@@ -1,8 +1,19 @@
-<html>
-  <body>
-    <script src="libfaust.js"></script>
-    <script src="webaudio-asm-wrapper.js"></script>
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charSet="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Faust Playpen</title>
+    <meta name="description" content="Elm Webpack Starter"/>
+    <meta name="author" content="Peter Morawiec"/>
+    <link rel="shortcut icon" type="image/png" href="./favicon.ico"/>
 
+    <script src="js/faust/libfaust.js"></script>
+    <script src="js/faust/webaudio-asm-wrapper.js"></script>
+
+  </head>
+  <body>
+    <div id="main"></div>
     <script>
       let tmp = "asdf";
       var audioContext = new AudioContext();
@@ -12,7 +23,8 @@
       // fetch('faustcode/math.lib')
       // fetch('faustcode/most-basic.dsp')
       // fetch('faustcode/echo.dsp')
-      fetch('faustcode/noise.dsp').then((response) => {
+      // fetch('faustcode/noise.dsp').then((response) => {
+      fetch('faustcode/noise-implementation.dsp').then((response) => {
         return response.text();
       }).then((code) => {
         console.log(code);
@@ -30,5 +42,5 @@
         console.log(dsp);
       })
     </script>
-  </body>
+  <script type="text/javascript" src="7d700681fb2ad217ca41.js"></script></body>
 </html>
