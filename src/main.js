@@ -88,6 +88,22 @@ elm.ports.compileFaustCode.subscribe(function(faustCode) {
     console.log('currDsp', currDsp);
     currDsp.connect(mainGainNode);
     mainGainNode.connect(audioMonitor);
+
+    var factoryCompute = currDsp.getFactoryCompute();
+    // console.log('factoryCompute', factoryCompute);
+    console.log(currDsp.debugComputeMono());
+    // var result = factoryCompute.func(
+    //   factoryCompute.args.
+    //
+    //     // Write outputs
+    //     for (i = 0; i < numOut; i++) {
+    //         var output = e.outputBuffer.getChannelData(i);
+    //         var dspOutput = dspOutChannnels[i];
+    //         for (j = 0; j < output.length; j++) {
+    //             output[j] = dspOutput[j];
+    //         }
+    //     }
+
   }
 });
 
