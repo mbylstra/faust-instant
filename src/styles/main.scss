@@ -21,3 +21,19 @@ button {
 .cm-s-monokai .CodeMirror-linenumber {
     color: #444444;
 }
+
+
+.audio-meter {
+  position: relative;
+  height: 100px;
+  width: 40px;
+  background-color: darken(green, 15);
+}
+
+.audio-meter-bar {
+  background-color: green;
+  width: 40px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}

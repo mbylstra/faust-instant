@@ -21,9 +21,10 @@ import Html.Events exposing
   )
 
 import HotKeys
-import FileReader
+-- import FileReader
 import Examples
 import Slider
+import AudioMeter
 
 
 -- MODEL
@@ -32,9 +33,10 @@ type alias Model =
   { faustCode : String
   , compilationError : Maybe String
   , hotKeys : HotKeys.Model
-  , fileReader : FileReader.Model
+  -- , fileReader : FileReader.Model
   , examples : List (String, String)
   , mainVolume : Slider.Model
+  , audioMeter : AudioMeter.Model
   }
 
 init : (Model, Cmd Msg)
@@ -47,9 +49,10 @@ process = noise;
 """
     , compilationError = Nothing
     , hotKeys = hotKeys
-    , fileReader = FileReader.init
+    -- , fileReader = FileReader.init
     , examples = Examples.init
     , mainVolume = Slider.init 1.0
+    , audioMeter = AudioMeter.init
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
@@ -64,13 +67,15 @@ type Msg
   | CompilationError (Maybe String)
   | FaustCodeChanged String
   | HotKeysMsg HotKeys.Msg
-  | FileReaderMsg FileReader.Msg
+  -- | FileReaderMsg FileReader.Msg
   | ExamplesMsg Examples.Msg
   | VolumeSliderMsg Slider.Msg
+  | AudioMeterMsg AudioMeter.Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
-  case Debug.log "action:" action of
+  -- case Debug.log "action:" action of
+  case action of
 
     Compile ->
       model ! [ compileFaustCode model.faustCode ]
@@ -103,8 +108,8 @@ update action model =
       in
         { model | hotKeys = hotKeys } ! commands
 
-    FileReaderMsg msg ->
-      model ! []
+    -- FileReaderMsg msg ->
+    --   model ! []
 
     ExamplesMsg msg ->
       let
@@ -122,6 +127,8 @@ update action model =
       in
         newModel ! [ updateMainVolume newModel.mainVolume ]
 
+    AudioMeterMsg msg ->
+      { model | audioMeter = AudioMeter.update msg model.audioMeter } ! []
 
 -- VIEW
 
@@ -142,6 +149,11 @@ view model =
     , button [ onClick Compile ] [ text "Compile" ]
     , App.map ExamplesMsg (Examples.view model.examples)
     , App.map VolumeSliderMsg (Slider.view model.mainVolume)
+    , p []
+      [ text "Audio Meter Value: "
+      , text (toString model.audioMeter)
+      ]
+    , App.map AudioMeterMsg (AudioMeter.view model.audioMeter)
     ]
 
 -- PORTS
@@ -152,6 +164,7 @@ port incomingFaustCode : (String -> msg) -> Sub msg
 port updateFaustCode : String -> Cmd msg
 port elmAppInitialRender : () -> Cmd msg
 port updateMainVolume : Float -> Cmd msg
+port incomingAudioMeterValue : (Float -> msg) -> Sub msg
 
 
 -- SUBSCRIPTIONS
@@ -159,5 +172,6 @@ subscriptions : List (Sub Msg)
 subscriptions =
   [ incomingFaustCode FaustCodeChanged
   , incomingCompilationErrors CompilationError
+  , Sub.map AudioMeterMsg (incomingAudioMeterValue AudioMeter.Updated)
   , Sub.map HotKeysMsg HotKeys.subscription
   ]

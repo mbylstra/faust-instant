@@ -16,16 +16,56 @@ var elm = Elm.Main.embed( document.getElementById( 'main' ) );
 
 
 var audioContext = new AudioContext();
-// var BUFFER_SIZE = 1024;
+var BUFFER_SIZE = 1024;
 // var BUFFER_SIZE = 2048;
-var BUFFER_SIZE = 4096;
+// var BUFFER_SIZE = 4096;
+// var BUFFER_SIZE = 4096;
 var currFaustCode = null;
 var currFactory = null;
 var currDsp = null;
 var editor = null;
 var mainGainNode = audioContext.createGain();
-mainGainNode.connect(audioContext.destination);
 mainGainNode.gain.value = 1;
+
+
+var audioMonitor = audioContext.createScriptProcessor(BUFFER_SIZE);
+audioMonitor.onaudioprocess = function(audioProcessingEvent) {
+
+  // The input buffer is the song we loaded earlier
+  var inputBuffer = audioProcessingEvent.inputBuffer;
+
+  // The output buffer contains the samples that will be modified and played
+  var outputBuffer = audioProcessingEvent.outputBuffer;
+
+  // Loop through the output channels (in this case there is only one)
+  for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+    var inputData = inputBuffer.getChannelData(channel);
+    var outputData = outputBuffer.getChannelData(channel);
+    // Loop through the 4096 samples
+    for (var sample = 0; sample < inputBuffer.length; sample++) {
+      // make output equal to the same as the input
+      outputData[sample] = inputData[sample];
+    }
+  }
+
+  var audioData = audioProcessingEvent.inputBuffer.getChannelData(0);
+  // let total = 0;
+  // let length = audioData.length;
+  // for (let i = 0; i < length; i++) {
+  //     total += Math.abs(audioData[i]);
+  // }
+  // var avg = total / length;
+  // var avgRms = Math.sqrt(avg) * 3.0;
+  // self.setState({amplitude: avgRms});
+
+  // just get first value for now:
+  var currentValue = audioData[0]
+  elm.ports.incomingAudioMeterValue.send(currentValue);
+}
+
+audioMonitor.connect(audioContext.destination);
+
+
 
 elm.ports.compileFaustCode.subscribe(function(faustCode) {
   console.log("faustCode:", faustCode);
@@ -45,7 +85,9 @@ elm.ports.compileFaustCode.subscribe(function(faustCode) {
       deleteDSPInstance(currDsp);
     }
     currDsp = faust.createDSPInstance(currFactory, audioContext, BUFFER_SIZE);
+    console.log('currDsp', currDsp);
     currDsp.connect(mainGainNode);
+    mainGainNode.connect(audioMonitor);
   }
 });
 

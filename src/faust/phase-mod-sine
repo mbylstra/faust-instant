@@ -1,0 +1,32 @@
+//-----------------------------------------------
+// 			osc(freq) : Sinusoidal Oscillator
+//-----------------------------------------------
+
+import("math.lib");
+import("music.lib");
+
+
+// generic table-driven oscillator with phase modulation
+
+// n	= the size of the table, must be a power of 2
+// f	= the wave function, must be defined on the range [0,2*PI]
+// freq	= the desired frequency in Hz
+// mod	= the phase modulation signal, in radians
+
+tblosc(n,f,freq,mod)	= (1-d)*rdtable(n,wave,i&(n-1)) +
+			  d*rdtable(n,wave,(i+1)&(n-1))
+with {
+	wave	 	= time*(2.0*PI)/n : f;
+	phase		= freq/SR : (+ : decimal) ~ _;
+	modphase	= decimal(phase+mod/(2*PI))*n;
+	i		= int(floor(modphase));
+	d		= decimal(modphase);
+};
+
+// phase modulation synth (sine modulated by another sine)
+freq = 440.0;
+
+process	= tblosc(1<<16, sin, freq, mod)
+with {
+	mod = 2*PI*tblosc(1<<16, sin, 440.0, 0) * 0.2;
+};
