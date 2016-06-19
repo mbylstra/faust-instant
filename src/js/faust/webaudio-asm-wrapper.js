@@ -908,6 +908,9 @@ faust.createPolyDSPInstance = function (factory, context, buffer_size, max_polyp
 
             if (voice >= 0) {
                 //console.log("keyOn voice %d", voice);
+                console.log("fFreqLabel", fFreqLabel);
+                console.log("fGainLabel", fGainLabel);
+                console.log("fGateLabel", fGateLabel);
                 factory.setValue(dsp_voices[voice], fFreqLabel, midiToFreq(pitch));
                 factory.setValue(dsp_voices[voice], fGainLabel, velocity/127.);
                 factory.setValue(dsp_voices[voice], fGateLabel, 1.0);

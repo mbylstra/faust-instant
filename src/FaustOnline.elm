@@ -1,5 +1,8 @@
 port module FaustOnline exposing (Model, Msg, init, update, view, subscriptions)
 
+import Array exposing (Array)
+import String
+
 import Html.App as App
 
 import Html exposing
@@ -20,14 +23,31 @@ import Html.Events exposing
   , onMouseDown, onMouseUp, onMouseEnter, onMouseLeave, onMouseOver, onMouseOut
   )
 
+import Util exposing (unsafe)
+
 import HotKeys
 -- import FileReader
 import Examples
 import Slider
 import AudioMeter
+import FFTBarGraph
+import Slider
+import SliderNoModel
+import Piano
+import Color
 
+
+type Polyphony
+  = Monophonic
+  | Polyphonic Int
 
 -- MODEL
+
+type alias UIInput =
+  { path : String
+  , value : Float
+  , label : String
+  }
 
 type alias Model =
   { faustCode : String
@@ -37,6 +57,9 @@ type alias Model =
   , examples : List (String, String)
   , mainVolume : Slider.Model
   , audioMeter : AudioMeter.Model
+  , fftData : List Float
+  , uiInputs : Array UIInput
+  , polyphony : Polyphony
   }
 
 init : (Model, Cmd Msg)
@@ -53,11 +76,21 @@ process = noise;
     , examples = Examples.init
     , mainVolume = Slider.init 1.0
     , audioMeter = AudioMeter.init
+    , fftData = []
+    , uiInputs = Array.empty
+    , polyphony = Monophonic
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
     , elmAppInitialRender ()
     ]
+
+showPiano : (Array UIInput) -> Bool
+showPiano uiInputs =
+  uiInputs
+  |> Array.filter (\uiInput -> uiInput.label == "freq")
+  |> Array.length
+  |> (==) 1
 
 
 -- UPDATE
@@ -71,6 +104,19 @@ type Msg
   | ExamplesMsg Examples.Msg
   | VolumeSliderMsg Slider.Msg
   | AudioMeterMsg AudioMeter.Msg
+  | NewFFTData (List Float)
+  | DSPCompiled (List String)
+  | SliderChanged Int Float
+  | PianoKeyMouseDown Float
+
+
+createCompileCommand : Model -> Cmd Msg
+createCompileCommand model =
+  case model.polyphony of
+    Polyphonic numVoices ->
+      compileFaustCode (model.faustCode, True, numVoices)
+    Monophonic ->
+      compileFaustCode (model.faustCode, False, 1)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
@@ -78,7 +124,7 @@ update action model =
   case action of
 
     Compile ->
-      model ! [ compileFaustCode model.faustCode ]
+      model ! [ createCompileCommand model ]
 
     CompilationError maybeRawMessage ->
       let
@@ -100,10 +146,10 @@ update action model =
       -- I think you have to get HotKeys to update the model here!
       let
         (hotKeys, hotKeysCommand) = HotKeys.update msg model.hotKeys
-        _ = Debug.log "hotKeys" hotKeys
+        -- _ = Debug.log "hotKeys" hotKeys
         commands = [ Cmd.map HotKeysMsg hotKeysCommand ] ++
           if hotKeys.controlShiftPressed
-          then [ compileFaustCode model.faustCode ]
+          then [ createCompileCommand model ]
           else []
       in
         { model | hotKeys = hotKeys } ! commands
@@ -117,7 +163,7 @@ update action model =
         newModel = { model | faustCode = example }
       in
         newModel
-          ! [ compileFaustCode newModel.faustCode
+          ! [ createCompileCommand newModel
             , updateFaustCode newModel.faustCode
             ]
 
@@ -130,10 +176,49 @@ update action model =
     AudioMeterMsg msg ->
       { model | audioMeter = AudioMeter.update msg model.audioMeter } ! []
 
+    NewFFTData fftData ->
+      { model | fftData = fftData } ! []
+
+    DSPCompiled uiInputNames ->
+      let
+        toUiInput rawUiInput =
+          let
+            label = String.split "/" rawUiInput |> Util.last |> Maybe.withDefault ""
+          in
+            { path = rawUiInput, value = 0.0, label = label }
+        uiInputs = List.map toUiInput uiInputNames
+          |> Array.fromList
+      in
+        { model | uiInputs = uiInputs } ! []
+        -- model ! []
+
+    SliderChanged i value ->
+      let
+        uiInput = unsafe (Array.get i model.uiInputs)
+        uiInput' = { uiInput | value = value }
+      in
+        { model | uiInputs = Array.set i uiInput' model.uiInputs }
+          ! [ setControlValue (uiInput.path, value) ]
+
+    PianoKeyMouseDown pitch ->
+      let
+        _ = Debug.log "pitch" pitch
+      in
+        model ! [ setPitch pitch ]
+
+
 -- VIEW
 
 view : Model -> Html Msg
 view model =
+
+  let
+    sliders =
+      Array.indexedMap
+      (\i uiInput -> SliderNoModel.view (SliderChanged i) uiInput.value)
+      model.uiInputs
+      |> Array.toList
+  in
   div []
     [ div []
       [ textarea
@@ -154,17 +239,32 @@ view model =
       , text (toString model.audioMeter)
       ]
     , App.map AudioMeterMsg (AudioMeter.view model.audioMeter)
+    , FFTBarGraph.view model.fftData
+    , div [] sliders
+    , pianoView model
     ]
+
+pianoView : Model -> Html Msg
+pianoView model =
+  if showPiano (Debug.log "model.uiInputs" model.uiInputs) then
+    Piano.view { blackKey = Color.black, whiteKey = Color.white} 2 36 PianoKeyMouseDown
+  else
+    div [] []
+
 
 -- PORTS
 
-port compileFaustCode : String -> Cmd msg
+port compileFaustCode : (String, Bool, Int) -> Cmd msg
+port setControlValue : (String, Float) -> Cmd msg
+port setPitch : Float -> Cmd msg
 port incomingCompilationErrors : (Maybe String -> msg) -> Sub msg
 port incomingFaustCode : (String -> msg) -> Sub msg
 port updateFaustCode : String -> Cmd msg
 port elmAppInitialRender : () -> Cmd msg
 port updateMainVolume : Float -> Cmd msg
 port incomingAudioMeterValue : (Float -> msg) -> Sub msg
+port incomingFFTData : (List Float -> msg) -> Sub msg
+port incomingDSPCompiled : (List String -> msg) -> Sub msg
 
 
 -- SUBSCRIPTIONS
@@ -174,4 +274,6 @@ subscriptions =
   , incomingCompilationErrors CompilationError
   , Sub.map AudioMeterMsg (incomingAudioMeterValue AudioMeter.Updated)
   , Sub.map HotKeysMsg HotKeys.subscription
+  , incomingFFTData NewFFTData
+  , incomingDSPCompiled DSPCompiled
   ]

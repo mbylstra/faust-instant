@@ -41,7 +41,7 @@ examplesRaw =
 
       filterQ = 0.97;
       filterFrequency = 2000.0;
-      process = noise : moog_vcf_2bn(filterQ, filterFrequency) : _ * 0.2;
+      process = noise : moog_vcf_2bn(filterQ, filterFrequency);
       """
     )
   , ( "Sine with vibrato"
@@ -53,7 +53,7 @@ examplesRaw =
       lfoFreq = 3.0;
       lfo = osc(lfoFreq) * lfoDepth;
 
-      process = osc(440.0 + lfo) * 0.2;
+      process = osc(440.0 + lfo);
       """
     )
   , ( "\"Pulse Width Modulation Synthesis\""
@@ -63,7 +63,7 @@ examplesRaw =
       supercollider = library("sc.lib");
 
 
-      process = supercollider.lfpulse(pulseFrequency, initialPulsePhase, pulseWidth) * 0.3;
+      process = supercollider.lfpulse(pulseFrequency, initialPulsePhase, pulseWidth);
       pulseFrequency = 440.0;
       initialPulsePhase = 0.0;
       pulseWidth = 0.5 + pulseWidthModulator;
@@ -76,6 +76,35 @@ examplesRaw =
       timbreLfo = oscillator.osc(timbreLfoFrequency) * timbreLfoRange;
       """
     )
+  , ( "Basic Saw wave implementation"
+    , """
+      periodInSamples = 44100 / 440.0;
+      increasingInts = 1 : + ~ _ : _ - 1;
+      normalize(maximum, value) = (value/maximum)*2 - 1;
+      repeatingRamp = increasingInts % periodInSamples;
+      process = repeatingRamp : normalize(periodInSamples - 1);
+      """
+    )
+  , ( "Noise with Slider"
+    , """
+      import ("music.lib");
+      // noise level controlled by a slider
+      process = noise * vslider("volume", 0, 0, 1, 0.1);
+      """
+    )
+  , ( "Sine with keyboard pitch"
+    , """
+      import ("music.lib");
+      freq = nentry("freq", 440, 20, 20000, 1);
+      process = osc(freq);
+      """
+    )
+
+
+
+
+-- freq = nentry("freq[unit:Hz]", 440, 20, 20000, 1);
+
   ]
 
 

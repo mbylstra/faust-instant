@@ -13,6 +13,7 @@ import Html.Attributes exposing
   , name, href, target, src, height, width, alt
   )
 
+
 -- MODEL
 
 type alias Model = Float
