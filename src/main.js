@@ -22,8 +22,8 @@ var currFactory = null;
 var currDsp = null;
 var editor = null;
 
-// var ENVIRONMENT = 'localhost';
-var ENVIRONMENT = 'bridged';
+var ENVIRONMENT = 'localhost';
+// var ENVIRONMENT = 'bridged';
 
 var basePath = null
 switch (ENVIRONMENT) {
