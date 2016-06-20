@@ -22,19 +22,6 @@ var currFactory = null;
 var currDsp = null;
 var editor = null;
 
-var ENVIRONMENT = 'localhost';
-// var ENVIRONMENT = 'bridged';
-
-var basePath = null
-switch (ENVIRONMENT) {
-  case 'localhost':
-    basePath = 'http://localhost:8080';
-    break;
-  case 'bridged':
-    basePath = 'http://192.168.0.8:8000';
-    break;
-}
-
 // var mainGainNode = audioContext.createGain();
 var polyphonic = false;
 // mainGainNode.gain.value = 1;
@@ -102,8 +89,7 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
 
 
     console.log("faustCode:", faustCode);
-    var args = ["-I", "http://" + window.location.hostname + "/faust-stdlib/"];
-    // var args = ["-I", basePath + "/faust-stdlib/"];
+    var args = ["-I", "http://" + window.location.hostname + ":" + window.location.port + "/faust-stdlib/"];
     faust.error_msg = null; //clear old error message
     var newFactory = faust.createDSPFactory(faustCode, args);
 
