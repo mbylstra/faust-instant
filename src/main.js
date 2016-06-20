@@ -11,7 +11,7 @@ require('./js/codemirror-faust-mode/faust.js');
 var CodeMirror = require('codemirror/lib/codemirror.js');
 
 // inject bundled Elm app into div#main
-var Elm = require( './Main' );
+var Elm = require( './Main.elm' );
 var elm = Elm.Main.embed( document.getElementById( 'main' ) );
 
 
