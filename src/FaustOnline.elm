@@ -15,13 +15,14 @@ import Html exposing
   )
 import Html.Attributes exposing
   ( style, class, id, title, hidden, type', checked, placeholder, selected
-  , name, href, target, src, height, width, alt
+  , name, href, target, src, height, width, alt, value
   )
 import Html.Events exposing
   ( on, targetValue, targetChecked, keyCode, onBlur, onFocus, onSubmit, onInput
   , onClick, onDoubleClick
   , onMouseDown, onMouseUp, onMouseEnter, onMouseLeave, onMouseOver, onMouseOut
   )
+import Json.Decode
 
 import Util exposing (unsafe)
 
@@ -35,11 +36,26 @@ import Slider
 import SliderNoModel
 import Piano
 import Color
-
+import GoogleSpinner
 
 type Polyphony
   = Monophonic
   | Polyphonic Int
+
+
+bufferSizes : List Int
+bufferSizes =
+  [ 256, 512, 1024, 2048, 4096 ]  -- Note web audio requires a minimum of 256
+
+defaultBufferSize : Int
+defaultBufferSize = 512
+
+sampleRate : Float
+sampleRate = 44100.0
+
+getBufferSizeMillis : Int -> Int
+getBufferSizeMillis bufferSize =
+  Basics.round ((1.0 / sampleRate) * (toFloat bufferSize) * 1000.0)
 
 -- MODEL
 
@@ -60,6 +76,8 @@ type alias Model =
   , fftData : List Float
   , uiInputs : Array UIInput
   , polyphony : Polyphony
+  , bufferSize : Int
+  , loading : Bool
   }
 
 init : (Model, Cmd Msg)
@@ -79,6 +97,8 @@ process = noise;
     , fftData = []
     , uiInputs = Array.empty
     , polyphony = Monophonic
+    , bufferSize = defaultBufferSize
+    , loading = False
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
@@ -108,15 +128,22 @@ type Msg
   | DSPCompiled (List String)
   | SliderChanged Int Float
   | PianoKeyMouseDown Float
+  | BufferSizeChanged Int
 
 
 createCompileCommand : Model -> Cmd Msg
 createCompileCommand model =
   case model.polyphony of
     Polyphonic numVoices ->
-      compileFaustCode (model.faustCode, True, numVoices)
+      compileFaustCode
+        { faustCode = model.faustCode, polyphonic = True
+        , numVoices = numVoices, bufferSize = model.bufferSize
+        }
     Monophonic ->
-      compileFaustCode (model.faustCode, False, 1)
+      compileFaustCode
+        { faustCode = model.faustCode, polyphonic = False
+        , numVoices = 1, bufferSize = model.bufferSize
+        }
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
@@ -124,7 +151,7 @@ update action model =
   case action of
 
     Compile ->
-      model ! [ createCompileCommand model ]
+      { model | loading = True } ! [ createCompileCommand model ]
 
     CompilationError maybeRawMessage ->
       let
@@ -137,7 +164,7 @@ update action model =
           Nothing ->
             Nothing
       in
-        { model | compilationError = message } ! []
+        { model | compilationError = message, loading = False } ! []
 
     FaustCodeChanged s ->
       { model | faustCode = s } ! []
@@ -147,12 +174,14 @@ update action model =
       let
         (hotKeys, hotKeysCommand) = HotKeys.update msg model.hotKeys
         -- _ = Debug.log "hotKeys" hotKeys
+        doCompile = hotKeys.controlShiftPressed
         commands = [ Cmd.map HotKeysMsg hotKeysCommand ] ++
-          if hotKeys.controlShiftPressed
+          if doCompile
           then [ createCompileCommand model ]
           else []
+        loading = if doCompile then True else model.loading
       in
-        { model | hotKeys = hotKeys } ! commands
+        { model | hotKeys = hotKeys, loading = loading } ! commands
 
     -- FileReaderMsg msg ->
     --   model ! []
@@ -160,7 +189,7 @@ update action model =
     ExamplesMsg msg ->
       let
         (_, example) = Examples.update msg model.examples
-        newModel = { model | faustCode = example }
+        newModel = { model | faustCode = example, loading = True }
       in
         newModel
           ! [ createCompileCommand newModel
@@ -189,7 +218,9 @@ update action model =
         uiInputs = List.map toUiInput uiInputNames
           |> Array.fromList
       in
-        { model | uiInputs = uiInputs } ! []
+
+        { model | uiInputs = uiInputs, loading = False } ! []
+        -- Debug.log "newmodel" { model | uiInputs = uiInputs } ! []
         -- model ! []
 
     SliderChanged i value ->
@@ -205,6 +236,12 @@ update action model =
         _ = Debug.log "pitch" pitch
       in
         model ! [ setPitch pitch ]
+
+    BufferSizeChanged bufferSize ->
+      let
+        newModel = { model | bufferSize = bufferSize }
+      in
+        newModel ! [ createCompileCommand newModel ]
 
 
 -- VIEW
@@ -233,6 +270,11 @@ view model =
         [ text (Maybe.withDefault "" model.compilationError) ]
     , button [ onClick Compile ] [ text "Compile" ]
     , App.map ExamplesMsg (Examples.view model.examples)
+    , (if model.loading then GoogleSpinner.view else span [] [])
+    -- , (if model.loading then (span [] [ text "loading"]) else span [] [])
+    -- , (if True then (span [] [ text "loading"]) else span [] [])
+    -- , (if True then GoogleSpinner.view else span [] [])
+    -- , GoogleSpinner.view
     , App.map VolumeSliderMsg (Slider.view model.mainVolume)
     , p []
       [ text "Audio Meter Value: "
@@ -242,19 +284,40 @@ view model =
     , FFTBarGraph.view model.fftData
     , div [] sliders
     , pianoView model
+    , bufferSizeSelectView model
     ]
 
 pianoView : Model -> Html Msg
 pianoView model =
-  if showPiano (Debug.log "model.uiInputs" model.uiInputs) then
+  if showPiano model.uiInputs then
     Piano.view { blackKey = Color.black, whiteKey = Color.white} 2 36 PianoKeyMouseDown
   else
     div [] []
 
+bufferSizeSelectView : Model -> Html Msg
+bufferSizeSelectView model =
+  let
+    renderOption bufferSize =
+      option
+        [ value (toString bufferSize), selected (bufferSize == model.bufferSize)]
+        [ text (toString bufferSize) ]
+    parseInt s =
+      String.toInt s |> Result.toMaybe |> Maybe.withDefault defaultBufferSize
+
+    onChange =
+      on "change" (Json.Decode.map (\v -> BufferSizeChanged (parseInt v)) targetValue)
+  in
+    select
+      [ onChange ]
+      (List.map renderOption bufferSizes)
+
 
 -- PORTS
 
-port compileFaustCode : (String, Bool, Int) -> Cmd msg
+
+port compileFaustCode :
+  { faustCode: String, polyphonic: Bool, numVoices: Int, bufferSize: Int }
+  -> Cmd msg
 port setControlValue : (String, Float) -> Cmd msg
 port setPitch : Float -> Cmd msg
 port incomingCompilationErrors : (Maybe String -> msg) -> Sub msg

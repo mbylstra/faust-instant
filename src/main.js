@@ -16,120 +16,112 @@ var elm = Elm.Main.embed( document.getElementById( 'main' ) );
 
 
 var audioContext = new AudioContext();
-var BUFFER_SIZE = 1024;
 var NUM_POLY_VOICES = 3;
-// var BUFFER_SIZE = 2048;
-// var BUFFER_SIZE = 4096;
-// var BUFFER_SIZE = 4096;
 var currFaustCode = null;
 var currFactory = null;
 var currDsp = null;
 var editor = null;
-var mainGainNode = audioContext.createGain();
+// var mainGainNode = audioContext.createGain();
 var polyphonic = false;
-mainGainNode.gain.value = 1;
+// mainGainNode.gain.value = 1;
 
 function midiToFreq(note) {
     return 440.0 * Math.pow(2.0, (note - 69.0) / 12.0);
 }
 
-var audioMonitor = audioContext.createScriptProcessor(BUFFER_SIZE);
-audioMonitor.onaudioprocess = function(audioProcessingEvent) {
+// var audioMonitor = audioContext.createScriptProcessor(bufferSize);
+// audioMonitor.onaudioprocess = function(audioProcessingEvent) {
+//
+//   // The input buffer is the song we loaded earlier
+//   var inputBuffer = audioProcessingEvent.inputBuffer;
+//
+//   // The output buffer contains the samples that will be modified and played
+//   var outputBuffer = audioProcessingEvent.outputBuffer;
+//
+//   // Loop through the output channels (in this case there is only one)
+//   for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+//     var inputData = inputBuffer.getChannelData(channel);
+//     var outputData = outputBuffer.getChannelData(channel);
+//     // Loop through the 4096 samples
+//     for (var sample = 0; sample < inputBuffer.length; sample++) {
+//       // make output equal to the same as the input
+//       outputData[sample] = inputData[sample];
+//     }
+//   }
+//
+//   var audioData = audioProcessingEvent.inputBuffer.getChannelData(0);
+//   // let total = 0;
+//   // let length = audioData.length;
+//   // for (let i = 0; i < length; i++) {
+//   //     total += Math.abs(audioData[i]);
+//   // }
+//   // var avg = total / length;
+//   // var avgRms = Math.sqrt(avg) * 3.0;
+//   // self.setState({amplitude: avgRms});
+//
+//   // just get first value for now:
+//   var currentValue = audioData[0]
+//   elm.ports.incomingAudioMeterValue.send(currentValue);
+// }
+//
+// audioMonitor.connect(audioContext.destination);
 
-  // The input buffer is the song we loaded earlier
-  var inputBuffer = audioProcessingEvent.inputBuffer;
 
-  // The output buffer contains the samples that will be modified and played
-  var outputBuffer = audioProcessingEvent.outputBuffer;
+// var analyserNode = audioContext.createAnalyser();
+// // analyserNode.fftSize = 2048;
+// // analyserNode.fftSize = 4096;
+// analyserNode.fftSize = 256;
+// var analyserBufferLength = analyserNode.frequencyBinCount;
+// console.log('analyserBufferLength', analyserBufferLength);
+// var analyserDataArray = new Float32Array(analyserBufferLength);
 
-  // Loop through the output channels (in this case there is only one)
-  for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
-    var inputData = inputBuffer.getChannelData(channel);
-    var outputData = outputBuffer.getChannelData(channel);
-    // Loop through the 4096 samples
-    for (var sample = 0; sample < inputBuffer.length; sample++) {
-      // make output equal to the same as the input
-      outputData[sample] = inputData[sample];
-    }
-  }
+elm.ports.compileFaustCode.subscribe(function(payload) {
 
-  var audioData = audioProcessingEvent.inputBuffer.getChannelData(0);
-  // let total = 0;
-  // let length = audioData.length;
-  // for (let i = 0; i < length; i++) {
-  //     total += Math.abs(audioData[i]);
-  // }
-  // var avg = total / length;
-  // var avgRms = Math.sqrt(avg) * 3.0;
-  // self.setState({amplitude: avgRms});
+  // document.getElementById("spinner").style.display = "block";
+  setTimeout(function() {
+    // This is a massive hack due to issues with concurrency and ordering in Elm!
 
-  // just get first value for now:
-  var currentValue = audioData[0]
-  elm.ports.incomingAudioMeterValue.send(currentValue);
-}
-
-audioMonitor.connect(audioContext.destination);
+    polyphonic = payload.polyphonic; //global
+    bufferSize = payload.bufferSize;
+    var faustCode = payload.faustCode;
+    var numVoices = payload.numVoices;
 
 
-var analyserNode = audioContext.createAnalyser();
-// analyserNode.fftSize = 2048;
-// analyserNode.fftSize = 4096;
-analyserNode.fftSize = 256;
-var analyserBufferLength = analyserNode.frequencyBinCount;
-console.log('analyserBufferLength', analyserBufferLength);
-var analyserDataArray = new Float32Array(analyserBufferLength);
+    console.log("faustCode:", faustCode);
+    //var args = ["-I", "http://" + window.location.hostname + "/faust-stdlib/"];
+    var args = ["-I", "http://localhost:8080/faust-stdlib/"];
+    faust.error_msg = null; //clear old error message
+    var newFactory = faust.createDSPFactory(faustCode, args);
 
-elm.ports.compileFaustCode.subscribe(function(args) {
-  polyphonic = args[1]; //global
-  var faustCode = args[0];
-  var numVoices = args[2];
-
-  console.log("faustCode:", faustCode);
-  //var args = ["-I", "http://" + window.location.hostname + "/faust-stdlib/"];
-  var args = ["-I", "http://localhost:8080/faust-stdlib/"];
-  faust.error_msg = null; //clear old error message
-  var newFactory = faust.createDSPFactory(faustCode, args);
-
-  if (faust.error_msg) {
-    console.log("faust.error_msg: ", faust.error_msg);
-    elm.ports.incomingCompilationErrors.send(faust.error_msg);
-  } else {
-    elm.ports.incomingCompilationErrors.send(null);
-    var currFactory = newFactory
-    if (currDsp != null) {
-      currDsp.disconnect(analyserNode);
-      deleteDSPInstance(currDsp);
-    }
-    if (polyphonic) {
-      currDsp = faust.createPolyDSPInstance(currFactory, audioContext, BUFFER_SIZE, numVoices);
+    if (faust.error_msg) {
+      console.log("faust.error_msg: ", faust.error_msg);
+      elm.ports.incomingCompilationErrors.send(faust.error_msg);
     } else {
-      currDsp = faust.createDSPInstance(currFactory, audioContext, BUFFER_SIZE);
+      elm.ports.incomingCompilationErrors.send(null);
+      var currFactory = newFactory
+      if (currDsp != null) {
+        // currDsp.disconnect(analyserNode);
+        currDsp.disconnect(audioContext.destination);
+        deleteDSPInstance(currDsp);
+      }
+      if (polyphonic) {
+        currDsp = faust.createPolyDSPInstance(currFactory, audioContext, bufferSize, numVoices);
+      } else {
+        currDsp = faust.createDSPInstance(currFactory, audioContext, bufferSize);
+      }
+      console.log('currDsp', currDsp);
+      console.log('controls', currDsp.controls());
+      elm.ports.incomingDSPCompiled.send(currDsp.controls());
+      console.log('json', JSON.parse(currDsp.json()));
+      // console.log('json.ui', currDsp.json().outputs);
+      // currDsp.connect(analyserNode);
+      currDsp.connect(audioContext.destination);
+      // analyserNode.connect(mainGainNode);
+      // mainGainNode.connect(audioMonitor);
     }
-    console.log('currDsp', currDsp);
-    console.log('controls', currDsp.controls());
-    elm.ports.incomingDSPCompiled.send(currDsp.controls());
-    console.log('json', JSON.parse(currDsp.json()));
-    // console.log('json.ui', currDsp.json().outputs);
-    currDsp.connect(analyserNode);
-    analyserNode.connect(mainGainNode);
-    mainGainNode.connect(audioMonitor);
+  },0); // This is a massive hack so that the spinner shows _before_ we start
+        // compiling!
 
-    // var factoryCompute = currDsp.getFactoryCompute();
-    // console.log('factoryCompute', factoryCompute);
-    // console.log(currDsp.debugComputeMono());
-    // var result = factoryCompute.func(
-    //   factoryCompute.args.
-    //
-    //     // Write outputs
-    //     for (i = 0; i < numOut; i++) {
-    //         var output = e.outputBuffer.getChannelData(i);
-    //         var dspOutput = dspOutChannnels[i];
-    //         for (j = 0; j < output.length; j++) {
-    //             output[j] = dspOutput[j];
-    //         }
-    //     }
-
-  }
 });
 
 elm.ports.elmAppInitialRender.subscribe(function() {
@@ -156,9 +148,9 @@ elm.ports.updateFaustCode.subscribe(function(faustCode) {
   editor.getDoc().setValue(faustCode);
 })
 
-elm.ports.updateMainVolume.subscribe(function(value) {
-  mainGainNode.gain.value = value;
-})
+// elm.ports.updateMainVolume.subscribe(function(value) {
+//   mainGainNode.gain.value = value;
+// })
 
 elm.ports.setControlValue.subscribe(function(e) {
   if (currDsp) {
@@ -202,13 +194,13 @@ function deleteDSPInstance(dsp) {
     Module._free(dsp.dsp);
 }
 
-function sendFFTData() {
-  analyserNode.getFloatFrequencyData(analyserDataArray);
-  var floatData = Array.prototype.slice.call(analyserDataArray);
-  elm.ports.incomingFFTData.send(floatData);
-  requestAnimationFrame(sendFFTData);
-}
-sendFFTData();
+// function sendFFTData() {
+//   analyserNode.getFloatFrequencyData(analyserDataArray);
+//   var floatData = Array.prototype.slice.call(analyserDataArray);
+//   elm.ports.incomingFFTData.send(floatData);
+//   requestAnimationFrame(sendFFTData);
+// }
+// sendFFTData();
 
 // setInterval(function() {
   // requestAnimationFrame(sendFFTData);
