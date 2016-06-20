@@ -4,9 +4,7 @@
     <meta charSet="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Faust Playpen</title>
-    <meta name="description" content="Elm Webpack Starter"/>
-    <meta name="author" content="Peter Morawiec"/>
-    <link rel="shortcut icon" type="image/png" href="./favicon.ico"/>
+    <meta name="author" content="Michael Bylstra"/>
 
     <script src="js/faust/libfaust.js"></script>
     <script src="js/faust/webaudio-asm-wrapper.js"></script>
@@ -14,33 +12,5 @@
   </head>
   <body>
     <div id="main"></div>
-    <script>
-      let tmp = "asdf";
-      var audioContext = new AudioContext();
-      var BUFFER_SIZE = 1024;
-      // console.log("faust", faust);
-      // fetch('faustcode/bogus.lib')
-      // fetch('faustcode/math.lib')
-      // fetch('faustcode/most-basic.dsp')
-      // fetch('faustcode/echo.dsp')
-      // fetch('faustcode/noise.dsp').then((response) => {
-      fetch('faustcode/noise-implementation.dsp').then((response) => {
-        return response.text();
-      }).then((code) => {
-        console.log(code);
-        //var args = ["-I", "http://" + window.location.hostname + "/faust-stdlib/"];
-        var args = ["-I", "http://localhost:8080/faust-stdlib/"];
-        // var args = ["-I", "/faust-stdlib/"];
-        console.log("args", args);
-        var factory = faust.createDSPFactory(code, args);
-        console.log("faust.error_msg: ", faust.error_msg);
-        console.log("factory", factory);
-        var dsp = faust.createDSPInstance(factory, audioContext, BUFFER_SIZE);
-
-        dsp.connect(audioContext.destination);       // connect the source to the context's destination (the speakers)
-
-        console.log(dsp);
-      })
-    </script>
-  <script type="text/javascript" src="7d700681fb2ad217ca41.js"></script></body>
+  <script type="text/javascript" src="3a0e0b2b8ea49b002fa7.js"></script></body>
 </html>

@@ -1,0 +1,6 @@
+# this doesn't work! 
+# webpack still does websockets stuff even with the -p option (?)
+# the *.lib files in js/faust-stdlib aren't served with cors even with the --cors option (?)
+./build.sh
+cd dist
+http-server -p8000 -a192.168.8 --cors

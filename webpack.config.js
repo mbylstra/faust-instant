@@ -58,7 +58,8 @@ if ( TARGET_ENV === 'development' ) {
 
     devServer: {
       inline:   true,
-      progress: true
+      progress: true,
+      headers: { "Access-Control-Allow-Origin": "*" }
     },
 
     module: {
