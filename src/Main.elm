@@ -1,5 +1,5 @@
 import Html.App
-import FaustOnline exposing (Model, Msg, init, update, view)
+import FaustInstant exposing (Model, Msg, init, update, view)
 
 main : Program Never
 main =
@@ -12,4 +12,4 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.batch FaustOnline.subscriptions
+  Sub.batch FaustInstant.subscriptions

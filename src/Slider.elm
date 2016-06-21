@@ -33,13 +33,13 @@ update action model =
 
 -- VIEW
 
-view : Float -> Html Msg
-view model =
+view : { min: Float, max: Float, step: Float} -> Float -> Html Msg
+view attrs model =
   input
     [ type' "range"
-    , Html.Attributes.min "0"
-    , Html.Attributes.max "1"
-    , Html.Attributes.step "0.001"
+    , Html.Attributes.min (toString attrs.min)
+    , Html.Attributes.max (toString attrs.max)
+    , Html.Attributes.step (toString attrs.step)
     , value (toString model)
     , onSliderInput ValueUpdated
     ]

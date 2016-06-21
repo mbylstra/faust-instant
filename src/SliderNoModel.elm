@@ -12,13 +12,13 @@ import Result
 
 -- VIEW
 
-view : (Float -> msg) -> Float -> Html msg
-view tagger model =
+view : { min: Float, max: Float, step: Float} -> (Float -> msg) -> Float -> Html msg
+view attrs tagger model =
   input
     [ type' "range"
-    , Html.Attributes.min "0"
-    , Html.Attributes.max "1"
-    , Html.Attributes.step "0.001"
+    , Html.Attributes.min (toString attrs.min)
+    , Html.Attributes.max (toString attrs.max)
+    , Html.Attributes.step (toString attrs.step)
     , value (toString model)
     , onSliderInput tagger
     ]

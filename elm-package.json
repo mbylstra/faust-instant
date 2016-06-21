@@ -13,6 +13,7 @@
         "elm-lang/svg": "1.0.0 <= v < 2.0.0",
         "evancz/elm-graphics": "1.0.0 <= v < 2.0.0",
         "ggb/numeral-elm": "1.1.3 <= v < 2.0.0",
+        "lorenzo/elm-string-addons": "2.0.1 <= v < 3.0.0",
         "ohanhi/keyboard-extra": "1.1.0 <= v < 2.0.0"
     },
     "elm-version": "0.17.0 <= v < 0.18.0"

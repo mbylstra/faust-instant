@@ -1,7 +1,8 @@
-port module FaustOnline exposing (Model, Msg, init, update, view, subscriptions)
+port module FaustInstant exposing (Model, Msg, init, update, view, subscriptions)
 
 import Array exposing (Array)
 import String
+-- import String.Addons as StringAddons
 
 import Html.App as App
 
@@ -11,7 +12,7 @@ import Html exposing
   , ol, ul, li, dl, dt, dd
   , form, input, textarea, button, select, option
   , table, caption, tbody, thead, tr, td, th
-  , em, strong, blockquote, hr
+  , em, strong, blockquote, hr, label
   )
 import Html.Attributes exposing
   ( style, class, id, title, hidden, type', checked, placeholder, selected
@@ -24,19 +25,20 @@ import Html.Events exposing
   )
 import Json.Decode
 
-import Util exposing (unsafe)
+import Util exposing (unsafeMaybe, unsafeResult)
 
 import HotKeys
 -- import FileReader
 import Examples
 import Slider
 import AudioMeter
-import FFTBarGraph
+-- import FFTBarGraph
 import Slider
 import SliderNoModel
 import Piano
 import Color
 import GoogleSpinner
+import FaustControls
 
 type Polyphony
   = Monophonic
@@ -59,12 +61,6 @@ getBufferSizeMillis bufferSize =
 
 -- MODEL
 
-type alias UIInput =
-  { path : String
-  , value : Float
-  , label : String
-  }
-
 type alias Model =
   { faustCode : String
   , compilationError : Maybe String
@@ -74,7 +70,7 @@ type alias Model =
   , mainVolume : Slider.Model
   , audioMeter : AudioMeter.Model
   , fftData : List Float
-  , uiInputs : Array UIInput
+  , uiInputs : Array (FaustControls.SliderData)
   , polyphony : Polyphony
   , bufferSize : Int
   , loading : Bool
@@ -105,7 +101,7 @@ process = noise;
     , elmAppInitialRender ()
     ]
 
-showPiano : (Array UIInput) -> Bool
+showPiano : (Array FaustControls.SliderData) -> Bool
 showPiano uiInputs =
   uiInputs
   |> Array.filter (\uiInput -> uiInput.label == "freq")
@@ -125,7 +121,7 @@ type Msg
   | VolumeSliderMsg Slider.Msg
   | AudioMeterMsg AudioMeter.Msg
   | NewFFTData (List Float)
-  | DSPCompiled (List String)
+  | DSPCompiled (List Json.Decode.Value)
   | SliderChanged Int Float
   | PianoKeyMouseDown Float
   | BufferSizeChanged Int
@@ -208,28 +204,25 @@ update action model =
     NewFFTData fftData ->
       { model | fftData = fftData } ! []
 
-    DSPCompiled uiInputNames ->
+    DSPCompiled jsonList ->
       let
-        toUiInput rawUiInput =
-          let
-            label = String.split "/" rawUiInput |> Util.last |> Maybe.withDefault ""
-          in
-            { path = rawUiInput, value = 0.0, label = label }
-        uiInputs = List.map toUiInput uiInputNames
-          |> Array.fromList
+        decodeJson json =
+          json
+          |> Json.Decode.decodeValue FaustControls.sliderDecoder
+          |> unsafeResult
+        sliders = List.map decodeJson jsonList |> Array.fromList
       in
-
-        { model | uiInputs = uiInputs, loading = False } ! []
+        { model | uiInputs = sliders, loading = False } ! []
         -- Debug.log "newmodel" { model | uiInputs = uiInputs } ! []
         -- model ! []
 
     SliderChanged i value ->
       let
-        uiInput = unsafe (Array.get i model.uiInputs)
-        uiInput' = { uiInput | value = value }
+        uiInput = unsafeMaybe (Array.get i model.uiInputs)
+        uiInput' = { uiInput | init = value }
       in
         { model | uiInputs = Array.set i uiInput' model.uiInputs }
-          ! [ setControlValue (uiInput.path, value) ]
+          ! [ setControlValue (uiInput.address, value) ]
 
     PianoKeyMouseDown pitch ->
       let
@@ -251,40 +244,55 @@ view model =
 
   let
     sliders =
-      Array.indexedMap
-      (\i uiInput -> SliderNoModel.view (SliderChanged i) uiInput.value)
-      model.uiInputs
-      |> Array.toList
+      let
+        renderSlider i uiInput =
+          label [ class "slider-container" ]
+            [ SliderNoModel.view
+                { min = uiInput.min, max = uiInput.max, step = uiInput.step }
+                (SliderChanged i)
+                uiInput.init
+            , span [] [text uiInput.label]
+            ]
+      in
+        Array.indexedMap renderSlider model.uiInputs |> Array.toList
   in
-  div []
-    [ div []
-      [ textarea
-        [ id "codemirror" ]
-        -- [ onInput FaustCodeChanged ]
-        -- [ text model.faustCode
-        -- ]
-        []
+  div [ class "main-wrap" ]
+    [ div [ class "main-header" ]
+      [ h1 [] [ text "Faust Instant" ] ]
+    , div [ class "main-row" ]
+      [ div [ class "code-editor-column" ]
+        [ div [ class "code-editor"]
+          [ textarea
+            [ id "codemirror" ]
+            []
+          ]
+        , div [ class "code-editor-buttons" ]
+          [ div [ class "spinner-holder" ]
+              [ if model.loading then GoogleSpinner.view else span [] [] ]
+          , label [] [ text "Latency"]
+          , bufferSizeSelectView model
+          , button [ onClick Compile ]
+            [ text "Compile "
+            , span [] [ text "(CTRL-ENTER)" ]
+            ]
+          ]
+        ]
+      , div [ class "examples"]
+        [ App.map ExamplesMsg (Examples.view model.examples) ]
       ]
-    -- , App.map FileReaderMsg (FileReader.view model.fileReader)
-    , p []
-        [ text (Maybe.withDefault "" model.compilationError) ]
-    , button [ onClick Compile ] [ text "Compile" ]
-    , App.map ExamplesMsg (Examples.view model.examples)
-    , (if model.loading then GoogleSpinner.view else span [] [])
-    -- , (if model.loading then (span [] [ text "loading"]) else span [] [])
-    -- , (if True then (span [] [ text "loading"]) else span [] [])
-    -- , (if True then GoogleSpinner.view else span [] [])
-    -- , GoogleSpinner.view
-    , App.map VolumeSliderMsg (Slider.view model.mainVolume)
-    , p []
-      [ text "Audio Meter Value: "
-      , text (toString model.audioMeter)
+    , div [ class "main-footer" ]
+      [ p []
+          [ text (Maybe.withDefault "" model.compilationError) ]
+      -- , App.map VolumeSliderMsg (Slider.view model.mainVolume)
+      -- , p []
+      --   [ text "Audio Meter Value: "
+      --   , text (toString model.audioMeter)
+      --   ]
+      -- , App.map AudioMeterMsg (AudioMeter.view model.audioMeter)
+      -- , FFTBarGraph.view model.fftData
+      , div [ class "sliders" ] sliders
+      , pianoView model
       ]
-    , App.map AudioMeterMsg (AudioMeter.view model.audioMeter)
-    , FFTBarGraph.view model.fftData
-    , div [] sliders
-    , pianoView model
-    , bufferSizeSelectView model
     ]
 
 pianoView : Model -> Html Msg
@@ -300,7 +308,7 @@ bufferSizeSelectView model =
     renderOption bufferSize =
       option
         [ value (toString bufferSize), selected (bufferSize == model.bufferSize)]
-        [ text (toString bufferSize) ]
+        [ text ((toString (getBufferSizeMillis bufferSize)) ++ "ms") ]
     parseInt s =
       String.toInt s |> Result.toMaybe |> Maybe.withDefault defaultBufferSize
 
@@ -327,7 +335,7 @@ port elmAppInitialRender : () -> Cmd msg
 port updateMainVolume : Float -> Cmd msg
 port incomingAudioMeterValue : (Float -> msg) -> Sub msg
 port incomingFFTData : (List Float -> msg) -> Sub msg
-port incomingDSPCompiled : (List String -> msg) -> Sub msg
+port incomingDSPCompiled : (List Json.Decode.Value -> msg) -> Sub msg
 
 
 -- SUBSCRIPTIONS

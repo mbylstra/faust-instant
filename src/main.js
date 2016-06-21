@@ -111,8 +111,13 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
       }
       console.log('currDsp', currDsp);
       console.log('controls', currDsp.controls());
-      elm.ports.incomingDSPCompiled.send(currDsp.controls());
       console.log('json', JSON.parse(currDsp.json()));
+      var ui = JSON.parse(currDsp.json()).ui;
+      var simplifiedUi = simplifyUiData(ui);
+      console.log('simplifiedUi', simplifiedUi);
+      // elm.ports.incomingDSPCompiled.send(currDsp.controls());
+      elm.ports.incomingDSPCompiled.send(simplifiedUi);
+
       // console.log('json.ui', currDsp.json().outputs);
       // currDsp.connect(analyserNode);
       currDsp.connect(audioContext.destination);
@@ -192,6 +197,21 @@ function deleteDSPInstance(dsp) {
     }
 
     Module._free(dsp.dsp);
+}
+
+function simplifyUiData(uiData) {
+  var controls = [];
+
+  for (var i=0; i < uiData.length; i++) {
+    var item = uiData[i];
+    if (item.type == 'vslider' || item.type == 'hslider') {
+      controls.push(item);
+    } else {
+      childControls = simplifyUiData(item.items);
+      controls = controls.concat(childControls);
+    }
+  }
+  return controls;
 }
 
 // function sendFFTData() {
