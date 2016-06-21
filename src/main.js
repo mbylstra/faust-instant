@@ -204,7 +204,7 @@ function simplifyUiData(uiData) {
 
   for (var i=0; i < uiData.length; i++) {
     var item = uiData[i];
-    if (item.type == 'vslider' || item.type == 'hslider') {
+    if (item.type == 'vslider' || item.type == 'hslider' || item.type == "nentry") {
       controls.push(item);
     } else {
       childControls = simplifyUiData(item.items);
