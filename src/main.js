@@ -140,13 +140,19 @@ elm.ports.elmAppInitialRender.subscribe(function() {
     // },
     lineNumbers: true,
     // theme: 'monokai'
-    theme: 'tomorrow-night-eighties'
+    theme: 'tomorrow-night-eighties',
   });
+  // updateCodeMirrorSize();
+
   editor.focus();
   editor.on('change', function() {
     var currentFaustCode = editor.getValue();
     elm.ports.incomingFaustCode.send(currentFaustCode);
   });
+});
+
+elm.ports.layoutUpdated.subscribe(function() {
+  updateCodeMirrorSize();
 });
 
 elm.ports.updateFaustCode.subscribe(function(faustCode) {
@@ -212,6 +218,28 @@ function simplifyUiData(uiData) {
     }
   }
   return controls;
+}
+
+function updateCodeMirrorSize() {
+    var codeMirrorHolder = document.getElementById('code-editor-holder');
+    codeMirrorHolder.style.overflow = "hidden";
+    setTimeout(function() {
+      // var rect = codeMirrorHolder.getBoundingClientRect();
+      // var width = codeMirrorHolder.offsetWidth;
+      // var height = codeMirrorHolder.offsetHeight;
+      var width = codeMirrorHolder.clientWidth;
+      var height = codeMirrorHolder.clientHeight;
+      editor.setSize(width, height);
+      // editor.setSize(width, 100);
+      // editor.setSize("100%", "100%");
+      // editor.setSize("auto", "auto");
+      setTimeout(function() {
+        // codeMirrorHolder.style.overflow = "visible";
+        // codeMirrorHolder.style.overflow = "";
+      },500);
+
+    },50);
+    // console.log(codeMirrorHolder);
 }
 
 // function sendFFTData() {

@@ -212,7 +212,8 @@ update action model =
           |> unsafeResult
         sliders = List.map decodeJson jsonList |> Array.fromList
       in
-        { model | uiInputs = sliders, loading = False } ! []
+        { model | uiInputs = sliders, loading = False } !
+          [ layoutUpdated () ]
         -- Debug.log "newmodel" { model | uiInputs = uiInputs } ! []
         -- model ! []
 
@@ -261,7 +262,7 @@ view model =
       [ h1 [] [ text "Faust Instant" ] ]
     , div [ class "main-row" ]
       [ div [ class "code-editor-column" ]
-        [ div [ class "code-editor"]
+        [ div [ id "code-editor-holder", class "code-editor"]
           [ textarea
             [ id "codemirror" ]
             []
@@ -332,6 +333,7 @@ port incomingCompilationErrors : (Maybe String -> msg) -> Sub msg
 port incomingFaustCode : (String -> msg) -> Sub msg
 port updateFaustCode : String -> Cmd msg
 port elmAppInitialRender : () -> Cmd msg
+port layoutUpdated : () -> Cmd msg
 port updateMainVolume : Float -> Cmd msg
 port incomingAudioMeterValue : (Float -> msg) -> Sub msg
 port incomingFFTData : (List Float -> msg) -> Sub msg
