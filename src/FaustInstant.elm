@@ -184,12 +184,16 @@ update action model =
 
     ExamplesMsg msg ->
       let
-        (_, example) = Examples.update msg model.examples
-        newModel = { model | faustCode = example, loading = True }
+        result = Examples.update msg model.examples
+        faustCode = case result.code of
+          Just code -> code
+          Nothing -> model.faustCode
+        newModel = { model | faustCode = faustCode, loading = True }
       in
         newModel
           ! [ createCompileCommand newModel
             , updateFaustCode newModel.faustCode
+            , Cmd.map ExamplesMsg result.cmd
             ]
 
     VolumeSliderMsg msg ->

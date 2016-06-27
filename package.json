@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base src/",
-    "build": "rimraf dist && webpack && cp -r src/js/ dist/ && cp -r src/faust-stdlib/ dist/",
+    "build": "rimraf dist && webpack && cp -r src/js/ dist/ && cp -r src/faust-stdlib/ dist/ && cp -r src/faust-examples dist/",
     "watch": "webpack --watch"
   },
   "devDependencies": {
