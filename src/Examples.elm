@@ -28,8 +28,10 @@ type alias Model = List (String, String)
 
 examples : Model
 examples =
-  [ ("Spooky Slide Whistle", "spooky-slide-whistle.dsp")
-  , ("Kisana", "Kisana.dsp")
+  [ ("Kisana", "Kisana.dsp")
+  , ("Spooky Slide Whistle", "spooky-slide-whistle.dsp")
+  , ("Flappy Flute", "FlappyFlute.dsp")
+  , ("Birds", "Birds.dsp")
   ]
 init : Model
 init = examples

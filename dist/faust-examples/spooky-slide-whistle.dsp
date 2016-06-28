@@ -1,3 +1,7 @@
+declare name  	"Spooky Slide Whistle";
+declare author  "Michael Bylstra";
+
+
 import("math.lib");
 import("effect.lib");
 import("filter.lib");
