@@ -47,7 +47,7 @@ type Msg
 
 fetchExample : String -> Task Http.Error String
 fetchExample filename =
-  Http.getString ("/faust-examples/" ++ filename)
+  Http.getString ("faust-examples/" ++ filename)
 
 update :
     Msg
