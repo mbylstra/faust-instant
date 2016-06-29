@@ -212,9 +212,11 @@ function simplifyUiData(uiData) {
     var item = uiData[i];
     if (item.type == 'vslider' || item.type == 'hslider' || item.type == "nentry") {
       controls.push(item);
-    } else {
+    } else if (item.type == 'vgroup' || item.type == 'hgroup') {
       childControls = simplifyUiData(item.items);
       controls = controls.concat(childControls);
+    } else {
+      console.log('ui item.type ' + item.type + ' not currently supported');
     }
   }
   return controls;

@@ -12,4 +12,4 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.batch FaustInstant.subscriptions
+  Sub.batch (FaustInstant.subscriptions model)

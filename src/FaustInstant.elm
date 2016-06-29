@@ -39,6 +39,7 @@ import Piano
 import Color
 import GoogleSpinner
 import FaustControls
+import Arpeggiator
 
 type Polyphony
   = Monophonic
@@ -74,6 +75,7 @@ type alias Model =
   , polyphony : Polyphony
   , bufferSize : Int
   , loading : Bool
+  , arpeggiator : Arpeggiator.Model
   }
 
 init : (Model, Cmd Msg)
@@ -95,6 +97,7 @@ process = noise;
     , polyphony = Monophonic
     , bufferSize = defaultBufferSize
     , loading = False
+    , arpeggiator = Arpeggiator.init
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
@@ -125,6 +128,7 @@ type Msg
   | SliderChanged Int Float
   | PianoKeyMouseDown Float
   | BufferSizeChanged Int
+  | ArpeggiatorMsg Arpeggiator.Msg
 
 
 createCompileCommand : Model -> Cmd Msg
@@ -241,6 +245,13 @@ update action model =
       in
         newModel ! [ createCompileCommand newModel ]
 
+    ArpeggiatorMsg msg ->
+      let
+        (arp2, pitch) = Arpeggiator.update msg model.arpeggiator
+        newModel = { model | arpeggiator = arp2 }
+        -- _ = Debug.log "arp note" note
+      in
+        newModel ! [ setPitch (toFloat pitch) ]
 
 -- VIEW
 
@@ -345,12 +356,13 @@ port incomingDSPCompiled : (List Json.Decode.Value -> msg) -> Sub msg
 
 
 -- SUBSCRIPTIONS
-subscriptions : List (Sub Msg)
-subscriptions =
+subscriptions : Model -> List (Sub Msg)
+subscriptions model =
   [ incomingFaustCode FaustCodeChanged
   , incomingCompilationErrors CompilationError
   , Sub.map AudioMeterMsg (incomingAudioMeterValue AudioMeter.Updated)
   , Sub.map HotKeysMsg HotKeys.subscription
   , incomingFFTData NewFFTData
   , incomingDSPCompiled DSPCompiled
+  , Sub.map ArpeggiatorMsg (Arpeggiator.subscription model.arpeggiator)
   ]
