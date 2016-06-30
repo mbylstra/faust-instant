@@ -76,6 +76,7 @@ type alias Model =
   , bufferSize : Int
   , loading : Bool
   , arpeggiator : Arpeggiator.Model
+  , arpeggiatorOn : Bool
   }
 
 init : (Model, Cmd Msg)
@@ -98,6 +99,7 @@ process = noise;
     , bufferSize = defaultBufferSize
     , loading = False
     , arpeggiator = Arpeggiator.init
+    , arpeggiatorOn = False
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
@@ -189,16 +191,23 @@ update action model =
     ExamplesMsg msg ->
       let
         result = Examples.update msg model.examples
-        faustCode = case result.code of
-          Just code -> code
-          Nothing -> model.faustCode
-        newModel = { model | faustCode = faustCode, loading = True }
+        (newModel, cmds) = case result.code of
+          Just code ->
+            let
+              newModel' = { model | faustCode = code, loading = True }
+            in
+              (newModel', [createCompileCommand newModel'])
+          Nothing ->
+            let
+              newModel' = { model | loading = True }
+            in
+              (newModel', [])
       in
-        newModel
-          ! [ createCompileCommand newModel
-            , updateFaustCode newModel.faustCode
+        newModel !
+          ( [ updateFaustCode newModel.faustCode
             , Cmd.map ExamplesMsg result.cmd
-            ]
+            ] ++ cmds
+          )
 
     VolumeSliderMsg msg ->
       let
@@ -314,7 +323,7 @@ view model =
 pianoView : Model -> Html Msg
 pianoView model =
   if showPiano model.uiInputs then
-    Piano.view { blackKey = Color.black, whiteKey = Color.white} 2 36 PianoKeyMouseDown
+    Piano.view { blackKey = Color.black, whiteKey = Color.white} 6 12 PianoKeyMouseDown
   else
     div [] []
 
@@ -358,11 +367,15 @@ port incomingDSPCompiled : (List Json.Decode.Value -> msg) -> Sub msg
 -- SUBSCRIPTIONS
 subscriptions : Model -> List (Sub Msg)
 subscriptions model =
-  [ incomingFaustCode FaustCodeChanged
-  , incomingCompilationErrors CompilationError
-  , Sub.map AudioMeterMsg (incomingAudioMeterValue AudioMeter.Updated)
-  , Sub.map HotKeysMsg HotKeys.subscription
-  , incomingFFTData NewFFTData
-  , incomingDSPCompiled DSPCompiled
-  , Sub.map ArpeggiatorMsg (Arpeggiator.subscription model.arpeggiator)
-  ]
+    [ incomingFaustCode FaustCodeChanged
+    , incomingCompilationErrors CompilationError
+    , Sub.map AudioMeterMsg (incomingAudioMeterValue AudioMeter.Updated)
+    , Sub.map HotKeysMsg HotKeys.subscription
+    , incomingFFTData NewFFTData
+    , incomingDSPCompiled DSPCompiled
+    ]
+    ++ (
+      if model.arpeggiatorOn
+      then [Sub.map ArpeggiatorMsg (Arpeggiator.subscription model.arpeggiator)]
+      else []
+    )
