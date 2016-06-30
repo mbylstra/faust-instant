@@ -26,6 +26,7 @@ import Html.Events exposing
 import Json.Decode
 
 import Util exposing (unsafeMaybe, unsafeResult)
+import Lib.MouseExtra as MouseExtra
 
 import HotKeys
 -- import FileReader
@@ -40,6 +41,8 @@ import Color
 import GoogleSpinner
 import FaustControls
 import Arpeggiator
+import Gui.Knob as Knob
+import Gui.KnobRegistry as KnobRegistry exposing (Msg(GlobalMouseUp, MousePosition), getKnobValue)
 
 type Polyphony
   = Monophonic
@@ -77,6 +80,7 @@ type alias Model =
   , loading : Bool
   , arpeggiator : Arpeggiator.Model
   , arpeggiatorOn : Bool
+  , knobRegistry : KnobRegistry.Model
   }
 
 init : (Model, Cmd Msg)
@@ -100,6 +104,12 @@ process = noise;
     , loading = False
     , arpeggiator = Arpeggiator.init
     , arpeggiatorOn = False
+    , knobRegistry = KnobRegistry.init
+      [ ("attack", Knob.defaultParams)
+      , ("decay", Knob.defaultParams)
+      , ("sustain", Knob.defaultParams)
+      , ("release", Knob.defaultParams)
+      ]
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
@@ -131,6 +141,7 @@ type Msg
   | PianoKeyMouseDown Float
   | BufferSizeChanged Int
   | ArpeggiatorMsg Arpeggiator.Msg
+  | KnobRegistryMsg KnobRegistry.Msg
 
 
 createCompileCommand : Model -> Cmd Msg
@@ -262,6 +273,10 @@ update action model =
       in
         newModel ! [ setPitch (toFloat pitch) ]
 
+    KnobRegistryMsg childAction ->
+      { model | knobRegistry = KnobRegistry.update childAction model.knobRegistry }
+      ! []
+
 -- VIEW
 
 view : Model -> Html Msg
@@ -280,8 +295,17 @@ view model =
             ]
       in
         Array.indexedMap renderSlider model.uiInputs |> Array.toList
+    knobView id =
+      App.map KnobRegistryMsg (KnobRegistry.view model.knobRegistry id)
   in
-  div [ class "main-wrap" ]
+  div
+    [ class "main-wrap"
+    , MouseExtra.onMouseMove
+        (\position -> KnobRegistryMsg (MousePosition position))
+    , onMouseUp (KnobRegistryMsg GlobalMouseUp)
+    ]
+
+
     [ div [ class "main-header" ]
       [ h1 [] [ text "Faust Instant" ] ]
     , div [ class "main-row" ]
@@ -316,6 +340,12 @@ view model =
       -- , App.map AudioMeterMsg (AudioMeter.view model.audioMeter)
       -- , FFTBarGraph.view model.fftData
       , div [ class "sliders" ] sliders
+      , div [class "knobs"]
+        [ knobView "attack"
+        , knobView "decay"
+        , knobView "sustain"
+        , knobView "release"
+        ]
       , pianoView model
       ]
     ]

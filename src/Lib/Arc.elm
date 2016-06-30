@@ -1,9 +1,8 @@
-module Lib.Arc
+module Lib.Arc exposing
   ( arc
   , arcSegment
   , getArcInfo
   )
-  where
 
 import String
 

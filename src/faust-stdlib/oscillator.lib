@@ -256,8 +256,10 @@ virtual_analog_oscillator_demo = signal with {
     [tooltip: Sawtooth waveform amplitude]",
     -20,-120,10,0.1));
   amp = ampdb : db2linear : smooth(0.999);
-
-  freq = nentry("freq", 440, 20, 20000, 1);
+  freq = af_group(hslider("[2] Frequency [unit:PK] [style:hslider]
+    [tooltip: Sawtooth frequency as a Piano Key (PK) number (A440 = key 49)]",
+    49,1,88,0.01) : pianokey2hz);
+  pianokey2hz(x) = 440.0*pow(2.0, (x-49.0)/12); // piano key 49 = A440 (also defined in effect.lib)
 
   detune1 = 1 - 0.01 * knob_group(
     vslider("[3] Detuning 1 [unit:%%] [style:knob]

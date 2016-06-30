@@ -1,14 +1,19 @@
-module Lib.HtmlEventsExtra where
+module Lib.HtmlEventsExtra exposing (..)
 
 import Html.Events exposing (on, onWithOptions, Options)
 import Html exposing (Attribute)
 import Json.Decode
 
-messageOnWithOptions : String -> Options -> Signal.Address a -> a -> Attribute
-messageOnWithOptions name options addr msg =
-  onWithOptions name options Json.Decode.value (\_ -> Signal.message addr msg)
+messageOnWithOptions : String -> Options -> msg -> Attribute msg
+messageOnWithOptions name options message =
+  onWithOptions name options (Json.Decode.succeed message)
 
-onMouseDownWithOptions : Options -> Signal.Address a -> a -> Attribute
+
+messageOn : String -> msg -> Attribute msg
+messageOn name message =
+  on name (Json.Decode.succeed message)
+
+onMouseDownWithOptions : Options -> msg -> Attribute msg
 onMouseDownWithOptions options =
   messageOnWithOptions "mousedown" options
 
