@@ -244,7 +244,7 @@ update action model =
         knobs =
           Array.map
             (\control ->
-              ( control.label
+              ( control.address
               , { defaults | width = 80 , height = 80
                 , minValue = control.min, maxValue = control.max
                 }
@@ -293,11 +293,11 @@ update action model =
         (knobRegistry, returnedMsg) = KnobRegistry.update childMsg model.knobRegistry
         cmd = case returnedMsg of
           KnobValueUpdated label value ->
-            Cmd.none
+            setControlValue (label, value)
           _ ->
-          Cmd.none
+            Cmd.none
       in
-        { model | knobRegistry =  knobRegistry } ! []
+        { model | knobRegistry =  knobRegistry } ! [cmd]
 
 -- VIEW
 
