@@ -44,7 +44,11 @@ import GoogleSpinner
 import FaustControls
 import Arpeggiator
 import Gui.Knob as Knob
-import Gui.KnobRegistry as KnobRegistry exposing (Msg(GlobalMouseUp, MousePosition), getKnobValue)
+import Gui.KnobRegistry as KnobRegistry exposing
+  ( Msg(GlobalMouseUp, MousePosition)
+  , ParentMsg(KnobValueUpdated)
+  , getKnobValue
+  )
 
 type Polyphony
   = Monophonic
@@ -240,7 +244,12 @@ update action model =
         knobs =
           Array.map
             (\control ->
-              (control.label, { defaults | width = 80 , height = 80 })
+              ( control.label
+              , { defaults | width = 80 , height = 80
+                , minValue = control.min, maxValue = control.max
+                }
+              , control.init
+              )
             )
             controls
           |> Array.toList
@@ -279,9 +288,16 @@ update action model =
       in
         newModel ! [ setPitch (toFloat pitch) ]
 
-    KnobRegistryMsg childAction ->
-      { model | knobRegistry = KnobRegistry.update childAction model.knobRegistry }
-      ! []
+    KnobRegistryMsg childMsg ->
+      let
+        (knobRegistry, returnedMsg) = KnobRegistry.update childMsg model.knobRegistry
+        cmd = case returnedMsg of
+          KnobValueUpdated label value ->
+            Cmd.none
+          _ ->
+          Cmd.none
+      in
+        { model | knobRegistry =  knobRegistry } ! []
 
 -- VIEW
 

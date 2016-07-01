@@ -4,6 +4,7 @@ module Gui.KnobRegistry exposing
   , EncodedModel
   , getKnobValue
   , Msg(GlobalMouseUp, MousePosition, UpdateParamsForAll)
+  , ParentMsg(KnobValueUpdated)
   , update
   , view
   , encode
@@ -19,6 +20,8 @@ import Html.App as App
 
 import Gui.Knob as Knob
 
+import Util exposing (unsafeMaybe)
+
 --------------------------------------------------------------------------------
 -- MODEL
 --------------------------------------------------------------------------------
@@ -31,9 +34,9 @@ type alias Model =
   , mouse : { y : Int, yVelocity : Int}
   }
 
-init : List (String, Knob.Params) -> Model
+init : List (String, Knob.Params, Float) -> Model
 init knobSpecs =
-  { knobs = List.map (\(name, params) -> (name, Knob.init params)) knobSpecs
+  { knobs = List.map (\(name, params, value) -> (name, Knob.init params value)) knobSpecs
       |> Dict.fromList
   , currentKnob = Nothing
   , mouse = { y = 0, yVelocity = 0}
@@ -74,14 +77,25 @@ type Msg
   | UpdateParamsForAll Knob.Params
 
 
-update : Msg -> Model -> Model
+type ParentMsg
+  = KnobValueUpdated String Float
+  | NoOp
+
+
+update : Msg -> Model -> (Model, ParentMsg)
 update action model =
   case action of
     KnobMsg id action' ->
-      { model |
-          knobs = Dict.update id (updateKnob action') model.knobs
-        , currentKnob = Just id
-      }
+      let
+        knob : Maybe Knob.Model
+        knob = Dict.get id model.knobs
+        newKnob = updateKnob action' knob |> unsafeMaybe
+        parentMsg = KnobValueUpdated id (Knob.encode newKnob)
+      in
+        ({ model |
+            knobs = Dict.insert id newKnob model.knobs
+          , currentKnob = Just id
+        }, parentMsg)
 
     MousePosition (x,y) ->
       let
@@ -93,28 +107,28 @@ update action model =
       in
         case model.currentKnob of
           Just id ->
-            { model |
+            ({ model |
                 knobs = Dict.update
                   id
                   (updateKnob (Knob.MouseMove newMouse.yVelocity))
                   model.knobs
               , mouse = newMouse
-            }
+            }, NoOp)
           Nothing ->
-            { model | mouse = newMouse }
+            ({ model | mouse = newMouse }, NoOp)
 
     GlobalMouseUp ->
       case model.currentKnob of
         Just id ->
-          { model |
+          ({ model |
               knobs = Dict.update id (updateKnob Knob.GlobalMouseUp) model.knobs
               , currentKnob = Nothing
-          }
+          }, NoOp)
         Nothing ->
-          model
+          (model, NoOp)
 
     UpdateParamsForAll params ->
-      updateAllKnobs (Knob.UpdateParams params) model
+      (updateAllKnobs (Knob.UpdateParams params) model, NoOp)
 
 updateAllKnobs : Knob.Msg -> Model -> Model
 updateAllKnobs knobMsg model =

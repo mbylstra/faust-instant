@@ -31,7 +31,7 @@ type alias Model =
   { params: Params
   , mouseDown: Bool
   , mouseInside: Bool
-  , value: Float -- A value from 0.0 to 1.0. The main thing the parent might care about
+  , value: Float
   }
 
 type alias Params =
@@ -39,6 +39,8 @@ type alias Params =
   , backgroundColor : Color
   , width : Int
   , height : Int
+  , maxValue : Float
+  , minValue : Float
   }
 
 defaultParams : Params
@@ -47,12 +49,23 @@ defaultParams =
   , backgroundColor = Color.black
   , width = 100
   , height = 100
+  , minValue = 0.0
+  , maxValue = 0.0
   }
 
-init : Params -> Model
-init params =
+
+denormalizeValue : Model -> Float
+denormalizeValue model =
+  model.params.minValue + ((model.params.maxValue - model.params.minValue) * model.value)
+
+normaliseValue : Float -> Float -> Float -> Float
+normaliseValue value minValue maxValue =
+  (value - minValue) / (maxValue - minValue)
+
+init : Params -> Float -> Model
+init params value =
   { params = params
-  , value = 0.0
+  , value = normaliseValue value params.minValue params.maxValue
   , mouseDown = False
   , mouseInside = False
   }
@@ -61,7 +74,7 @@ type alias EncodedModel = Float
 
 encode : Model -> EncodedModel
 encode model =
-  model.value
+  denormalizeValue model
 
 -- UPDATE
 
