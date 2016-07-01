@@ -197,6 +197,14 @@ textarea {
   align-content: stretch;
 }
 
+.knobs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  // align-content: stretch;
+}
+
 
 .cm-s-monokai .CodeMirror-linenumber {
     color: #444444;

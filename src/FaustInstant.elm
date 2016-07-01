@@ -6,6 +6,8 @@ import String
 
 import Html.App as App
 
+import Dict
+
 import Html exposing
   -- delete what you don't need
   ( Html, div, span, img, p, a, h1, h2, h3, h4, h5, h6, h6, text
@@ -74,7 +76,7 @@ type alias Model =
   , mainVolume : Slider.Model
   , audioMeter : AudioMeter.Model
   , fftData : List Float
-  , uiInputs : Array (FaustControls.SliderData)
+  , sliders : Array (FaustControls.SliderData)
   , polyphony : Polyphony
   , bufferSize : Int
   , loading : Bool
@@ -98,18 +100,13 @@ process = noise;
     , mainVolume = Slider.init 1.0
     , audioMeter = AudioMeter.init
     , fftData = []
-    , uiInputs = Array.empty
+    , sliders = Array.empty
     , polyphony = Monophonic
     , bufferSize = defaultBufferSize
     , loading = False
     , arpeggiator = Arpeggiator.init
     , arpeggiatorOn = False
-    , knobRegistry = KnobRegistry.init
-      [ ("attack", Knob.defaultParams)
-      , ("decay", Knob.defaultParams)
-      , ("sustain", Knob.defaultParams)
-      , ("release", Knob.defaultParams)
-      ]
+    , knobRegistry = KnobRegistry.init []
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
@@ -117,8 +114,8 @@ process = noise;
     ]
 
 showPiano : (Array FaustControls.SliderData) -> Bool
-showPiano uiInputs =
-  uiInputs
+showPiano sliders =
+  sliders
   |> Array.filter (\uiInput -> uiInput.label == "freq")
   |> Array.length
   |> (==) 1
@@ -238,19 +235,28 @@ update action model =
           json
           |> Json.Decode.decodeValue FaustControls.sliderDecoder
           |> unsafeResult
-        sliders = List.map decodeJson jsonList |> Array.fromList
+        controls = List.map decodeJson jsonList |> Array.fromList
+        defaults = Knob.defaultParams
+        knobs =
+          Array.map
+            (\control ->
+              (control.label, { defaults | width = 80 , height = 80 })
+            )
+            controls
+          |> Array.toList
+        knobRegistry = KnobRegistry.init knobs
       in
-        { model | uiInputs = sliders, loading = False } !
+        { model | sliders = controls, knobRegistry = knobRegistry, loading = False } !
           [ layoutUpdated () ]
-        -- Debug.log "newmodel" { model | uiInputs = uiInputs } ! []
+        -- Debug.log "newmodel" { model | sliders = sliders } ! []
         -- model ! []
 
     SliderChanged i value ->
       let
-        uiInput = unsafeMaybe (Array.get i model.uiInputs)
+        uiInput = unsafeMaybe (Array.get i model.sliders)
         uiInput' = { uiInput | init = value }
       in
-        { model | uiInputs = Array.set i uiInput' model.uiInputs }
+        { model | sliders = Array.set i uiInput' model.sliders }
           ! [ setControlValue (uiInput.address, value) ]
 
     PianoKeyMouseDown pitch ->
@@ -294,7 +300,7 @@ view model =
             , span [] [text uiInput.label]
             ]
       in
-        Array.indexedMap renderSlider model.uiInputs |> Array.toList
+        Array.indexedMap renderSlider model.sliders |> Array.toList
     knobView id =
       App.map KnobRegistryMsg (KnobRegistry.view model.knobRegistry id)
   in
@@ -341,18 +347,19 @@ view model =
       -- , FFTBarGraph.view model.fftData
       , div [ class "sliders" ] sliders
       , div [class "knobs"]
-        [ knobView "attack"
-        , knobView "decay"
-        , knobView "sustain"
-        , knobView "release"
-        ]
+        (List.map knobView (Dict.keys model.knobRegistry.knobs))
+        -- [ knobView "attack"
+        -- , knobView "decay"
+        -- , knobView "sustain"
+        -- , knobView "release"
+        -- ]
       , pianoView model
       ]
     ]
 
 pianoView : Model -> Html Msg
 pianoView model =
-  if showPiano model.uiInputs then
+  if showPiano model.sliders then
     Piano.view { blackKey = Color.black, whiteKey = Color.white} 6 12 PianoKeyMouseDown
   else
     div [] []
