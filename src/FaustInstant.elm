@@ -3,6 +3,8 @@ port module FaustInstant exposing (Model, Msg, init, update, view, subscriptions
 import Array exposing (Array)
 import String
 -- import String.Addons as StringAddons
+import Task
+import Result
 
 import Html.App as App
 
@@ -24,8 +26,25 @@ import Html.Events exposing
   , onMouseDown, onMouseUp, onMouseEnter, onMouseLeave, onMouseOver, onMouseOut
   )
 import Json.Decode
+import Task exposing (Task)
+import HttpBuilder
 
 import Util exposing (unsafeMaybe, unsafeResult)
+
+import LocalStorage
+import FirebaseHttp
+
+
+import SignupView exposing
+  ( Msg(OpenSignInDialog, OpenSignUpDialog)
+  , OutMsg(SignUpButtonClicked, SignInButtonClicked)
+  )
+-- import SignupView.HtmlExtra exposing (aButton)
+import HtmlHelpers exposing (aButton, maybeView)
+-- import SignupView.Css
+
+-- local imports
+
 
 import HotKeys
 -- import FileReader
@@ -40,6 +59,17 @@ import Color
 import GoogleSpinner
 import FaustControls
 import Arpeggiator
+import Components.User as User
+import Components.FaustProgram as FaustProgram
+
+import FirebaseAuth exposing (AuthProvider(..), SignInWithPopupError(..))
+
+firebaseConfig : FirebaseAuth.Config
+firebaseConfig =
+  { apiKey = "AIzaSyDZmUzh7NIrLj82ourEnI1E4fffa1Zk2EE"
+  , authDomain = "faust-instant.firebaseapp.com"
+  , databaseURL = "https://faust-instant.firebaseio.com"
+  }
 
 type Polyphony
   = Monophonic
@@ -63,7 +93,7 @@ getBufferSizeMillis bufferSize =
 -- MODEL
 
 type alias Model =
-  { faustCode : String
+  { faustProgram : FaustProgram.Model
   , compilationError : Maybe String
   , hotKeys : HotKeys.Model
   -- , fileReader : FileReader.Model
@@ -77,6 +107,9 @@ type alias Model =
   , loading : Bool
   , arpeggiator : Arpeggiator.Model
   , arpeggiatorOn : Bool
+  , signupView : SignupView.Model
+  , user : Maybe User.Model
+  , authToken : Maybe String
   }
 
 init : (Model, Cmd Msg)
@@ -84,9 +117,7 @@ init =
   let
     (hotKeys, hotKeysCommand) = HotKeys.init
   in
-    { faustCode = """import("music.lib");
-process = noise;
-"""
+    { faustProgram = FaustProgram.init
     , compilationError = Nothing
     , hotKeys = hotKeys
     -- , fileReader = FileReader.init
@@ -100,10 +131,15 @@ process = noise;
     , loading = False
     , arpeggiator = Arpeggiator.init
     , arpeggiatorOn = False
+    , signupView = SignupView.init
+    , user = Nothing
+    , authToken = Nothing
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
     , elmAppInitialRender ()
+    , Task.perform AuthTokenNotRetrievedFromLocalStorage AuthTokenRetrievedFromLocalStorage
+        (LocalStorage.get "authToken")
     ]
 
 showPiano : (Array FaustControls.SliderData) -> Bool
@@ -131,19 +167,27 @@ type Msg
   | PianoKeyMouseDown Float
   | BufferSizeChanged Int
   | ArpeggiatorMsg Arpeggiator.Msg
-
+  | SignupViewMsg SignupView.Msg
+  | Error SignInWithPopupError
+  | Success FirebaseAuth.User
+  | SuccessfulPut (Maybe String)
+  | GeneralError -- beacuse I'm lazy
+  | Save
+  | FaustProgramPosted (HttpBuilder.Response String)
+  | AuthTokenRetrievedFromLocalStorage String
+  | AuthTokenNotRetrievedFromLocalStorage LocalStorage.Error
 
 createCompileCommand : Model -> Cmd Msg
 createCompileCommand model =
   case model.polyphony of
     Polyphonic numVoices ->
       compileFaustCode
-        { faustCode = model.faustCode, polyphonic = True
+        { faustCode = model.faustProgram.code, polyphonic = True
         , numVoices = numVoices, bufferSize = model.bufferSize
         }
     Monophonic ->
       compileFaustCode
-        { faustCode = model.faustCode, polyphonic = False
+        { faustCode = model.faustProgram.code, polyphonic = False
         , numVoices = 1, bufferSize = model.bufferSize
         }
 
@@ -169,7 +213,11 @@ update action model =
         { model | compilationError = message, loading = False } ! []
 
     FaustCodeChanged s ->
-      { model | faustCode = s } ! []
+      let
+        faustProgram =  model.faustProgram
+        newFaustProgram = { faustProgram | code = s }
+      in
+      { model | faustProgram = newFaustProgram } ! []
 
     HotKeysMsg msg ->
       -- I think you have to get HotKeys to update the model here!
@@ -194,7 +242,9 @@ update action model =
         (newModel, cmds) = case result.code of
           Just code ->
             let
-              newModel' = { model | faustCode = code, loading = True }
+              faustProgram = model.faustProgram
+              newFaustProgram = { faustProgram | code = code }
+              newModel' = { model | faustProgram = newFaustProgram, loading = True }
             in
               (newModel', [createCompileCommand newModel'])
           Nothing ->
@@ -204,7 +254,7 @@ update action model =
               (newModel', [])
       in
         newModel !
-          ( [ updateFaustCode newModel.faustCode
+          ( [ updateFaustCode newModel.faustProgram.code
             , Cmd.map ExamplesMsg result.cmd
             ] ++ cmds
           )
@@ -262,6 +312,88 @@ update action model =
       in
         newModel ! [ setPitch (toFloat pitch) ]
 
+    SignupViewMsg msg ->
+      let
+        (signupView, maybeOutMsg) = SignupView.update msg model.signupView
+
+        facebookLoginTask = FirebaseAuth.facebookSignInWithPopup firebaseConfig
+        githubLoginTask = FirebaseAuth.githubSignInWithPopup firebaseConfig
+        performSignUpCommand = Task.perform Error Success githubLoginTask
+        cmds =
+          case maybeOutMsg of
+            Just outMsg ->
+              case outMsg of
+                SignUpButtonClicked _ ->
+                  [ performSignUpCommand ]
+                SignInButtonClicked _ ->
+                  [ performSignUpCommand ]
+
+            Nothing -> []
+            -- _ ->
+            --   []
+      in
+        { model | signupView = signupView } ! cmds
+
+    Success firebaseUser ->
+      let
+        user =
+          { uid = firebaseUser.uid
+          , displayName = firebaseUser.displayName
+          , imageUrl = firebaseUser.photoURL
+          }
+        task = FirebaseHttp.putUser firebaseUser.token firebaseUser.uid user
+        cmd = Task.perform (\_ -> GeneralError) (\_ -> SuccessfulPut Nothing) task
+      in
+        { model | user = Just user, authToken = Just firebaseUser.token }
+          ! [ cmd
+            , Task.perform Blah Blah (LocalStorage.set "authToken" firebaseUser.token)
+
+            -- TODO: make a bloody encoder/decoder to store firebase user: {"token": blah, "uid": Sdfsadf}
+            -- You have to commit to this, because schema changes would be really annoying!
+            -- I guess worse case is you just set it to null and the user has to log back in
+            -- Then you have to do a rest api call to get the user data
+              -- an anoyance is that you don't really want to show the login button while this is happening!
+              -- so really the login buttons should only show if token is null (not if user is null)
+            ]
+
+
+    SuccessfulPut maybeString ->
+      let
+        _ = Debug.log "SuccessfulPut" 1
+      in
+        model ! []
+
+    GeneralError ->
+      let
+        _ = Debug.log "GeneralError" 1
+      in
+        model ! []
+
+    Error error ->
+      model ! []
+
+    Save ->
+      case model.authToken of
+        Just authToken ->
+          let
+            task = FirebaseHttp.postFaustProgram authToken model.faustProgram
+            cmd = Task.perform (\_ -> GeneralError) FaustProgramPosted task
+          in
+            model ! [ cmd ]
+        Nothing ->
+          Debug.crash "we need to do something about save if user is not logged in"
+
+    FaustProgramPosted key ->
+      -- key is the newly generated key
+      model ! []
+
+    AuthTokenRetrievedFromLocalStorage authToken ->
+      model ! []
+      -- TODO: fetch user data so we can show the most up to date avatar (storing it in localstorage is a bad idea!)
+
+    AuthTokenNotRetrievedFromLocalStorage _ ->
+      model ! []
+
 -- VIEW
 
 view : Model -> Html Msg
@@ -282,8 +414,20 @@ view model =
         Array.indexedMap renderSlider model.uiInputs |> Array.toList
   in
   div [ class "main-wrap" ]
+    -- [ SignupView.Css.styleTag  (doesn't work - too late in the css load )
     [ div [ class "main-header" ]
-      [ h1 [] [ text "Faust Instant" ] ]
+      [ div [ class "main-header-left" ]
+          [ h1 [] [ text "Faust Instant" ] ]
+      , div [ class "main-header-right" ]
+          ( case model.user of
+              Just user ->
+                [ User.view user ]
+              Nothing ->
+                [ aButton (SignupViewMsg OpenSignInDialog) [] [ text "Log In" ]
+                , aButton (SignupViewMsg OpenSignUpDialog) [] [ text "Sign Up" ]
+                ]
+          )
+      ]
     , div [ class "main-row" ]
       [ div [ class "code-editor-column" ]
         [ div [ id "code-editor-holder", class "code-editor"]
@@ -300,6 +444,9 @@ view model =
             [ text "Compile "
             , span [] [ text "(CTRL-ENTER)" ]
             ]
+          , maybeView
+              (\_ -> aButton Save [ class "save-button" ] [ text "Save" ] )
+              model.user
           ]
         ]
       , div [ class "examples"]
@@ -318,6 +465,16 @@ view model =
       , div [ class "sliders" ] sliders
       , pianoView model
       ]
+    , ( let
+          defaults = SignupView.defaults
+          config =
+            { defaults |
+              branding = Just <| h1 [] [ text "Faust Instant" ]
+            , signUpEnticer = Just <| p [] [ text "Sign up to save, share & star Faust programs" ]
+            }
+        in
+          SignupView.view config model.signupView |> App.map SignupViewMsg
+      )
     ]
 
 pianoView : Model -> Html Msg

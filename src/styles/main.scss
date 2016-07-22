@@ -1,29 +1,13 @@
-@import 'range-flat-square';
+@import 'general.scss';
+
+@import 'range-flat-square.scss';
+@import 'signup-view.scss';
 
 @import url('https://fonts.googleapis.com/css?family=Bungee+Hairline');
-@import url('https://fonts.googleapis.com/css?family=Heebo:100');
+@import url('https://fonts.googleapis.com/css?family=Roboto:100');
 
-$heading-font: 'Bungee Hairline', sans-serif;
-$body-font: 'Heebo', 'Helvetica', sans-serif;
 
-$body-font-color: #cecece;
 
-$background-color: #222;
-
-@mixin flat-vertical-scrollbar {
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-  &::-webkit-scrollbar-track {
-    // background-color: $background-color;
-    background-color: black;
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: #464646;
-    // background-color: #black;
-    padding-left: 2px;
-  }
-}
 
 body {
   font-family: $body-font;
@@ -43,15 +27,46 @@ html, body, #main, .main-wrap {
   flex-direction: column;
 }
 
+h1 {
+  font-family: $heading-font;
+  font-weight: normal;
+  font-size: 30px;
+  margin: 10px 0px;
+}
+
 .main-header {
   padding: 0px 10px;
-  h1 {
-    font-family: $heading-font;
-    font-weight: normal;
-    font-size: 30px;
-    margin: 10px 0px;
+  border-bottom: 1px solid #3a3a3a;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  a {
+    color: $body-font-color;
+    margin-right: 30px;
   }
 }
+
+.main-header-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  img {
+    height: 40px;
+    border-radius: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
+
+.user {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 
 .main-row {
   display: flex;
@@ -109,12 +124,13 @@ html, body, #main, .main-wrap {
   }
 }
 
-button {
+button, .save-button {
   border: 1px solid $body-font-color;
   background-color: black;
   color: $body-font-color;
   font-family: $body-font;
   font-size: 20px;
+  line-height: 27px;
   padding: 5px 10px;
   &:focus {
     outline: 0;

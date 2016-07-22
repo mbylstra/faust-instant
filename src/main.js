@@ -3,6 +3,7 @@
 require('codemirror/lib/codemirror.css');
 // require('codemirror/theme/monokai.css');
 // require('../node_modules/codemirror/theme/twighlight.css');
+require( './styles/mbylstra-signup-view.css' );
 require('./styles/tomorrow-night-eighties.css');
 require( './styles/main.scss' );
 

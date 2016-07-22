@@ -5,7 +5,7 @@
 // MIT License
 
 
-$background-color: rgba(0,0,0,0);
+$darlanrod-input-range-sass-background-color: rgba(0,0,0,0);
 
 // $track-color: #424242;
 $track-color: #121212;
@@ -64,7 +64,7 @@ $contrast: 5%;
   // margin: $thumb-height / 2 0;
   width: $track-width;
   // max-width: $max-track-width;
-  background-color: $background-color;
+  background-color: $darlanrod-input-range-sass-background-color;
 
   &:focus {
     outline: none;

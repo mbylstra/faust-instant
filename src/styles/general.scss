@@ -1,0 +1,32 @@
+$bungee-font-family: 'Bungee Hairline', sans-serif;
+$roboto-font-family: 'Roboto', sans-serif;
+
+$body-font: $roboto-font-family;
+$heading-font: $bungee-font-family;
+
+$yellow: #FFE431;
+$dark-grey: #222;
+$very-light-grey: #cecece;
+
+$body-font-color: $very-light-grey;
+$background-color: $dark-grey;
+$highlight-color: $yellow;
+
+@mixin flat-vertical-scrollbar {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    // background-color: $background-color;
+    background-color: black;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #464646;
+    // background-color: #black;
+    padding-left: 2px;
+  }
+}
+
+a {
+  color: $highlight-color;
+}

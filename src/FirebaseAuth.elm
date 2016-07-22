@@ -1,0 +1,1 @@
+/home/michael/code/current/elm-firebase-auth/src/FirebaseAuth.elm
