@@ -33,7 +33,7 @@ import Main.Ports exposing
   , setControlValue
   , setPitch
   )
-import Main.Model exposing (firebaseConfig)
+import Main.Constants exposing (firebaseConfig)
 import Main.Http.Firebase as FirebaseHttp
 
 --------------------------------------------------------------------------------
@@ -42,8 +42,8 @@ import Main.Http.Firebase as FirebaseHttp
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
-  -- case Debug.log "action:" action of
-  case action of
+  case Debug.log "action:" action of
+  -- case action of
 
     Compile ->
       { model | loading = True } ! [ createCompileCommand model ]
@@ -180,27 +180,33 @@ update action model =
       in
         { model | signupView = signupView } ! cmds
 
-    -- Success firebaseUser ->
-    --   let
-    --     user =
-    --       { uid = firebaseUser.uid
-    --       , displayName = firebaseUser.displayName
-    --       , imageUrl = firebaseUser.photoURL
-    --       }
-    --     task = FirebaseHttp.putUser firebaseUser.token firebaseUser.uid user
-    --     cmd = Task.perform (\_ -> GeneralError) (\_ -> SuccessfulPut Nothing) task
-    --   in
-    --     { model | user = Just user, authToken = Just firebaseUser.token }
-    --       ! [ cmd
-    --         , Task.perform Blah Blah (LocalStorage.set "authToken" firebaseUser.token)
-    --
-    --         -- TODO: make a bloody encoder/decoder to store firebase user: {"token": blah, "uid": Sdfsadf}
-    --         -- You have to commit to this, because schema changes would be really annoying!
-    --         -- I guess worse case is you just set it to null and the user has to log back in
-    --         -- Then you have to do a rest api call to get the user data
-    --           -- an anoyance is that you don't really want to show the login button while this is happening!
-    --           -- so really the login buttons should only show if token is null (not if user is null)
-    --         ]
+    CurrentFirebaseUserFetched maybeFirebaseUser ->
+      case maybeFirebaseUser of
+        Just firebaseUser ->
+          let
+            user =
+              { uid = firebaseUser.uid
+              , displayName = firebaseUser.displayName
+              , imageUrl = firebaseUser.photoURL
+              }
+          in
+            { model | user = Just user, authToken = Just firebaseUser.token } ! []
+        Nothing ->
+          model ! []
+
+    Success firebaseUser ->
+      let
+        user =
+          { uid = firebaseUser.uid
+          , displayName = firebaseUser.displayName
+          , imageUrl = firebaseUser.photoURL
+          }
+        task = FirebaseHttp.putUser firebaseUser.token firebaseUser.uid user
+        cmd = Task.perform (\_ -> GeneralError) (\_ -> SuccessfulPut Nothing) task
+      in
+        { model | user = Just user, authToken = Just firebaseUser.token }
+          ! [ cmd
+            ]
 
 
     SuccessfulPut maybeString ->

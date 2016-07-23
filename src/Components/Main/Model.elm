@@ -4,12 +4,12 @@ module Main.Model exposing (..)
 
 -- core
 import Array exposing (Array)
-import Task
+-- import Task
 
 -- external components
 import SignupView
-import LocalStorage
-import FirebaseAuth
+-- import LocalStorage
+-- import FirebaseAuth
 
 -- project components
 import FaustProgram
@@ -21,24 +21,12 @@ import Examples
 -- component modules
 import Main.Types exposing (..)
 import Main.Ports exposing (..)
+import Main.Constants
+import Main.Commands exposing (fetchCurrentFirebaseUser)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
--- Defaults
-
-defaultBufferSize : Int
-defaultBufferSize = 512
-
-sampleRate : Float
-sampleRate = 44100.0
-
-firebaseConfig : FirebaseAuth.Config
-firebaseConfig =
-  { apiKey = "AIzaSyDZmUzh7NIrLj82ourEnI1E4fffa1Zk2EE"
-  , authDomain = "faust-instant.firebaseapp.com"
-  , databaseURL = "https://faust-instant.firebaseio.com"
-  }
 
 -- Init
 
@@ -56,7 +44,7 @@ init =
     , fftData = []
     , uiInputs = Array.empty
     , polyphony = Monophonic
-    , bufferSize = defaultBufferSize
+    , bufferSize = Main.Constants.defaultBufferSize
     , loading = False
     , arpeggiator = Arpeggiator.init
     , arpeggiatorOn = False
@@ -67,6 +55,7 @@ init =
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
     , elmAppInitialRender ()
-    , Task.perform AuthTokenNotRetrievedFromLocalStorage AuthTokenRetrievedFromLocalStorage
-        (LocalStorage.get "authToken")
+    , fetchCurrentFirebaseUser
+    -- , Task.perform AuthTokenNotRetrievedFromLocalStorage AuthTokenRetrievedFromLocalStorage
+    --     (LocalStorage.get "authToken")
     ]

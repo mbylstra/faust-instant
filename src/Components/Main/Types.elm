@@ -61,6 +61,7 @@ type Msg
   | FaustProgramPosted (HttpBuilder.Response String)
   | AuthTokenRetrievedFromLocalStorage String
   | AuthTokenNotRetrievedFromLocalStorage LocalStorage.Error
+  | CurrentFirebaseUserFetched (Maybe FirebaseAuth.User)
 
 type Polyphony
   = Monophonic

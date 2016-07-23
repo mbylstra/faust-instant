@@ -49,8 +49,9 @@ import FaustControls
 -- component modules
 -- import Main.Http.Firebase as FirebaseHttp
 
-import Main.Model exposing (sampleRate, defaultBufferSize)
+import Main.Model
 import Main.Types exposing (..)
+import Main.Constants exposing (defaultBufferSize)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -62,7 +63,7 @@ bufferSizes =
 
 getBufferSizeMillis : Int -> Int
 getBufferSizeMillis bufferSize =
-  Basics.round ((1.0 / sampleRate) * (toFloat bufferSize) * 1000.0)
+  Basics.round ((1.0 / Main.Constants.sampleRate) * (toFloat bufferSize) * 1000.0)
 
 
 -- VIEW

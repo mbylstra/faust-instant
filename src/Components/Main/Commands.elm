@@ -1,11 +1,26 @@
 module Main.Commands exposing (..)
 
 --------------------------------------------------------------------------------
+import Task
+
+import FirebaseAuth
+
 import Main.Types exposing (..)
 import Main.Ports exposing (compileFaustCode)
+import Main.Constants
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
+
+
+
+fetchCurrentFirebaseUser : Cmd Msg
+fetchCurrentFirebaseUser =
+  let
+    task = FirebaseAuth.getCurrentUser Main.Constants.firebaseConfig
+  in
+    Task.perform (\_ -> GeneralError) CurrentFirebaseUserFetched task
+
 
 createCompileCommand : Model -> Cmd Msg
 createCompileCommand model =
