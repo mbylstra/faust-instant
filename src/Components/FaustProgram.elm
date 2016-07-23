@@ -1,4 +1,4 @@
-module Components.FaustProgram exposing
+module FaustProgram exposing
   ( Model
   , init
   , encoder

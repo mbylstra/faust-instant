@@ -20,7 +20,7 @@ import Svg.Attributes exposing (d, stroke, fill, strokeWidth, x, y, x1, y1, x2, 
 import Lib.HtmlEventsExtra exposing (onMouseDownWithOptions, preventDefault)
 import Lib.Arc exposing (arc, getArcInfo)
 import Lib.HtmlAttributesExtra exposing (..)
-import Lib.ColorExtra exposing (toCssRgb)
+import ColorExtra exposing (toCssRgb)
 
 
 

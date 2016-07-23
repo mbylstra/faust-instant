@@ -1,4 +1,4 @@
-module Lib.ListExtra (unsafeHead) where
+module ListExtra (unsafeHead) where
 
 unsafeHead : List a -> a
 unsafeHead l =

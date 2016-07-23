@@ -6,7 +6,7 @@ import Html.Events exposing(onMouseDown, onMouseEnter, Options)
 import Color exposing (Color)
 
 -- import Lib.HtmlAttributesExtra exposing (..)
-import Lib.ColorExtra exposing (toCssRgb)
+import ColorExtra exposing (toCssRgb)
 
 pitchToFrequency : Float -> Float
 pitchToFrequency pitch =
@@ -42,7 +42,7 @@ view colorScheme numOctaves bottomPitch tagger =
         _ = False
         -- tagger' pitch =
         --   tagger (pitchToFrequency pitch)
-        -- 
+        --
       in
         case keyType of
           Black ->

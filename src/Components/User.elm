@@ -1,4 +1,4 @@
-module Components.User exposing
+module User exposing
   ( Model
   , view
   , encoder

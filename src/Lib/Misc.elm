@@ -1,4 +1,4 @@
-module Lib.Misc where
+module Misc where
 
 import Dict exposing(Dict)
 

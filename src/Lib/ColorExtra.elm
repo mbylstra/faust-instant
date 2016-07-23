@@ -1,4 +1,4 @@
-module Lib.ColorExtra exposing (..)
+module ColorExtra exposing (..)
 
 import Color exposing (Color, toHsl)
 import List

@@ -4,6 +4,7 @@ import Json.Decode exposing (..)
 
 import Util exposing (unsafeResult)
 import String
+import Array exposing (Array)
 
 type alias SliderData =
   { address: String
@@ -14,6 +15,13 @@ type alias SliderData =
   , step: Float
   , type': String
   }
+
+showPiano : (Array SliderData) -> Bool
+showPiano uiInputs =
+  uiInputs
+  |> Array.filter (\uiInput -> uiInput.label == "freq")
+  |> Array.length
+  |> (==) 1
 
 unsafeStringToFloat : String -> Float
 unsafeStringToFloat s =
