@@ -21,6 +21,13 @@ fetchCurrentFirebaseUser =
   in
     Task.perform (\_ -> GeneralError) CurrentFirebaseUserFetched task
 
+signOutFirebaseUser : Cmd Msg
+signOutFirebaseUser =
+  let
+    task = FirebaseAuth.signOut Main.Constants.firebaseConfig
+  in
+    Task.perform (\_ -> GeneralError) (\_ -> UserSignedOut) task
+
 
 createCompileCommand : Model -> Cmd Msg
 createCompileCommand model =

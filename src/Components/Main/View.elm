@@ -49,9 +49,12 @@ import FaustControls
 -- component modules
 -- import Main.Http.Firebase as FirebaseHttp
 
-import Main.Model
+-- import Main.Model
 import Main.Types exposing (..)
 import Main.Constants exposing (defaultBufferSize)
+
+-- component views
+import Main.View.UserMenu as UserMenu
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -93,7 +96,9 @@ view model =
       , div [ class "main-header-right" ]
           ( case model.user of
               Just user ->
-                [ User.view user ]
+                [ User.view user
+                , UserMenu.view MDL model.mdl
+                ]
               Nothing ->
                 [ aButton (SignupViewMsg SignupView.OpenSignInDialog) [] [ text "Log In" ]
                 , aButton (SignupViewMsg SignupView.OpenSignUpDialog) [] [ text "Sign Up" ]

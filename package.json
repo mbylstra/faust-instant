@@ -34,6 +34,8 @@
     "webpack-merge": "^0.13.0"
   },
   "dependencies": {
-    "codemirror": "^5.15.2"
+    "codemirror": "^5.15.2",
+    "material-design-icons": "^2.2.3",
+    "material-design-lite": "^1.1.3"
   }
 }

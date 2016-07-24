@@ -13,19 +13,20 @@ import Util exposing (unsafeMaybe, unsafeResult)
 -- external components
 import SignupView exposing (OutMsg(SignUpButtonClicked, SignInButtonClicked))
 import FirebaseAuth
+import Material
 
 -- project components
-import FaustProgram
+-- import FaustProgram
 import HotKeys
 import Slider
 import Arpeggiator
 import FaustControls
-import User
+-- import User
 import Examples
 
 -- component modules
 import Main.Types exposing (..)
-import Main.Commands exposing (createCompileCommand)
+import Main.Commands exposing (createCompileCommand, signOutFirebaseUser)
 import Main.Ports exposing
   ( updateFaustCode
   , updateMainVolume
@@ -224,27 +225,41 @@ update action model =
     Error error ->
       model ! []
 
-    -- Save ->
-    --   case model.authToken of
-    --     Just authToken ->
-    --       let
-    --         task = FirebaseHttp.postFaustProgram authToken model.faustProgram
-    --         cmd = Task.perform (\_ -> GeneralError) FaustProgramPosted task
-    --       in
-    --         model ! [ cmd ]
-    --     Nothing ->
-    --       Debug.crash "we need to do something about save if user is not logged in"
+    Save ->
+      case model.authToken of
+        Just authToken ->
+          let
+            task = FirebaseHttp.postFaustProgram authToken model.faustProgram
+            --cmd = Task.perform (\_ -> GeneralError) FaustProgramPosted task
+          in
+            -- model ! [ cmd ]
+            model ! []
+        Nothing ->
+          Debug.crash "we need to do something about save if user is not logged in"
 
     FaustProgramPosted key ->
       -- key is the newly generated key
       model ! []
 
-    AuthTokenRetrievedFromLocalStorage authToken ->
-      model ! []
-      -- TODO: fetch user data so we can show the most up to date avatar (storing it in localstorage is a bad idea!)
+    -- MenuMsg msg' ->
 
-    AuthTokenNotRetrievedFromLocalStorage _ ->
-      model ! []
+    MenuMsg idx action ->
+        (model, Cmd.none)
+      -- let
+      --   (userMenu, cmd) = Material.Menu.update msg' model.userMenu
+      -- in
+      --   { model | userMenu = userMenu } ! [ Cmd.map MenuMsg cmd ]
 
-    _ ->
-      Debug.crash ""
+    MDL msg' ->
+      Material.update MDL msg' model
+
+    LogOutClicked ->
+      model ! [ signOutFirebaseUser ]
+
+    UserSignedOut ->
+      { model | authToken = Nothing, user = Nothing } ! []
+
+    -- UserSignedOut ->
+
+    -- _ ->
+    --   Debug.crash ""

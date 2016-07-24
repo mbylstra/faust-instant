@@ -380,3 +380,17 @@ $google-spinner-width: 40px;
     stroke: $yellow;
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+/// Material Design Lite
+////////////////////////////////////////////////////////////////////////////////
+
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+@import "~material-design-lite/src/menu/_menu.scss";
+@import "~material-design-lite/src/button/_button.scss";
+@import "~material-design-lite/src/_mixins.scss";
+
+.material-icons {
+  @include typo-icon;
+}

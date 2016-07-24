@@ -2,13 +2,19 @@ module Main.Types exposing (..)
 
 --------------------------------------------------------------------------------
 
+-- core
 import Json.Decode
 import Array exposing (Array)
 
-import FirebaseAuth exposing (AuthProvider(..), SignInWithPopupError(..))
-import LocalStorage
+-- external libs
 import HttpBuilder
 
+-- external components
+import FirebaseAuth exposing (AuthProvider(..), SignInWithPopupError(..))
+import Material
+import Material.Menu
+
+-- project components
 import HotKeys
 import Examples
 import Slider
@@ -37,6 +43,8 @@ type alias Model =
   , signupView : SignupView.Model
   , user : Maybe User.Model
   , authToken : Maybe String
+  -- , userMenu : Material.Menu.Model
+  , mdl : Material.Model
   }
 
 type Msg
@@ -59,9 +67,13 @@ type Msg
   | GeneralError -- beacuse I'm lazy
   | Save
   | FaustProgramPosted (HttpBuilder.Response String)
-  | AuthTokenRetrievedFromLocalStorage String
-  | AuthTokenNotRetrievedFromLocalStorage LocalStorage.Error
   | CurrentFirebaseUserFetched (Maybe FirebaseAuth.User)
+  | LogOutClicked
+  | UserSignedOut
+
+  -- Material Design Lite
+  | MDL Material.Msg
+  | MenuMsg Int Material.Menu.Msg
 
 type Polyphony
   = Monophonic

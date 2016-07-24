@@ -10,6 +10,7 @@ import Array exposing (Array)
 import SignupView
 -- import LocalStorage
 -- import FirebaseAuth
+import Material
 
 -- project components
 import FaustProgram
@@ -51,6 +52,7 @@ init =
     , signupView = SignupView.init
     , user = Nothing
     , authToken = Nothing
+    , mdl = Material.model
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
