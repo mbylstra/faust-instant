@@ -1,4 +1,4 @@
-module Misc where
+module Misc exposing (unsafeDictGet, maybeEmptyString)
 
 import Dict exposing(Dict)
 
@@ -9,3 +9,10 @@ unsafeDictGet key dict =
       value
     Nothing ->
       Debug.crash("Dict.get returned Nothing from within usafeDictGet")
+
+
+maybeEmptyString : Maybe String -> String
+maybeEmptyString maybeString =
+  case maybeString of
+    Just s -> s
+    Nothing -> ""

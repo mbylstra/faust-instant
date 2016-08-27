@@ -48,15 +48,15 @@ put :
   -> Maybe String
   -> String
   -> model
-  -> Task (HttpBuilder.Error String) (HttpBuilder.Response ())
+  -> Task (HttpBuilder.Error String) ()
 put databaseUrl path encoder maybeAuthToken id model =
   let
-    url = restUrl databaseUrl path maybeAuthToken
+    path' = path ++ "/" ++ id
+    url = restUrl databaseUrl path' maybeAuthToken
 
     body : String
     body =
       Json.Encode.encode 0 (encoder model)
-      |> makeBodyForPut id
 
     requestBuilder =
       HttpBuilder.put url
@@ -67,6 +67,7 @@ put databaseUrl path encoder maybeAuthToken id model =
       |> HttpBuilder.send
           (HttpBuilder.jsonReader ignoreResponseBodyDecoder)
           HttpBuilder.stringReader
+      |> Task.map .data
   in
     task
 
@@ -97,11 +98,6 @@ post databaseUrl path encoder maybeAuthToken model =
       |> Task.map .data
   in
     task
-
-
-makeBodyForPut : String -> String -> String
-makeBodyForPut id encodedModel =
-  "{\n  " ++ (toString id) ++ ": \n" ++ encodedModel ++ "\n}"
 
 
 ignoreResponseBodyDecoder : Json.Decode.Decoder ()

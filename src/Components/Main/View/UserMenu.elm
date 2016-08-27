@@ -6,7 +6,7 @@ import Html exposing (Html, text)
 import Html.Events exposing (onClick)
 -- import Html.App as App
 
-import Main.Types exposing (Msg(MenuMsg, LogOutClicked))
+import Main.Types exposing (Msg(MenuMsg, LogOutClicked, OpenUserSettingsDialog))
 
 item : String -> Html Msg
 item str =
@@ -34,5 +34,8 @@ view mdlMsg mdlModel =
     [ Menu.bottomRight
     -- , Menu.ripple
     ]
-    [ Menu.Item False True  <| item "Log Out"
+    [ Menu.Item False True
+      <| Html.div [ onClick OpenUserSettingsDialog ] [ Html.text "Edit Profile" ]
+    , Menu.Item False True
+      <| Html.div [ onClick LogOutClicked ] [ Html.text "Log Out" ]
     ]

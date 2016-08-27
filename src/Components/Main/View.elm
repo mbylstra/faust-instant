@@ -45,6 +45,7 @@ import FaustControls
 import User
 -- import FaustProgram
 import FaustControls
+import SimpleDialog
 
 -- component modules
 -- import Main.Http.Firebase as FirebaseHttp
@@ -55,6 +56,7 @@ import Main.Constants exposing (defaultBufferSize)
 
 -- component views
 import Main.View.UserMenu as UserMenu
+import Main.View.UserSettingsDialog as UserSettingsDialog
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -88,71 +90,71 @@ view model =
       in
         Array.indexedMap renderSlider model.uiInputs |> Array.toList
   in
-  div [ class "main-wrap" ]
-    -- [ SignupView.Css.styleTag  (doesn't work - too late in the css load )
-    [ div [ class "main-header" ]
-      [ div [ class "main-header-left" ]
-          [ h1 [] [ text "Faust Instant" ] ]
-      , div [ class "main-header-right" ]
-          ( case model.user of
-              Just user ->
-                [ User.view user
-                , UserMenu.view MDL model.mdl
-                ]
-              Nothing ->
-                [ aButton (SignupViewMsg SignupView.OpenSignInDialog) [] [ text "Log In" ]
-                , aButton (SignupViewMsg SignupView.OpenSignUpDialog) [] [ text "Sign Up" ]
-                ]
-          )
-      ]
-    , div [ class "main-row" ]
-      [ div [ class "code-editor-column" ]
-        [ div [ id "code-editor-holder", class "code-editor"]
-          [ textarea
-            [ id "codemirror" ]
-            []
-          ]
-        , div [ class "code-editor-buttons" ]
-          [ div [ class "spinner-holder" ]
-              [ if model.loading then GoogleSpinner.view else span [] [] ]
-          , label [] [ text "Latency"]
-          , bufferSizeSelectView model
-          , button [ onClick Compile ]
-            [ text "Compile "
-            , span [] [ text "(CTRL-ENTER)" ]
-            ]
-          , maybeView
-              (\_ -> aButton Save [ class "save-button" ] [ text "Save" ] )
-              model.user
-          ]
+    div [ class "main-wrap" ]
+      [ UserSettingsDialog.view model
+      , div [ class "main-header" ]
+        [ div [ class "main-header-left" ]
+            [ h1 [] [ text "Faust Instant" ] ]
+        , div [ class "main-header-right" ]
+            ( case model.user of
+                Just user ->
+                  [ User.view user
+                  , UserMenu.view MDL model.mdl
+                  ]
+                Nothing ->
+                  [ aButton (SignupViewMsg SignupView.OpenSignInDialog) [] [ text "Log In" ]
+                  , aButton (SignupViewMsg SignupView.OpenSignUpDialog) [] [ text "Sign Up" ]
+                  ]
+            )
         ]
-      , div [ class "examples"]
-        [ App.map ExamplesMsg (Examples.view model.examples) ]
+      , div [ class "main-row" ]
+        [ div [ class "code-editor-column" ]
+          [ div [ id "code-editor-holder", class "code-editor"]
+            [ textarea
+              [ id "codemirror" ]
+              []
+            ]
+          , div [ class "code-editor-buttons" ]
+            [ div [ class "spinner-holder" ]
+                [ if model.loading then GoogleSpinner.view else span [] [] ]
+            , label [] [ text "Latency"]
+            , bufferSizeSelectView model
+            , button [ onClick Compile ]
+              [ text "Compile "
+              , span [] [ text "(CTRL-ENTER)" ]
+              ]
+            , maybeView
+                (\_ -> aButton Save [ class "save-button" ] [ text "Save" ] )
+                model.user
+            ]
+          ]
+        , div [ class "examples"]
+          [ App.map ExamplesMsg (Examples.view model.examples) ]
+        ]
+      , div [ class "main-footer" ]
+        [ p []
+            [ text (Maybe.withDefault "" model.compilationError) ]
+        -- , App.map VolumeSliderMsg (Slider.view model.mainVolume)
+        -- , p []
+        --   [ text "Audio Meter Value: "
+        --   , text (toString model.audioMeter)
+        --   ]
+        -- , App.map AudioMeterMsg (AudioMeter.view model.audioMeter)
+        -- , FFTBarGraph.view model.fftData
+        , div [ class "sliders" ] sliders
+        , pianoView model
+        ]
+      , ( let
+            defaults = SignupView.defaults
+            config =
+              { defaults |
+                branding = Just <| h1 [] [ text "Faust Instant" ]
+              , signUpEnticer = Just <| p [] [ text "Sign up to save, share & star Faust programs" ]
+              }
+          in
+            SignupView.view config model.signupView |> App.map SignupViewMsg
+        )
       ]
-    , div [ class "main-footer" ]
-      [ p []
-          [ text (Maybe.withDefault "" model.compilationError) ]
-      -- , App.map VolumeSliderMsg (Slider.view model.mainVolume)
-      -- , p []
-      --   [ text "Audio Meter Value: "
-      --   , text (toString model.audioMeter)
-      --   ]
-      -- , App.map AudioMeterMsg (AudioMeter.view model.audioMeter)
-      -- , FFTBarGraph.view model.fftData
-      , div [ class "sliders" ] sliders
-      , pianoView model
-      ]
-    , ( let
-          defaults = SignupView.defaults
-          config =
-            { defaults |
-              branding = Just <| h1 [] [ text "Faust Instant" ]
-            , signUpEnticer = Just <| p [] [ text "Sign up to save, share & star Faust programs" ]
-            }
-        in
-          SignupView.view config model.signupView |> App.map SignupViewMsg
-      )
-    ]
 
 pianoView : Model -> Html Msg
 pianoView model =

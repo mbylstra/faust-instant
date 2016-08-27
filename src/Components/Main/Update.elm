@@ -23,8 +23,10 @@ import Arpeggiator
 import FaustControls
 -- import User
 import Examples
+import SimpleDialog
 
 -- component modules
+import Main.Model as Model
 import Main.Types exposing (..)
 import Main.Commands exposing (createCompileCommand, signOutFirebaseUser)
 import Main.Ports exposing
@@ -37,6 +39,7 @@ import Main.Ports exposing
 import Main.Constants exposing (firebaseConfig)
 import Main.Http.Firebase as FirebaseHttp
 
+import UserSettingsForm
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
@@ -44,6 +47,10 @@ import Main.Http.Firebase as FirebaseHttp
 update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
   case Debug.log "action:" action of
+  -- case action of
+
+    NoOp ->
+      model ! []
   -- case action of
 
     Compile ->
@@ -165,7 +172,7 @@ update action model =
 
         facebookLoginTask = FirebaseAuth.facebookSignInWithPopup firebaseConfig
         githubLoginTask = FirebaseAuth.githubSignInWithPopup firebaseConfig
-        performSignUpCommand = Task.perform Error Success githubLoginTask
+        performSignUpCommand = Task.perform Error FirebaseLoginSuccess githubLoginTask
         cmds =
           case maybeOutMsg of
             Just outMsg ->
@@ -190,27 +197,32 @@ update action model =
               , displayName = firebaseUser.displayName
               , imageUrl = firebaseUser.photoURL
               }
+            model2 = Model.updateUser (Just user) model
           in
-            { model | user = Just user, authToken = Just firebaseUser.token } ! []
+            { model2
+            | userSettingsForm = Just <| UserSettingsForm.init user
+            , authToken = Just firebaseUser.token
+            } ! []
         Nothing ->
           model ! []
 
-    Success firebaseUser ->
+    FirebaseLoginSuccess firebaseUser ->
       let
         user =
           { uid = firebaseUser.uid
           , displayName = firebaseUser.displayName
           , imageUrl = firebaseUser.photoURL
           }
-        task = FirebaseHttp.putUser firebaseUser.token firebaseUser.uid user
-        cmd = Task.perform (\_ -> GeneralError) (\_ -> SuccessfulPut Nothing) task
+        faustProgram = model.faustProgram
+        model2 = Model.updateUser (Just user) model
       in
-        { model | user = Just user, authToken = Just firebaseUser.token }
-          ! [ cmd
-            ]
+        { model2
+        | userSettingsForm = Just <| UserSettingsForm.init user
+        , authToken = Just firebaseUser.token
+        } ! []
 
 
-    SuccessfulPut maybeString ->
+    SuccessfulPut ->
       let
         _ = Debug.log "SuccessfulPut" 1
       in
@@ -229,26 +241,33 @@ update action model =
       case model.authToken of
         Just authToken ->
           let
-            task = FirebaseHttp.postFaustProgram authToken model.faustProgram
-            --cmd = Task.perform (\_ -> GeneralError) FaustProgramPosted task
+            cmd =
+              case model.faustProgram.databaseId of
+                Just id ->
+                  let
+                    task = FirebaseHttp.putFaustProgram authToken id model.faustProgram
+                  in
+                    Task.perform (\_ -> GeneralError) (\_ -> SuccessfulPut) task
+                Nothing ->
+                  let
+                    task = FirebaseHttp.postFaustProgram authToken model.faustProgram
+                  in
+                    Task.perform (\_ -> GeneralError) FaustProgramPosted task
           in
-            -- model ! [ cmd ]
-            model ! []
+            model ! [ cmd ]
         Nothing ->
-          Debug.crash "we need to do something about save if user is not logged in"
+          Debug.crash "We need to do something about save if user is not logged in"
 
     FaustProgramPosted key ->
       -- key is the newly generated key
-      model ! []
+      let
+        faustProgram = model.faustProgram
 
-    -- MenuMsg msg' ->
+      in
+        { model | faustProgram = { faustProgram | databaseId = Just key } } ! []
 
     MenuMsg idx action ->
         (model, Cmd.none)
-      -- let
-      --   (userMenu, cmd) = Material.Menu.update msg' model.userMenu
-      -- in
-      --   { model | userMenu = userMenu } ! [ Cmd.map MenuMsg cmd ]
 
     MDL msg' ->
       Material.update MDL msg' model
@@ -259,7 +278,44 @@ update action model =
     UserSignedOut ->
       { model | authToken = Nothing, user = Nothing } ! []
 
-    -- UserSignedOut ->
+    UserSettingsDialogMsg msg' ->
+      let
+        userSettingsDialog = SimpleDialog.update msg' model.userSettingsDialog
+      in
+        { model | userSettingsDialog = userSettingsDialog } ! []
 
+    OpenUserSettingsDialog ->
+      let
+        userSettingsDialog = SimpleDialog.update SimpleDialog.Open model.userSettingsDialog
+      in
+        { model | userSettingsDialog = userSettingsDialog } ! []
+
+    UserSettingsFormMsg msg' ->
+      case model.userSettingsForm of
+        Just userSettingsForm ->
+          let
+            (userSettingsForm, maybeUser) = UserSettingsForm.update msg' userSettingsForm
+          in
+            case maybeUser of
+              Just user ->
+                let
+                  updateUserProfileTask =
+                    FirebaseAuth.updateUserProfile
+                      firebaseConfig
+                      { displayName = user.displayName , photoURL = user.imageUrl }
+                  updateUserProfileCommand = Task.perform (\() -> NoOp) (\() -> NoOp) updateUserProfileTask
+                  userSettingsDialog = SimpleDialog.update SimpleDialog.Close model.userSettingsDialog
+                in
+                  { model
+                  | user = Just user
+                  , userSettingsDialog = userSettingsDialog
+                  , userSettingsForm = Just userSettingsForm
+                  }
+                  !
+                  [ updateUserProfileCommand ]
+              Nothing ->
+                { model | userSettingsForm = Just userSettingsForm } ! []
+        Nothing ->
+          model ! []
     -- _ ->
     --   Debug.crash ""

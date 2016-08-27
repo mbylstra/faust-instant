@@ -18,8 +18,10 @@
     "bootstrap-sass": "^3.3.6",
     "css-loader": "0.23.1",
     "elm": "0.17.0",
+    "elm-css": "^0.5.1",
+    "elm-css-webpack-loader": "^2.0.1",
     "elm-hot-loader": "0.3.2",
-    "elm-webpack-loader": "^3.0.3",
+    "elm-webpack-loader": "^3.0.5",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.8.5",
     "html-webpack-plugin": "2.17.0",
@@ -35,6 +37,7 @@
   },
   "dependencies": {
     "codemirror": "^5.15.2",
+    "glob-to-regexp": "^0.1.0",
     "material-design-icons": "^2.2.3",
     "material-design-lite": "^1.1.3"
   }

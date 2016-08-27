@@ -4,6 +4,7 @@ var merge             = require( 'webpack-merge' );
 var HtmlWebpackPlugin = require( 'html-webpack-plugin' );
 var autoprefixer      = require( 'autoprefixer' );
 var ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
+var glob              = require( 'glob' );
 
 console.log( 'WEBPACK GO!');
 
@@ -53,7 +54,10 @@ if ( TARGET_ENV === 'development' ) {
 
     entry: [
       'webpack-dev-server/client?http://localhost:8080',
+      //glob.sync("./src/**/*.*")
       path.join( __dirname, 'src/main.js' )
+      // path.join( __dirname, 'src/Main.elm' )
+      //glob.sync("./src/**/*.*")
     ],
 
     devServer: {

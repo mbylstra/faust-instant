@@ -36,7 +36,7 @@ This is a *dangerous* function and you should do your best to not use it at all 
 unsafeMaybe : Maybe a -> a
 unsafeMaybe v =
   case v of
-    Nothing -> Debug.crash "unexpected crash when using the Util.unsafe function"
+    Nothing -> Debug.crash "unexpected crash when using the Util.unsafeMaybe function"
     Just x -> x
 
 unsafeResult : Result err value -> value
@@ -44,6 +44,8 @@ unsafeResult r =
   case r of
     Err msg -> Debug.crash (toString msg)
     Ok v -> v
+
+
 
 last : List a -> Maybe a
 last l =

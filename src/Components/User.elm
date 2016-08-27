@@ -3,6 +3,7 @@ module User exposing
   , view
   , encoder
   , decoder
+  , dummyModel
   )
 
 import Html exposing (..)
@@ -20,11 +21,17 @@ import HtmlHelpers exposing (maybeView)
 
 type alias Model =
   { uid : String
-  , displayName : Maybe String
+  , displayName : String
   , imageUrl : Maybe String
   }
 
 
+dummyModel : Model
+dummyModel =
+  { uid = "abcdefg"
+  , displayName = "Michael"
+  , imageUrl = Nothing
+  }
 -- VIEW
 
 view : Model -> Html msg
@@ -33,7 +40,7 @@ view user =
     photo =
       maybeView (\url -> img [ src url, class "avatar" ] []) user.imageUrl
     displayName =
-      maybeView (\name -> span [] [ text name ]) user.displayName
+      span [] [ text user.displayName ]
   in
     div [ class "user" ]
       [ displayName
@@ -46,7 +53,7 @@ encoder : Model -> Value
 encoder model =
     JsonEncode.object
         [ ( "uid", JsonEncode.string model.uid )
-        , ( "displayName", maybeString model.displayName )
+        , ( "displayName", JsonEncode.string model.displayName )
         , ( "imageUrl", maybeString model.imageUrl )
         ]
 
@@ -54,5 +61,5 @@ decoder : Decoder Model
 decoder =
     JsonDecode.object3 Model
         ("uid" := JsonDecode.string)
-        ("displayName" := JsonDecode.map Just JsonDecode.string)
+        ("displayName" := JsonDecode.string)
         ("imageUrl" := JsonDecode.map Just JsonDecode.string)

@@ -1,0 +1,17 @@
+!/bin/bash
+
+elm-css src/Stylesheets.elm --output src/styles/elm-css-build
+
+
+
+#  Usage: elm-css elm-css PATH # path to your Stylesheets.elm file
+#
+#  Options:
+#
+#    -h, --help                 output usage information
+#    -V, --version              output the version number
+#    -o, --output [outputDir]   (optional) directory in which to write CSS file
+#    -m, --module [moduleName]  (optional) name of stylesheets module in your project
+#    -p, --port [portName]      (optional) name of the port from which to read CSS results
+#    -r, --root [projectDir]    (optional) root directory of the project
+

@@ -23,6 +23,8 @@ import SignupView
 import FaustControls
 import FaustProgram
 import User
+import SimpleDialog
+import UserSettingsForm
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -45,10 +47,13 @@ type alias Model =
   , authToken : Maybe String
   -- , userMenu : Material.Menu.Model
   , mdl : Material.Model
+  , userSettingsDialog : SimpleDialog.Model
+  , userSettingsForm : Maybe UserSettingsForm.Model
   }
 
 type Msg
-  = Compile
+  = NoOp
+  | Compile
   | CompilationError (Maybe String)
   | FaustCodeChanged String
   | HotKeysMsg HotKeys.Msg
@@ -62,14 +67,17 @@ type Msg
   | ArpeggiatorMsg Arpeggiator.Msg
   | SignupViewMsg SignupView.Msg
   | Error SignInWithPopupError
-  | Success FirebaseAuth.User
-  | SuccessfulPut (Maybe String)
+  | FirebaseLoginSuccess FirebaseAuth.User
+  | SuccessfulPut
   | GeneralError -- beacuse I'm lazy
   | Save
-  | FaustProgramPosted (HttpBuilder.Response String)
+  | FaustProgramPosted String
   | CurrentFirebaseUserFetched (Maybe FirebaseAuth.User)
   | LogOutClicked
   | UserSignedOut
+  | UserSettingsDialogMsg SimpleDialog.Msg
+  | OpenUserSettingsDialog
+  | UserSettingsFormMsg UserSettingsForm.Msg
 
   -- Material Design Lite
   | MDL Material.Msg

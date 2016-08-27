@@ -8,25 +8,27 @@ module FaustProgram exposing
 import Json.Decode as JsonDecode exposing (Decoder, (:=))
 import Json.Encode as JsonEncode exposing (Value)
 
+import Json.Encode.Extra exposing (maybeString)
+
 
 -- MODEL
 
 type alias Model =
-  { code : String
-    -- key : Maybe String
+  { databaseId : Maybe String
+  , code : String
   , title : String
   , public : Bool
-  , author : String
+  , authorUid : Maybe String
   , starCount : Int
   }
 
 init : Model
 init =
-  { code = ""
-  -- , key = Nothing
+  { databaseId = Nothing
+  , code = ""
   , title = "Untitled"
   , public = False
-  , author = ""
+  , authorUid = Nothing
   , starCount = 0
   }
 
@@ -38,15 +40,16 @@ encoder model =
         [ ( "code", JsonEncode.string model.code )
         , ( "title", JsonEncode.string model.title )
         , ( "public", JsonEncode.bool model.public )
-        , ( "author", JsonEncode.string model.author )
+        , ( "authorUid", maybeString model.authorUid )
         , ( "starCount", JsonEncode.int model.starCount )
         ]
 
 decoder : Decoder Model
 decoder =
-    JsonDecode.object5 Model
+    JsonDecode.object6 Model
+        (JsonDecode.succeed Nothing)
         ("code" := JsonDecode.string)
         ("title" := JsonDecode.string)
         ("public" := JsonDecode.bool)
-        ("author" := JsonDecode.string)
+        ("authorUid" := JsonDecode.maybe JsonDecode.string)
         ("starCount" := JsonDecode.int)
