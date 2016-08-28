@@ -72,9 +72,13 @@ buttonView faustProgram =
     [ class "example", onClick (OpenProgram faustProgram) ]
     [ text faustProgram.title ]
 
-view : Model -> Html Msg
-view model =
+view : Bool -> Model -> Html Msg
+view loggedIn model =
   let
     buttons = List.map buttonView model.demos
   in
-    div [] buttons
+    if loggedIn
+    then
+      div [] (buttons ++ [ div [] [ text "logged in"]]) 
+    else
+      div [] buttons

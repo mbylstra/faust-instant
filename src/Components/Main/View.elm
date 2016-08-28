@@ -49,7 +49,7 @@ import ProgramList
 -- component modules
 -- import Main.Http.Firebase as FirebaseHttp
 
--- import Main.Model
+import Main.Model exposing (isLoggedIn)
 import Main.Types exposing (..)
 import Main.Constants exposing (defaultBufferSize)
 
@@ -128,7 +128,7 @@ view model =
             ]
           ]
         , div [ class "examples"]
-          [ App.map ProgramListMsg (ProgramList.view model.programList) ]
+          [ App.map ProgramListMsg (ProgramList.view (isLoggedIn model) model.programList) ]
         ]
       , div [ class "main-footer" ]
         [ p []

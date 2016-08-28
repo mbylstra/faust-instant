@@ -86,3 +86,9 @@ updateUser maybeUser model =
         | user = Nothing,
           faustProgram = { faustProgram | authorUid = Nothing }
         }
+
+isLoggedIn : Model -> Bool
+isLoggedIn model =
+  case model.user of
+    Just _ -> True
+    Nothing -> False
