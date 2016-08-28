@@ -190,12 +190,17 @@ update action model =
 
 
     FirebaseLoginSuccess firebaseUser ->
-      (firebaseUserLoggedIn firebaseUser model) ! []
-
+      let
+        (model2, cmd) = firebaseUserLoggedIn firebaseUser model
+      in
+        model2 ! [cmd]
     CurrentFirebaseUserFetched maybeFirebaseUser ->
       case maybeFirebaseUser of
         Just firebaseUser ->
-          (firebaseUserLoggedIn firebaseUser model) ! []
+          let
+            (model2, cmd) = firebaseUserLoggedIn firebaseUser model
+          in
+            model2 ! [cmd]
         Nothing ->
           model ! []
 
@@ -297,6 +302,9 @@ update action model =
 
     FetchedStaffPicks staffPicks ->
       { model | staffPicks = List.map snd staffPicks } ! []
+
+    FetchedUserPrograms faustPrograms ->
+      { model | myPrograms = List.map snd faustPrograms } ! []
 
     OpenProgram faustProgram ->
       let

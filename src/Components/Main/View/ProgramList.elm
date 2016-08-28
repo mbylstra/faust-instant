@@ -40,6 +40,9 @@ view model =
   in
     if (isLoggedIn model)
     then
-      div [] (buttons ++ [ div [] [ text "logged in"]])
+      let
+        userProgramButtons = List.map buttonView model.myPrograms
+      in
+        div [] (buttons ++ userProgramButtons)
     else
       div [] buttons

@@ -27,7 +27,7 @@ import UserSettingsForm
 import Main.Types exposing (..)
 import Main.Ports exposing (..)
 import Main.Constants
-import Main.Commands exposing (fetchCurrentFirebaseUser)
+import Main.Commands exposing (fetchCurrentFirebaseUser, fetchUserPrograms)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ isLoggedIn model =
     Just _ -> True
     Nothing -> False
 
-firebaseUserLoggedIn : FirebaseAuth.User -> Model -> Model
+firebaseUserLoggedIn : FirebaseAuth.User -> Model -> (Model, Cmd Msg)
 firebaseUserLoggedIn firebaseUser model =
   let
     user =
@@ -103,7 +103,9 @@ firebaseUserLoggedIn firebaseUser model =
       }
     model2 = updateUser (Just user) model
   in
-    { model2
-    | userSettingsForm = Just <| UserSettingsForm.init user
-    , authToken = Just firebaseUser.token
-    }
+    ( { model2
+      | userSettingsForm = Just <| UserSettingsForm.init user
+      , authToken = Just firebaseUser.token
+      }
+    , fetchUserPrograms user
+    )

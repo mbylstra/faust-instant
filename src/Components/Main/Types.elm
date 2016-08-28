@@ -65,18 +65,21 @@ type Msg
   | ArpeggiatorMsg Arpeggiator.Msg
   | SignupViewMsg SignupView.Msg
   | Error SignInWithPopupError
+
   | FirebaseLoginSuccess FirebaseAuth.User
+  | CurrentFirebaseUserFetched (Maybe FirebaseAuth.User)
+
   | SuccessfulPut
   | GeneralError -- beacuse I'm lazy
   | Save
   | FaustProgramPosted String
-  | CurrentFirebaseUserFetched (Maybe FirebaseAuth.User)
   | LogOutClicked
   | UserSignedOut
   | UserSettingsDialogMsg SimpleDialog.Msg
   | OpenUserSettingsDialog
   | UserSettingsFormMsg UserSettingsForm.Msg
   | FetchedStaffPicks (List (String, FaustProgram.Model))
+  | FetchedUserPrograms (List (String, FaustProgram.Model))
   | OpenProgram FaustProgram.Model
 
   -- Material Design Lite

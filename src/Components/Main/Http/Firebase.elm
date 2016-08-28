@@ -56,5 +56,5 @@ getUserFaustPrograms
 getUserFaustPrograms user =
   getFaustPrograms
     [ ("orderBy", "\"authorUid\"")
-    , ("equalTo", user.uid)
+    , ("equalTo", "\"" ++ user.uid ++ "\"")
     ]

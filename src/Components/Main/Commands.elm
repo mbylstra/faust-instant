@@ -8,6 +8,9 @@ import FirebaseAuth
 import Main.Types exposing (..)
 import Main.Ports exposing (compileFaustCode)
 import Main.Constants
+import Main.Http.Firebase exposing (getUserFaustPrograms)
+
+import User
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -42,3 +45,7 @@ createCompileCommand model =
         { faustCode = model.faustProgram.code, polyphonic = False
         , numVoices = 1, bufferSize = model.bufferSize
         }
+
+fetchUserPrograms : User.Model -> Cmd Msg
+fetchUserPrograms user =
+  Task.perform HttpBuilderError FetchedUserPrograms (getUserFaustPrograms user)
