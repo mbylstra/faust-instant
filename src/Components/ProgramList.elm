@@ -41,28 +41,25 @@ type Msg
   = Error (HttpBuilder.Error String)
   | FetchedStaffPicks (List (String, FaustProgram.Model))
   | OpenProgram FaustProgram.Model
-  | NoOp
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd Msg, Maybe FaustProgram.Model)
 update action model =
   case action of
-    NoOp ->
-      model ! []
 
     Error e ->
       let
         _ = Debug.crash (toString e)
       in
-        model ! []
+        (model, Cmd.none, Nothing)
 
     FetchedStaffPicks staffPicks ->
       let
         newModel = List.map snd staffPicks
       in
-        newModel ! []
+        (newModel, Cmd.none, Nothing)
 
     OpenProgram faustProgram ->
-      model ! []
+        (model, Cmd.none, Just faustProgram)
 
 
 -- VIEW

@@ -24,6 +24,7 @@ import FaustControls
 -- import User
 import SimpleDialog
 import ProgramList
+import FaustProgram
 
 -- component modules
 import Main.Model as Model
@@ -95,9 +96,31 @@ update action model =
 
     ProgramListMsg msg ->
       let
-        (programList, _) = ProgramList.update msg model.programList
+        (programList, _, maybeFaustProgram) = ProgramList.update msg model.programList
       in
-       { model | programList = programList } ! []
+        case maybeFaustProgram of
+          Just faustProgram ->
+            let
+              defaultFaustProgram = FaustProgram.default
+              newFaustProgram =
+                { defaultFaustProgram
+                | title = faustProgram.title
+                , code = faustProgram.code
+                }
+              newModel =
+                { model
+                | faustProgram = newFaustProgram
+                , programList = programList
+                , loading = True
+                }
+            in
+              newModel !
+                [ updateFaustCode newModel.faustProgram.code 
+                , createCompileCommand newModel
+                ]
+
+          Nothing ->
+           { model | programList = programList } ! []
     -- ExamplesMsg msg ->
     --   let
     --     result = Examples.update msg model.examples

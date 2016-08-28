@@ -1,6 +1,7 @@
 module FaustProgram exposing
   ( Model
   , init
+  , default
   , encoder
   , decoder
   )
@@ -23,8 +24,8 @@ type alias Model =
   , staffPick : Bool
   }
 
-init : Model
-init =
+default : Model
+default =
   { databaseId = Nothing
   , code = ""
   , title = "Untitled"
@@ -33,6 +34,9 @@ init =
   , starCount = 0
   , staffPick = False
   }
+
+init : Model
+init = default
 
 -- SERIALIZE
 
@@ -51,6 +55,8 @@ decoder : Decoder Model
 decoder =
     JsonDecode.object7 Model
         (JsonDecode.succeed Nothing)
+          -- TODO: actually get the id, or store the id in the model, which
+          -- would reuqire a subsequent PUT (a bit ugly)
         ("code" := JsonDecode.string)
         ("title" := JsonDecode.string)
         ("public" := JsonDecode.bool)
