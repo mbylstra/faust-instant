@@ -23,7 +23,6 @@ import Arpeggiator
 import FaustControls
 -- import User
 import SimpleDialog
-import ProgramList
 import FaustProgram
 
 -- component modules
@@ -94,33 +93,6 @@ update action model =
     -- FileReaderMsg msg ->
     --   model ! []
 
-    ProgramListMsg msg ->
-      let
-        (programList, _, maybeFaustProgram) = ProgramList.update msg model.programList
-      in
-        case maybeFaustProgram of
-          Just faustProgram ->
-            let
-              defaultFaustProgram = FaustProgram.default
-              newFaustProgram =
-                { defaultFaustProgram
-                | title = faustProgram.title
-                , code = faustProgram.code
-                }
-              newModel =
-                { model
-                | faustProgram = newFaustProgram
-                , programList = programList
-                , loading = True
-                }
-            in
-              newModel !
-                [ updateFaustCode newModel.faustProgram.code 
-                , createCompileCommand newModel
-                ]
-
-          Nothing ->
-           { model | programList = programList } ! []
     -- ExamplesMsg msg ->
     --   let
     --     result = Examples.update msg model.examples
@@ -345,5 +317,34 @@ update action model =
                 { model | userSettingsForm = Just userSettingsForm } ! []
         Nothing ->
           model ! []
+
+    FetchedStaffPicks staffPicks ->
+      { model | staffPicks = List.map snd staffPicks } ! []
+
+    OpenProgram faustProgram ->
+      let
+        defaultFaustProgram = FaustProgram.default
+        newFaustProgram =
+          { defaultFaustProgram
+          | title = faustProgram.title
+          , code = faustProgram.code
+          }
+        newModel =
+          { model
+          | faustProgram = newFaustProgram
+          , loading = True
+          }
+      in
+        newModel !
+          [ updateFaustCode newModel.faustProgram.code
+          , createCompileCommand newModel
+          ]
+    HttpBuilderError httpBuilderError ->
+      let
+        _ = Debug.crash (toString httpBuilderError)
+      in
+        model ! []
+
+
     -- _ ->
     --   Debug.crash ""

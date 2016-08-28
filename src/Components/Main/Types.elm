@@ -6,15 +6,14 @@ module Main.Types exposing (..)
 import Json.Decode
 import Array exposing (Array)
 
-
 -- external components
 import FirebaseAuth exposing (AuthProvider(..), SignInWithPopupError(..))
 import Material
 import Material.Menu
+import HttpBuilder
 
 -- project components
 import HotKeys
-import Examples
 import Slider
 import Arpeggiator
 import SignupView
@@ -23,7 +22,6 @@ import FaustProgram
 import User
 import SimpleDialog
 import UserSettingsForm
-import ProgramList
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -32,7 +30,6 @@ type alias Model =
   { faustProgram : FaustProgram.Model
   , compilationError : Maybe String
   , hotKeys : HotKeys.Model
-  , programList : ProgramList.Model
   , mainVolume : Slider.Model
   , fftData : List Float
   , uiInputs : UiInputs
@@ -48,15 +45,17 @@ type alias Model =
   , mdl : Material.Model
   , userSettingsDialog : SimpleDialog.Model
   , userSettingsForm : Maybe UserSettingsForm.Model
+  , staffPicks : List FaustProgram.Model
+  , myPrograms : List FaustProgram.Model
   }
 
 type Msg
   = NoOp
+  | HttpBuilderError (HttpBuilder.Error String)
   | Compile
   | CompilationError (Maybe String)
   | FaustCodeChanged String
   | HotKeysMsg HotKeys.Msg
-  | ProgramListMsg ProgramList.Msg
   | VolumeSliderMsg Slider.Msg
   | NewFFTData (List Float)
   | DSPCompiled (List Json.Decode.Value)
@@ -77,6 +76,8 @@ type Msg
   | UserSettingsDialogMsg SimpleDialog.Msg
   | OpenUserSettingsDialog
   | UserSettingsFormMsg UserSettingsForm.Msg
+  | FetchedStaffPicks (List (String, FaustProgram.Model))
+  | OpenProgram FaustProgram.Model
 
   -- Material Design Lite
   | MDL Material.Msg

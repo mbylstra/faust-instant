@@ -44,12 +44,11 @@ import FaustControls
 import User
 -- import FaustProgram
 import FaustControls
-import ProgramList
+import Main.View.ProgramList as ProgramList
 
 -- component modules
 -- import Main.Http.Firebase as FirebaseHttp
 
-import Main.Model exposing (isLoggedIn)
 import Main.Types exposing (..)
 import Main.Constants exposing (defaultBufferSize)
 
@@ -128,7 +127,7 @@ view model =
             ]
           ]
         , div [ class "examples"]
-          [ App.map ProgramListMsg (ProgramList.view (isLoggedIn model) model.programList) ]
+          [ ProgramList.view model ]
         ]
       , div [ class "main-footer" ]
         [ p []

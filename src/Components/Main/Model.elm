@@ -4,7 +4,8 @@ module Main.Model exposing (..)
 
 -- core
 import Array exposing (Array)
--- import Task
+import Task
+
 
 -- external components
 import SignupView
@@ -19,7 +20,7 @@ import Slider
 import Arpeggiator
 import SimpleDialog
 import User
-import ProgramList
+import Main.Http.Firebase
 
 -- component modules
 import Main.Types exposing (..)
@@ -37,12 +38,10 @@ init : (Model, Cmd Msg)
 init =
   let
     (hotKeys, hotKeysCommand) = HotKeys.init
-    (programList, programListCommand) = ProgramList.init
   in
     { faustProgram = FaustProgram.init
     , compilationError = Nothing
     , hotKeys = hotKeys
-    , programList = programList
     -- , fileReader = FileReader.init
     , mainVolume = Slider.init 1.0
     , fftData = []
@@ -60,14 +59,14 @@ init =
     , mdl = Material.model
     , userSettingsDialog = SimpleDialog.init
     , userSettingsForm = Nothing
+    , staffPicks = []
+    , myPrograms = []
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
-    , Cmd.map ProgramListMsg programListCommand
     , elmAppInitialRender ()
     , fetchCurrentFirebaseUser
-    -- , Task.perform AuthTokenNotRetrievedFromLocalStorage AuthTokenRetrievedFromLocalStorage
-    --     (LocalStorage.get "authToken")
+    , Task.perform HttpBuilderError FetchedStaffPicks Main.Http.Firebase.getStaffPicks
     ]
 
 updateUser : Maybe User.Model -> Model -> Model
