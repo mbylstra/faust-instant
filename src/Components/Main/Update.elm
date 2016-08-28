@@ -26,7 +26,7 @@ import SimpleDialog
 import FaustProgram
 
 -- component modules
-import Main.Model as Model
+import Main.Model as Model exposing (firebaseUserLoggedIn)
 import Main.Types exposing (..)
 import Main.Commands exposing (createCompileCommand, signOutFirebaseUser)
 import Main.Ports exposing
@@ -188,39 +188,16 @@ update action model =
       in
         { model | signupView = signupView } ! cmds
 
+
+    FirebaseLoginSuccess firebaseUser ->
+      (firebaseUserLoggedIn firebaseUser model) ! []
+
     CurrentFirebaseUserFetched maybeFirebaseUser ->
       case maybeFirebaseUser of
         Just firebaseUser ->
-          let
-            user =
-              { uid = firebaseUser.uid
-              , displayName = firebaseUser.displayName
-              , imageUrl = firebaseUser.photoURL
-              }
-            model2 = Model.updateUser (Just user) model
-          in
-            { model2
-            | userSettingsForm = Just <| UserSettingsForm.init user
-            , authToken = Just firebaseUser.token
-            } ! []
+          (firebaseUserLoggedIn firebaseUser model) ! []
         Nothing ->
           model ! []
-
-    FirebaseLoginSuccess firebaseUser ->
-      let
-        user =
-          { uid = firebaseUser.uid
-          , displayName = firebaseUser.displayName
-          , imageUrl = firebaseUser.photoURL
-          }
-        faustProgram = model.faustProgram
-        model2 = Model.updateUser (Just user) model
-      in
-        { model2
-        | userSettingsForm = Just <| UserSettingsForm.init user
-        , authToken = Just firebaseUser.token
-        } ! []
-
 
     SuccessfulPut ->
       let

@@ -10,7 +10,7 @@ import Task
 -- external components
 import SignupView
 -- import LocalStorage
--- import FirebaseAuth
+import FirebaseAuth
 import Material
 
 -- project components
@@ -21,6 +21,7 @@ import Arpeggiator
 import SimpleDialog
 import User
 import Main.Http.Firebase
+import UserSettingsForm
 
 -- component modules
 import Main.Types exposing (..)
@@ -91,3 +92,18 @@ isLoggedIn model =
   case model.user of
     Just _ -> True
     Nothing -> False
+
+firebaseUserLoggedIn : FirebaseAuth.User -> Model -> Model
+firebaseUserLoggedIn firebaseUser model =
+  let
+    user =
+      { uid = firebaseUser.uid
+      , displayName = firebaseUser.displayName
+      , imageUrl = firebaseUser.photoURL
+      }
+    model2 = updateUser (Just user) model
+  in
+    { model2
+    | userSettingsForm = Just <| UserSettingsForm.init user
+    , authToken = Just firebaseUser.token
+    }
