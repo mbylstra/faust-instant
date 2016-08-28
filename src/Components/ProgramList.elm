@@ -26,14 +26,16 @@ import Main.Http.Firebase
 -- MODEL
 
 type alias Model =
-  List FaustProgram.Model
+  { demos: List FaustProgram.Model
+  , myPrograms: List FaustProgram.Model
+  }
 
 init : (Model, Cmd Msg)
 init =
   let
     cmd = Task.perform Error FetchedStaffPicks Main.Http.Firebase.getStaffPicks
   in
-    [] ! [ cmd ]
+    { demos = [], myPrograms = [] } ! [ cmd ]
 
 -- UPDATE
 
@@ -54,7 +56,7 @@ update action model =
 
     FetchedStaffPicks staffPicks ->
       let
-        newModel = List.map snd staffPicks
+        newModel = { model | demos = List.map snd staffPicks }
       in
         (newModel, Cmd.none, Nothing)
 
@@ -73,6 +75,6 @@ buttonView faustProgram =
 view : Model -> Html Msg
 view model =
   let
-    buttons = List.map buttonView model
+    buttons = List.map buttonView model.demos
   in
     div [] buttons
