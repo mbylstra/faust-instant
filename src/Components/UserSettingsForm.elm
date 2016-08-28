@@ -101,6 +101,12 @@ view model =
     ]
     [ labelledInput
         "Name"
-        ( input [ onInput DisplayNameInput, defaultValue model.userModel.displayName ] [ ] )
+        ( input
+          [ type' "text"
+          , onInput DisplayNameInput
+          , defaultValue model.userModel.displayName
+          ]
+          [ ]
+        )
     , aButton Submit [ class "button save-button" ] [ text "submit" ]
     ]
