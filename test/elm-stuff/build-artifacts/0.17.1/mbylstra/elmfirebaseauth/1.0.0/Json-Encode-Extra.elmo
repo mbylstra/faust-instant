@@ -1,0 +1,8 @@
+var _mbylstra$elmfirebaseauth$Json_Encode_Extra$maybeString = function (maybeS) {
+	var _p0 = maybeS;
+	if (_p0.ctor === 'Just') {
+		return _elm_lang$core$Json_Encode$string(_p0._0);
+	} else {
+		return _elm_lang$core$Json_Encode$null;
+	}
+};

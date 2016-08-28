@@ -22,8 +22,8 @@ import Slider
 import Arpeggiator
 import FaustControls
 -- import User
-import Examples
 import SimpleDialog
+import ProgramList
 
 -- component modules
 import Main.Model as Model
@@ -93,28 +93,33 @@ update action model =
     -- FileReaderMsg msg ->
     --   model ! []
 
-    ExamplesMsg msg ->
+    ProgramListMsg msg ->
       let
-        result = Examples.update msg model.examples
-        (newModel, cmds) = case result.code of
-          Just code ->
-            let
-              faustProgram = model.faustProgram
-              newFaustProgram = { faustProgram | code = code }
-              newModel' = { model | faustProgram = newFaustProgram, loading = True }
-            in
-              (newModel', [createCompileCommand newModel'])
-          Nothing ->
-            let
-              newModel' = { model | loading = True }
-            in
-              (newModel', [])
+        (programList, _) = ProgramList.update msg model.programList
       in
-        newModel !
-          ( [ updateFaustCode newModel.faustProgram.code
-            , Cmd.map ExamplesMsg result.cmd
-            ] ++ cmds
-          )
+       { model | programList = programList } ! []
+    -- ExamplesMsg msg ->
+    --   let
+    --     result = Examples.update msg model.examples
+    --     (newModel, cmds) = case result.code of
+    --       Just code ->
+    --         let
+    --           faustProgram = model.faustProgram
+    --           newFaustProgram = { faustProgram | code = code }
+    --           newModel' = { model | faustProgram = newFaustProgram, loading = True }
+    --         in
+    --           (newModel', [createCompileCommand newModel'])
+    --       Nothing ->
+    --         let
+    --           newModel' = { model | loading = True }
+    --         in
+    --           (newModel', [])
+    --   in
+    --     newModel !
+    --       ( [ updateFaustCode newModel.faustProgram.code
+    --         , Cmd.map ExamplesMsg result.cmd
+    --         ] ++ cmds
+    --       )
 
     VolumeSliderMsg msg ->
       let

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html><head><meta charset="UTF-8"><title>Main</title><style>html,head,body { padding:0; margin:0; }
+<html><head><meta charset="UTF-8"><title>Main.Update</title><style>html,head,body { padding:0; margin:0; }
 body { font-family: calibri, helvetica, arial, sans-serif; }</style><script type="text/javascript">
 (function() {
 'use strict';
@@ -12536,171 +12536,6 @@ var _elm_lang$core$Regex$AtMost = function (a) {
 	return {ctor: 'AtMost', _0: a};
 };
 var _elm_lang$core$Regex$All = {ctor: 'All'};
-var _elm_lang$core$Color$fmod = F2(
-	function (f, n) {
-		var integer = _elm_lang$core$Basics$floor(f);
-		return (_elm_lang$core$Basics$toFloat(
-			A2(_elm_lang$core$Basics_ops['%'], integer, n)) + f) - _elm_lang$core$Basics$toFloat(integer);
-	});
-var _elm_lang$core$Color$rgbToHsl = F3(
-	function (red, green, blue) {
-		var b = _elm_lang$core$Basics$toFloat(blue) / 255;
-		var g = _elm_lang$core$Basics$toFloat(green) / 255;
-		var r = _elm_lang$core$Basics$toFloat(red) / 255;
-		var cMax = A2(
-			_elm_lang$core$Basics$max,
-			A2(_elm_lang$core$Basics$max, r, g),
-			b);
-		var cMin = A2(
-			_elm_lang$core$Basics$min,
-			A2(_elm_lang$core$Basics$min, r, g),
-			b);
-		var c = cMax - cMin;
-		var lightness = (cMax + cMin) / 2;
-		var saturation = _elm_lang$core$Native_Utils.eq(lightness, 0) ? 0 : (c / (1 - _elm_lang$core$Basics$abs((2 * lightness) - 1)));
-		var hue = _elm_lang$core$Basics$degrees(60) * (_elm_lang$core$Native_Utils.eq(cMax, r) ? A2(_elm_lang$core$Color$fmod, (g - b) / c, 6) : (_elm_lang$core$Native_Utils.eq(cMax, g) ? (((b - r) / c) + 2) : (((r - g) / c) + 4)));
-		return {ctor: '_Tuple3', _0: hue, _1: saturation, _2: lightness};
-	});
-var _elm_lang$core$Color$hslToRgb = F3(
-	function (hue, saturation, lightness) {
-		var hue$ = hue / _elm_lang$core$Basics$degrees(60);
-		var chroma = (1 - _elm_lang$core$Basics$abs((2 * lightness) - 1)) * saturation;
-		var x = chroma * (1 - _elm_lang$core$Basics$abs(
-			A2(_elm_lang$core$Color$fmod, hue$, 2) - 1));
-		var _p0 = (_elm_lang$core$Native_Utils.cmp(hue$, 0) < 0) ? {ctor: '_Tuple3', _0: 0, _1: 0, _2: 0} : ((_elm_lang$core$Native_Utils.cmp(hue$, 1) < 0) ? {ctor: '_Tuple3', _0: chroma, _1: x, _2: 0} : ((_elm_lang$core$Native_Utils.cmp(hue$, 2) < 0) ? {ctor: '_Tuple3', _0: x, _1: chroma, _2: 0} : ((_elm_lang$core$Native_Utils.cmp(hue$, 3) < 0) ? {ctor: '_Tuple3', _0: 0, _1: chroma, _2: x} : ((_elm_lang$core$Native_Utils.cmp(hue$, 4) < 0) ? {ctor: '_Tuple3', _0: 0, _1: x, _2: chroma} : ((_elm_lang$core$Native_Utils.cmp(hue$, 5) < 0) ? {ctor: '_Tuple3', _0: x, _1: 0, _2: chroma} : ((_elm_lang$core$Native_Utils.cmp(hue$, 6) < 0) ? {ctor: '_Tuple3', _0: chroma, _1: 0, _2: x} : {ctor: '_Tuple3', _0: 0, _1: 0, _2: 0}))))));
-		var r = _p0._0;
-		var g = _p0._1;
-		var b = _p0._2;
-		var m = lightness - (chroma / 2);
-		return {ctor: '_Tuple3', _0: r + m, _1: g + m, _2: b + m};
-	});
-var _elm_lang$core$Color$toRgb = function (color) {
-	var _p1 = color;
-	if (_p1.ctor === 'RGBA') {
-		return {red: _p1._0, green: _p1._1, blue: _p1._2, alpha: _p1._3};
-	} else {
-		var _p2 = A3(_elm_lang$core$Color$hslToRgb, _p1._0, _p1._1, _p1._2);
-		var r = _p2._0;
-		var g = _p2._1;
-		var b = _p2._2;
-		return {
-			red: _elm_lang$core$Basics$round(255 * r),
-			green: _elm_lang$core$Basics$round(255 * g),
-			blue: _elm_lang$core$Basics$round(255 * b),
-			alpha: _p1._3
-		};
-	}
-};
-var _elm_lang$core$Color$toHsl = function (color) {
-	var _p3 = color;
-	if (_p3.ctor === 'HSLA') {
-		return {hue: _p3._0, saturation: _p3._1, lightness: _p3._2, alpha: _p3._3};
-	} else {
-		var _p4 = A3(_elm_lang$core$Color$rgbToHsl, _p3._0, _p3._1, _p3._2);
-		var h = _p4._0;
-		var s = _p4._1;
-		var l = _p4._2;
-		return {hue: h, saturation: s, lightness: l, alpha: _p3._3};
-	}
-};
-var _elm_lang$core$Color$HSLA = F4(
-	function (a, b, c, d) {
-		return {ctor: 'HSLA', _0: a, _1: b, _2: c, _3: d};
-	});
-var _elm_lang$core$Color$hsla = F4(
-	function (hue, saturation, lightness, alpha) {
-		return A4(
-			_elm_lang$core$Color$HSLA,
-			hue - _elm_lang$core$Basics$turns(
-				_elm_lang$core$Basics$toFloat(
-					_elm_lang$core$Basics$floor(hue / (2 * _elm_lang$core$Basics$pi)))),
-			saturation,
-			lightness,
-			alpha);
-	});
-var _elm_lang$core$Color$hsl = F3(
-	function (hue, saturation, lightness) {
-		return A4(_elm_lang$core$Color$hsla, hue, saturation, lightness, 1);
-	});
-var _elm_lang$core$Color$complement = function (color) {
-	var _p5 = color;
-	if (_p5.ctor === 'HSLA') {
-		return A4(
-			_elm_lang$core$Color$hsla,
-			_p5._0 + _elm_lang$core$Basics$degrees(180),
-			_p5._1,
-			_p5._2,
-			_p5._3);
-	} else {
-		var _p6 = A3(_elm_lang$core$Color$rgbToHsl, _p5._0, _p5._1, _p5._2);
-		var h = _p6._0;
-		var s = _p6._1;
-		var l = _p6._2;
-		return A4(
-			_elm_lang$core$Color$hsla,
-			h + _elm_lang$core$Basics$degrees(180),
-			s,
-			l,
-			_p5._3);
-	}
-};
-var _elm_lang$core$Color$grayscale = function (p) {
-	return A4(_elm_lang$core$Color$HSLA, 0, 0, 1 - p, 1);
-};
-var _elm_lang$core$Color$greyscale = function (p) {
-	return A4(_elm_lang$core$Color$HSLA, 0, 0, 1 - p, 1);
-};
-var _elm_lang$core$Color$RGBA = F4(
-	function (a, b, c, d) {
-		return {ctor: 'RGBA', _0: a, _1: b, _2: c, _3: d};
-	});
-var _elm_lang$core$Color$rgba = _elm_lang$core$Color$RGBA;
-var _elm_lang$core$Color$rgb = F3(
-	function (r, g, b) {
-		return A4(_elm_lang$core$Color$RGBA, r, g, b, 1);
-	});
-var _elm_lang$core$Color$lightRed = A4(_elm_lang$core$Color$RGBA, 239, 41, 41, 1);
-var _elm_lang$core$Color$red = A4(_elm_lang$core$Color$RGBA, 204, 0, 0, 1);
-var _elm_lang$core$Color$darkRed = A4(_elm_lang$core$Color$RGBA, 164, 0, 0, 1);
-var _elm_lang$core$Color$lightOrange = A4(_elm_lang$core$Color$RGBA, 252, 175, 62, 1);
-var _elm_lang$core$Color$orange = A4(_elm_lang$core$Color$RGBA, 245, 121, 0, 1);
-var _elm_lang$core$Color$darkOrange = A4(_elm_lang$core$Color$RGBA, 206, 92, 0, 1);
-var _elm_lang$core$Color$lightYellow = A4(_elm_lang$core$Color$RGBA, 255, 233, 79, 1);
-var _elm_lang$core$Color$yellow = A4(_elm_lang$core$Color$RGBA, 237, 212, 0, 1);
-var _elm_lang$core$Color$darkYellow = A4(_elm_lang$core$Color$RGBA, 196, 160, 0, 1);
-var _elm_lang$core$Color$lightGreen = A4(_elm_lang$core$Color$RGBA, 138, 226, 52, 1);
-var _elm_lang$core$Color$green = A4(_elm_lang$core$Color$RGBA, 115, 210, 22, 1);
-var _elm_lang$core$Color$darkGreen = A4(_elm_lang$core$Color$RGBA, 78, 154, 6, 1);
-var _elm_lang$core$Color$lightBlue = A4(_elm_lang$core$Color$RGBA, 114, 159, 207, 1);
-var _elm_lang$core$Color$blue = A4(_elm_lang$core$Color$RGBA, 52, 101, 164, 1);
-var _elm_lang$core$Color$darkBlue = A4(_elm_lang$core$Color$RGBA, 32, 74, 135, 1);
-var _elm_lang$core$Color$lightPurple = A4(_elm_lang$core$Color$RGBA, 173, 127, 168, 1);
-var _elm_lang$core$Color$purple = A4(_elm_lang$core$Color$RGBA, 117, 80, 123, 1);
-var _elm_lang$core$Color$darkPurple = A4(_elm_lang$core$Color$RGBA, 92, 53, 102, 1);
-var _elm_lang$core$Color$lightBrown = A4(_elm_lang$core$Color$RGBA, 233, 185, 110, 1);
-var _elm_lang$core$Color$brown = A4(_elm_lang$core$Color$RGBA, 193, 125, 17, 1);
-var _elm_lang$core$Color$darkBrown = A4(_elm_lang$core$Color$RGBA, 143, 89, 2, 1);
-var _elm_lang$core$Color$black = A4(_elm_lang$core$Color$RGBA, 0, 0, 0, 1);
-var _elm_lang$core$Color$white = A4(_elm_lang$core$Color$RGBA, 255, 255, 255, 1);
-var _elm_lang$core$Color$lightGrey = A4(_elm_lang$core$Color$RGBA, 238, 238, 236, 1);
-var _elm_lang$core$Color$grey = A4(_elm_lang$core$Color$RGBA, 211, 215, 207, 1);
-var _elm_lang$core$Color$darkGrey = A4(_elm_lang$core$Color$RGBA, 186, 189, 182, 1);
-var _elm_lang$core$Color$lightGray = A4(_elm_lang$core$Color$RGBA, 238, 238, 236, 1);
-var _elm_lang$core$Color$gray = A4(_elm_lang$core$Color$RGBA, 211, 215, 207, 1);
-var _elm_lang$core$Color$darkGray = A4(_elm_lang$core$Color$RGBA, 186, 189, 182, 1);
-var _elm_lang$core$Color$lightCharcoal = A4(_elm_lang$core$Color$RGBA, 136, 138, 133, 1);
-var _elm_lang$core$Color$charcoal = A4(_elm_lang$core$Color$RGBA, 85, 87, 83, 1);
-var _elm_lang$core$Color$darkCharcoal = A4(_elm_lang$core$Color$RGBA, 46, 52, 54, 1);
-var _elm_lang$core$Color$Radial = F5(
-	function (a, b, c, d, e) {
-		return {ctor: 'Radial', _0: a, _1: b, _2: c, _3: d, _4: e};
-	});
-var _elm_lang$core$Color$radial = _elm_lang$core$Color$Radial;
-var _elm_lang$core$Color$Linear = F3(
-	function (a, b, c) {
-		return {ctor: 'Linear', _0: a, _1: b, _2: c};
-	});
-var _elm_lang$core$Color$linear = _elm_lang$core$Color$Linear;
 var _elm_lang$core$Set$foldr = F3(
 	function (f, b, _p0) {
 		var _p1 = _p0;
@@ -14241,43 +14076,6 @@ var _mbylstra$elmfirebaseauth$Arpeggiator$subscription = function (model) {
 			return _mbylstra$elmfirebaseauth$Arpeggiator$Tick;
 		});
 };
-var _mbylstra$elmfirebaseauth$ColorExtra$toCssRgb = function (color) {
-	var color$ = _elm_lang$core$Color$toRgb(color);
-	var colors = _elm_lang$core$Native_List.fromArray(
-		[color$.red, color$.green, color$.blue]);
-	var inner = A2(
-		_elm_lang$core$String$join,
-		',',
-		A2(_elm_lang$core$List$map, _elm_lang$core$Basics$toString, colors));
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		'rgb(',
-		A2(_elm_lang$core$Basics_ops['++'], inner, ')'));
-};
-var _mbylstra$elmfirebaseauth$ColorExtra$compareLightness = F2(
-	function (colorA, colorB) {
-		var lightnessB = function (_) {
-			return _.lightness;
-		}(
-			_elm_lang$core$Color$toHsl(colorB));
-		var lightnessA = function (_) {
-			return _.lightness;
-		}(
-			_elm_lang$core$Color$toHsl(colorA));
-		return (_elm_lang$core$Native_Utils.cmp(lightnessA, lightnessB) > 0) ? _elm_lang$core$Basics$GT : (_elm_lang$core$Native_Utils.eq(lightnessA, lightnessB) ? _elm_lang$core$Basics$EQ : _elm_lang$core$Basics$LT);
-	});
-var _mbylstra$elmfirebaseauth$ColorExtra$isLighter = F2(
-	function (colorA, colorB) {
-		var _p0 = A2(_mbylstra$elmfirebaseauth$ColorExtra$compareLightness, colorA, colorB);
-		if (_p0.ctor === 'GT') {
-			return true;
-		} else {
-			return false;
-		}
-	});
-var _mbylstra$elmfirebaseauth$ColorExtra$sortByLightness = function (colors) {
-	return A2(_elm_lang$core$List$sortWith, _mbylstra$elmfirebaseauth$ColorExtra$compareLightness, colors);
-};
 var _mbylstra$elmfirebaseauth$Examples$fetchExample = function (filename) {
 	return _evancz$elm_http$Http$getString(
 		A2(_elm_lang$core$Basics_ops['++'], 'faust-examples/', filename));
@@ -14406,6 +14204,14 @@ var _mbylstra$elmfirebaseauth$FaustControls$sliderDecoder = A8(
 		'step',
 		A2(_elm_lang$core$Json_Decode$map, _mbylstra$elmfirebaseauth$FaustControls$unsafeStringToFloat, _elm_lang$core$Json_Decode$string)),
 	A2(_elm_lang$core$Json_Decode_ops[':='], 'type', _elm_lang$core$Json_Decode$string));
+var _mbylstra$elmfirebaseauth$Json_Encode_Extra$maybeString = function (maybeS) {
+	var _p0 = maybeS;
+	if (_p0.ctor === 'Just') {
+		return _elm_lang$core$Json_Encode$string(_p0._0);
+	} else {
+		return _elm_lang$core$Json_Encode$null;
+	}
+};
 var _mbylstra$elmfirebaseauth$FaustProgram$encoder = function (model) {
 	return _elm_lang$core$Json_Encode$object(
 		_elm_lang$core$Native_List.fromArray(
@@ -14427,29 +14233,44 @@ var _mbylstra$elmfirebaseauth$FaustProgram$encoder = function (model) {
 			},
 				{
 				ctor: '_Tuple2',
-				_0: 'author',
-				_1: _elm_lang$core$Json_Encode$string(model.author)
+				_0: 'authorUid',
+				_1: _mbylstra$elmfirebaseauth$Json_Encode_Extra$maybeString(model.authorUid)
 			},
 				{
 				ctor: '_Tuple2',
 				_0: 'starCount',
 				_1: _elm_lang$core$Json_Encode$int(model.starCount)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'staffPick',
+				_1: _elm_lang$core$Json_Encode$bool(model.staffPick)
 			}
 			]));
 };
-var _mbylstra$elmfirebaseauth$FaustProgram$init = {code: '', title: 'Untitled', $public: false, author: '', starCount: 0};
-var _mbylstra$elmfirebaseauth$FaustProgram$Model = F5(
-	function (a, b, c, d, e) {
-		return {code: a, title: b, $public: c, author: d, starCount: e};
+var _mbylstra$elmfirebaseauth$FaustProgram$init = {databaseId: _elm_lang$core$Maybe$Nothing, code: '', title: 'Untitled', $public: false, authorUid: _elm_lang$core$Maybe$Nothing, starCount: 0, staffPick: false};
+var _mbylstra$elmfirebaseauth$FaustProgram$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {databaseId: a, code: b, title: c, $public: d, authorUid: e, starCount: f, staffPick: g};
 	});
-var _mbylstra$elmfirebaseauth$FaustProgram$decoder = A6(
-	_elm_lang$core$Json_Decode$object5,
+var _mbylstra$elmfirebaseauth$FaustProgram$decoder = A8(
+	_elm_lang$core$Json_Decode$object7,
 	_mbylstra$elmfirebaseauth$FaustProgram$Model,
+	_elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing),
 	A2(_elm_lang$core$Json_Decode_ops[':='], 'code', _elm_lang$core$Json_Decode$string),
 	A2(_elm_lang$core$Json_Decode_ops[':='], 'title', _elm_lang$core$Json_Decode$string),
 	A2(_elm_lang$core$Json_Decode_ops[':='], 'public', _elm_lang$core$Json_Decode$bool),
-	A2(_elm_lang$core$Json_Decode_ops[':='], 'author', _elm_lang$core$Json_Decode$string),
-	A2(_elm_lang$core$Json_Decode_ops[':='], 'starCount', _elm_lang$core$Json_Decode$int));
+	_elm_lang$core$Json_Decode$oneOf(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$core$Json_Decode$map,
+				_elm_lang$core$Maybe$Just,
+				A2(_elm_lang$core$Json_Decode_ops[':='], 'authorUid', _elm_lang$core$Json_Decode$string)),
+				_elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing)
+			])),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'starCount', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'staffPick', _elm_lang$core$Json_Decode$bool));
 
 var _mbylstra$elmfirebaseauth$Native_FirebaseAuth = function() {
 
@@ -14458,6 +14279,7 @@ var _mbylstra$elmfirebaseauth$Native_FirebaseAuth = function() {
   var Just = _elm_lang$core$Maybe$Just;
 
   var firebaseApp = null;
+  var globalUser = null;
 
   function nullableToMaybe(v) {
     return v == null ? Nothing : Just(v);
@@ -14473,7 +14295,6 @@ var _mbylstra$elmfirebaseauth$Native_FirebaseAuth = function() {
   }
 
   function authProviderSignIn(config, providerUnion) {
-
 
     return NativeScheduler.nativeBinding(function(callback) {
       initializeSdk(config);
@@ -14497,14 +14318,14 @@ var _mbylstra$elmfirebaseauth$Native_FirebaseAuth = function() {
 
       firebase.auth().signInWithPopup(provider).then(function(result) {
         var token = result.credential.accessToken;
-        var user = result.user;
-        user.getToken().then(function(token) {
+        globalUser = result.user;
+        globalUser.getToken().then(function(token) {
           return callback(NativeScheduler.succeed({
-            uid: user.uid,
+            uid: globalUser.uid,
             token: token,
-            photoURL: nullableToMaybe(user.photoURL),
+            photoURL: nullableToMaybe(globalUser.photoURL),
             //displayName: nullableToMaybe(user.displayName),
-            displayName: user.displayName,
+            displayName: globalUser.displayName,
           }));
         });
       }).catch(function(error) {
@@ -14561,14 +14382,15 @@ var _mbylstra$elmfirebaseauth$Native_FirebaseAuth = function() {
       //TODO: this should really be a subscription!
       firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
-          name = user.displayName;
-          user.getToken().then(function(token) {
+          globalUser = user;
+          name = globalUser.displayName;
+          globalUser.getToken().then(function(token) {
             return callback(NativeScheduler.succeed(
               Just({
-                uid: user.uid,
+                uid: globalUser.uid,
                 token: token,
-                photoURL: nullableToMaybe(user.photoURL),
-                displayName: user.displayName,
+                photoURL: nullableToMaybe(globalUser.photoURL),
+                displayName: globalUser.displayName,
               })
             ));
           });
@@ -14579,12 +14401,43 @@ var _mbylstra$elmfirebaseauth$Native_FirebaseAuth = function() {
     });
   }
 
+  function updateUserProfile(config, rawProfileJson) {
+    // console.log('config:', config);
+    // console.log('profile:', profile);
+
+    return NativeScheduler.nativeBinding(function(callback) {
+
+      initializeSdk(config);
+      // console.log("expected: {displayName: nullable string, photoURL: nullable string}");
+      // console.log('profile:', profile);
+      // var profile = { displayName: "Jane Q. User", photoURL: "https://avatars.githubusercontent.com/u/702885?v=3" }
+      // console.log('profile:', profile);
+      //
+      var profile = JSON.parse(rawProfileJson);
+
+      if (globalUser != null) {
+        globalUser.updateProfile(profile)
+        .then(function() {
+          console.log('updated sucess!')
+          return callback(NativeScheduler.succeed());
+        }, function(error) {
+          console.log('updated error!', error)
+          return callback(NativeScheduler.fail());
+        });
+      } else {
+        console.log('global user is null');
+        return callback(NativeScheduler.fail());
+      }
+    });
+  }
+
   function signOut(config) {
     return NativeScheduler.nativeBinding(function(callback) {
 
       initializeSdk(config);
 
       firebase.auth().signOut().then(function() {
+        globalUser = null;
         return callback(NativeScheduler.succeed(true));
       });
     });
@@ -14593,11 +14446,38 @@ var _mbylstra$elmfirebaseauth$Native_FirebaseAuth = function() {
   return {
     authProviderSignIn: F2(authProviderSignIn),
     getCurrentUser: getCurrentUser,
+    updateUserProfile: F2(updateUserProfile),
     signOut: signOut
   }
 
 }();
 var _mbylstra$elmfirebaseauth$FirebaseAuth$signOut = _mbylstra$elmfirebaseauth$Native_FirebaseAuth.signOut;
+var _mbylstra$elmfirebaseauth$FirebaseAuth$updateUserProfile = F2(
+	function (config, userProfile) {
+		var photoUrlEncoded = function () {
+			var _p0 = userProfile.photoURL;
+			if (_p0.ctor === 'Just') {
+				return _elm_lang$core$Json_Encode$string(_p0._0);
+			} else {
+				return _elm_lang$core$Json_Encode$null;
+			}
+		}();
+		var userProfileEncoded = A2(
+			_elm_lang$core$Json_Encode$encode,
+			0,
+			_elm_lang$core$Json_Encode$object(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						{
+						ctor: '_Tuple2',
+						_0: 'displayName',
+						_1: _elm_lang$core$Json_Encode$string(userProfile.displayName)
+					},
+						{ctor: '_Tuple2', _0: 'photoURL', _1: photoUrlEncoded}
+					])));
+		var _p1 = A2(_elm_lang$core$Debug$log, 'userProfileEncoded', userProfileEncoded);
+		return A2(_mbylstra$elmfirebaseauth$Native_FirebaseAuth.updateUserProfile, config, userProfileEncoded);
+	});
 var _mbylstra$elmfirebaseauth$FirebaseAuth$getCurrentUser = _mbylstra$elmfirebaseauth$Native_FirebaseAuth.getCurrentUser;
 var _mbylstra$elmfirebaseauth$FirebaseAuth$authProviderSignInWithPopup = _mbylstra$elmfirebaseauth$Native_FirebaseAuth.authProviderSignIn;
 var _mbylstra$elmfirebaseauth$FirebaseAuth$Config = F3(
@@ -14607,6 +14487,10 @@ var _mbylstra$elmfirebaseauth$FirebaseAuth$Config = F3(
 var _mbylstra$elmfirebaseauth$FirebaseAuth$User = F4(
 	function (a, b, c, d) {
 		return {uid: a, token: b, displayName: c, photoURL: d};
+	});
+var _mbylstra$elmfirebaseauth$FirebaseAuth$UserProfile = F2(
+	function (a, b) {
+		return {displayName: a, photoURL: b};
 	});
 var _mbylstra$elmfirebaseauth$FirebaseAuth$Twitter = {ctor: 'Twitter'};
 var _mbylstra$elmfirebaseauth$FirebaseAuth$twitterSignInWithPopup = function (config) {
@@ -14645,21 +14529,8 @@ var _mbylstra$elmfirebaseauth$FirebaseAuth$AccountExistsWithDifferentCredential 
 var _mbylstra$elmfirebaseauth$FirebaseRest$keyResponseBodyDecoder = A2(_elm_lang$core$Json_Decode_ops[':='], 'name', _elm_lang$core$Json_Decode$string);
 var _mbylstra$elmfirebaseauth$FirebaseRest$ignoreResponseBodyDecoder = _elm_lang$core$Json_Decode$succeed(
 	{ctor: '_Tuple0'});
-var _mbylstra$elmfirebaseauth$FirebaseRest$makeBodyForPut = F2(
-	function (id, encodedModel) {
-		return A2(
-			_elm_lang$core$Basics_ops['++'],
-			'{\n  ',
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				_elm_lang$core$Basics$toString(id),
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					': \n',
-					A2(_elm_lang$core$Basics_ops['++'], encodedModel, '\n}'))));
-	});
-var _mbylstra$elmfirebaseauth$FirebaseRest$restUrl = F3(
-	function (databaseUrl, path, maybeAuthToken) {
+var _mbylstra$elmfirebaseauth$FirebaseRest$restUrl = F4(
+	function (databaseUrl, path, params, maybeAuthToken) {
 		var normalisedPath = _elm_lang$core$Native_Utils.eq(
 			A2(_elm_lang$core$String$startsWith, '/', path),
 			true) ? path : A2(_elm_lang$core$Basics_ops['++'], '/', path);
@@ -14669,38 +14540,52 @@ var _mbylstra$elmfirebaseauth$FirebaseRest$restUrl = F3(
 				_elm_lang$core$Basics_ops['++'],
 				databaseUrl,
 				A2(_elm_lang$core$Basics_ops['++'], normalisedPath, '.json')),
-			function () {
-				var _p0 = maybeAuthToken;
-				if (_p0.ctor === 'Just') {
-					return _elm_lang$core$Native_List.fromArray(
-						[
-							{ctor: '_Tuple2', _0: 'auth', _1: _p0._0}
-						]);
-				} else {
-					return _elm_lang$core$Native_List.fromArray(
-						[]);
-				}
-			}());
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				params,
+				function () {
+					var _p0 = maybeAuthToken;
+					if (_p0.ctor === 'Just') {
+						return _elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: 'auth', _1: _p0._0}
+							]);
+					} else {
+						return _elm_lang$core$Native_List.fromArray(
+							[]);
+					}
+				}()));
 	});
 var _mbylstra$elmfirebaseauth$FirebaseRest$put = F6(
 	function (databaseUrl, path, encoder, maybeAuthToken, id, model) {
 		var body = A2(
-			_mbylstra$elmfirebaseauth$FirebaseRest$makeBodyForPut,
-			id,
-			A2(
-				_elm_lang$core$Json_Encode$encode,
-				0,
-				encoder(model)));
-		var url = A3(_mbylstra$elmfirebaseauth$FirebaseRest$restUrl, databaseUrl, path, maybeAuthToken);
-		var requestBuilder = A2(
-			_lukewestby$elm_http_builder$HttpBuilder$withStringBody,
-			body,
-			_lukewestby$elm_http_builder$HttpBuilder$put(url));
-		var task = A3(
-			_lukewestby$elm_http_builder$HttpBuilder$send,
-			_lukewestby$elm_http_builder$HttpBuilder$jsonReader(_mbylstra$elmfirebaseauth$FirebaseRest$ignoreResponseBodyDecoder),
-			_lukewestby$elm_http_builder$HttpBuilder$stringReader,
-			requestBuilder);
+			_elm_lang$core$Json_Encode$encode,
+			0,
+			encoder(model));
+		var path$ = A2(
+			_elm_lang$core$Basics_ops['++'],
+			path,
+			A2(_elm_lang$core$Basics_ops['++'], '/', id));
+		var url = A4(
+			_mbylstra$elmfirebaseauth$FirebaseRest$restUrl,
+			databaseUrl,
+			path$,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			maybeAuthToken);
+		var task = A2(
+			_elm_lang$core$Task$map,
+			function (_) {
+				return _.data;
+			},
+			A3(
+				_lukewestby$elm_http_builder$HttpBuilder$send,
+				_lukewestby$elm_http_builder$HttpBuilder$jsonReader(_mbylstra$elmfirebaseauth$FirebaseRest$ignoreResponseBodyDecoder),
+				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+				A2(
+					_lukewestby$elm_http_builder$HttpBuilder$withStringBody,
+					body,
+					_lukewestby$elm_http_builder$HttpBuilder$put(url))));
 		return task;
 	});
 var _mbylstra$elmfirebaseauth$FirebaseRest$post = F5(
@@ -14709,11 +14594,13 @@ var _mbylstra$elmfirebaseauth$FirebaseRest$post = F5(
 			_elm_lang$core$Json_Encode$encode,
 			0,
 			encoder(model));
-		var url = A3(_mbylstra$elmfirebaseauth$FirebaseRest$restUrl, databaseUrl, path, maybeAuthToken);
-		var requestBuilder = A2(
-			_lukewestby$elm_http_builder$HttpBuilder$withStringBody,
-			body,
-			_lukewestby$elm_http_builder$HttpBuilder$post(url));
+		var url = A4(
+			_mbylstra$elmfirebaseauth$FirebaseRest$restUrl,
+			databaseUrl,
+			path,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			maybeAuthToken);
 		var task = A2(
 			_elm_lang$core$Task$map,
 			function (_) {
@@ -14723,42 +14610,47 @@ var _mbylstra$elmfirebaseauth$FirebaseRest$post = F5(
 				_lukewestby$elm_http_builder$HttpBuilder$send,
 				_lukewestby$elm_http_builder$HttpBuilder$jsonReader(_mbylstra$elmfirebaseauth$FirebaseRest$keyResponseBodyDecoder),
 				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
-				requestBuilder));
+				A2(
+					_lukewestby$elm_http_builder$HttpBuilder$withStringBody,
+					body,
+					_lukewestby$elm_http_builder$HttpBuilder$post(url))));
 		return task;
 	});
-var _mbylstra$elmfirebaseauth$GoogleSpinner$view = A2(
-	_elm_lang$html$Html$div,
-	_elm_lang$core$Native_List.fromArray(
-		[
-			_elm_lang$html$Html_Attributes$id('spinner'),
-			_elm_lang$svg$Svg_Attributes$class('google-spinner')
-		]),
-	_elm_lang$core$Native_List.fromArray(
-		[
-			A2(
-			_elm_lang$svg$Svg$svg,
+var _mbylstra$elmfirebaseauth$FirebaseRest$getOne = F4(
+	function (databaseUrl, path, decoder, maybeAuthToken) {
+		var url = A4(
+			_mbylstra$elmfirebaseauth$FirebaseRest$restUrl,
+			databaseUrl,
+			path,
 			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$class('google-spinner__circular'),
-					_elm_lang$svg$Svg_Attributes$viewBox('25 25 50 50')
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A3(
-					_elm_lang$svg$Svg$node,
-					'circle',
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$svg$Svg_Attributes$class('google-spinner__path'),
-							A2(_elm_lang$html$Html_Attributes$attribute, 'cx', '50'),
-							A2(_elm_lang$html$Html_Attributes$attribute, 'cy', '50'),
-							_elm_lang$svg$Svg_Attributes$fill('none'),
-							A2(_elm_lang$html$Html_Attributes$attribute, 'r', '20')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[]))
-				]))
-		]));
+				[]),
+			maybeAuthToken);
+		return A2(
+			_elm_lang$core$Task$map,
+			function (_) {
+				return _.data;
+			},
+			A3(
+				_lukewestby$elm_http_builder$HttpBuilder$send,
+				_lukewestby$elm_http_builder$HttpBuilder$jsonReader(decoder),
+				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+				_lukewestby$elm_http_builder$HttpBuilder$get(url)));
+	});
+var _mbylstra$elmfirebaseauth$FirebaseRest$getMany = F5(
+	function (databaseUrl, path, singleDecoder, params, maybeAuthToken) {
+		var manyDecoder = _elm_lang$core$Json_Decode$keyValuePairs(singleDecoder);
+		var url = A4(_mbylstra$elmfirebaseauth$FirebaseRest$restUrl, databaseUrl, path, params, maybeAuthToken);
+		return A2(
+			_elm_lang$core$Task$map,
+			function (_) {
+				return _.data;
+			},
+			A3(
+				_lukewestby$elm_http_builder$HttpBuilder$send,
+				_lukewestby$elm_http_builder$HttpBuilder$jsonReader(manyDecoder),
+				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+				_lukewestby$elm_http_builder$HttpBuilder$get(url)));
+	});
 var _ohanhi$keyboard_extra$Keyboard_Arrows$boolToInt = function (bool) {
 	return bool ? 1 : 0;
 };
@@ -15400,6 +15292,53 @@ var _mbylstra$elmfirebaseauth$HtmlHelpers$aButton = F3(
 				attrs),
 			children);
 	});
+var _mbylstra$elmfirebaseauth$Slider$decodeSliderValue = function (result) {
+	return A2(
+		_elm_lang$core$Result$withDefault,
+		0.0,
+		_elm_lang$core$String$toFloat(result));
+};
+var _mbylstra$elmfirebaseauth$Slider$onSliderInput = function (tagger) {
+	var mapper = function (_p0) {
+		return tagger(
+			_mbylstra$elmfirebaseauth$Slider$decodeSliderValue(_p0));
+	};
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'input',
+		A2(_elm_lang$core$Json_Decode$map, mapper, _elm_lang$html$Html_Events$targetValue));
+};
+var _mbylstra$elmfirebaseauth$Slider$update = F2(
+	function (action, model) {
+		var _p1 = action;
+		return _p1._0;
+	});
+var _mbylstra$elmfirebaseauth$Slider$init = function (value) {
+	return value;
+};
+var _mbylstra$elmfirebaseauth$Slider$ValueUpdated = function (a) {
+	return {ctor: 'ValueUpdated', _0: a};
+};
+var _mbylstra$elmfirebaseauth$Slider$view = F2(
+	function (attrs, model) {
+		return A2(
+			_elm_lang$html$Html$input,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$type$('range'),
+					_elm_lang$html$Html_Attributes$min(
+					_elm_lang$core$Basics$toString(attrs.min)),
+					_elm_lang$html$Html_Attributes$max(
+					_elm_lang$core$Basics$toString(attrs.max)),
+					_elm_lang$html$Html_Attributes$step(
+					_elm_lang$core$Basics$toString(attrs.step)),
+					_elm_lang$html$Html_Attributes$value(
+					_elm_lang$core$Basics$toString(model)),
+					_mbylstra$elmfirebaseauth$Slider$onSliderInput(_mbylstra$elmfirebaseauth$Slider$ValueUpdated)
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});
 var _mbylstra$elmfirebaseauth$SignupView_HtmlExtra$maybeHtml = function (maybeHtml$) {
 	return A2(
 		_elm_lang$core$Maybe$withDefault,
@@ -15784,10 +15723,7 @@ var _mbylstra$elmfirebaseauth$SignupView$view = F2(
 							[
 								header,
 								_mbylstra$elmfirebaseauth$SignupView_HtmlExtra$maybeHtml(config.signInEnticer),
-								_mbylstra$elmfirebaseauth$SignupView$facebookSignInButton,
-								_mbylstra$elmfirebaseauth$SignupView$googleSignInButton,
 								_mbylstra$elmfirebaseauth$SignupView$githubSignInButton,
-								_mbylstra$elmfirebaseauth$SignupView$twitterSignInButton,
 								A2(
 								_elm_lang$html$Html$div,
 								_elm_lang$core$Native_List.fromArray(
@@ -15814,10 +15750,7 @@ var _mbylstra$elmfirebaseauth$SignupView$view = F2(
 							[
 								header,
 								_mbylstra$elmfirebaseauth$SignupView_HtmlExtra$maybeHtml(config.signUpEnticer),
-								_mbylstra$elmfirebaseauth$SignupView$facebookSignUpButton,
-								_mbylstra$elmfirebaseauth$SignupView$googleSignUpButton,
 								_mbylstra$elmfirebaseauth$SignupView$githubSignUpButton,
-								_mbylstra$elmfirebaseauth$SignupView$twitterSignUpButton,
 								A2(
 								_elm_lang$html$Html$div,
 								_elm_lang$core$Native_List.fromArray(
@@ -15927,53 +15860,81 @@ var _mbylstra$elmfirebaseauth$SignupView$update = F2(
 				};
 		}
 	});
-var _mbylstra$elmfirebaseauth$Slider$decodeSliderValue = function (result) {
+var _mbylstra$elmfirebaseauth$Mbylstra_Json_Encode$maybeString = function (maybeString$) {
+	var _p0 = maybeString$;
+	if (_p0.ctor === 'Just') {
+		return _elm_lang$core$Json_Encode$string(_p0._0);
+	} else {
+		return _elm_lang$core$Json_Encode$null;
+	}
+};
+var _mbylstra$elmfirebaseauth$User$encoder = function (model) {
+	return _elm_lang$core$Json_Encode$object(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				{
+				ctor: '_Tuple2',
+				_0: 'uid',
+				_1: _elm_lang$core$Json_Encode$string(model.uid)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'displayName',
+				_1: _elm_lang$core$Json_Encode$string(model.displayName)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'imageUrl',
+				_1: _mbylstra$elmfirebaseauth$Mbylstra_Json_Encode$maybeString(model.imageUrl)
+			}
+			]));
+};
+var _mbylstra$elmfirebaseauth$User$view = function (user) {
+	var displayName = A2(
+		_elm_lang$html$Html$span,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(user.displayName)
+			]));
+	var photo = A2(
+		_mbylstra$elmfirebaseauth$HtmlHelpers$maybeView,
+		function (url) {
+			return A2(
+				_elm_lang$html$Html$img,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$src(url),
+						_elm_lang$html$Html_Attributes$class('avatar')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[]));
+		},
+		user.imageUrl);
 	return A2(
-		_elm_lang$core$Result$withDefault,
-		0.0,
-		_elm_lang$core$String$toFloat(result));
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('user')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[displayName, photo]));
 };
-var _mbylstra$elmfirebaseauth$Slider$onSliderInput = function (tagger) {
-	var mapper = function (_p0) {
-		return tagger(
-			_mbylstra$elmfirebaseauth$Slider$decodeSliderValue(_p0));
-	};
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'input',
-		A2(_elm_lang$core$Json_Decode$map, mapper, _elm_lang$html$Html_Events$targetValue));
-};
-var _mbylstra$elmfirebaseauth$Slider$update = F2(
-	function (action, model) {
-		var _p1 = action;
-		return _p1._0;
+var _mbylstra$elmfirebaseauth$User$dummyModel = {uid: 'abcdefg', displayName: 'Michael', imageUrl: _elm_lang$core$Maybe$Nothing};
+var _mbylstra$elmfirebaseauth$User$Model = F3(
+	function (a, b, c) {
+		return {uid: a, displayName: b, imageUrl: c};
 	});
-var _mbylstra$elmfirebaseauth$Slider$init = function (value) {
-	return value;
-};
-var _mbylstra$elmfirebaseauth$Slider$ValueUpdated = function (a) {
-	return {ctor: 'ValueUpdated', _0: a};
-};
-var _mbylstra$elmfirebaseauth$Slider$view = F2(
-	function (attrs, model) {
-		return A2(
-			_elm_lang$html$Html$input,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$type$('range'),
-					_elm_lang$html$Html_Attributes$min(
-					_elm_lang$core$Basics$toString(attrs.min)),
-					_elm_lang$html$Html_Attributes$max(
-					_elm_lang$core$Basics$toString(attrs.max)),
-					_elm_lang$html$Html_Attributes$step(
-					_elm_lang$core$Basics$toString(attrs.step)),
-					_elm_lang$html$Html_Attributes$value(
-					_elm_lang$core$Basics$toString(model)),
-					_mbylstra$elmfirebaseauth$Slider$onSliderInput(_mbylstra$elmfirebaseauth$Slider$ValueUpdated)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[]));
-	});
+var _mbylstra$elmfirebaseauth$User$decoder = A4(
+	_elm_lang$core$Json_Decode$object3,
+	_mbylstra$elmfirebaseauth$User$Model,
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'uid', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'displayName', _elm_lang$core$Json_Decode$string),
+	A2(
+		_elm_lang$core$Json_Decode_ops[':='],
+		'imageUrl',
+		A2(_elm_lang$core$Json_Decode$map, _elm_lang$core$Maybe$Just, _elm_lang$core$Json_Decode$string)));
 var _rtfeldman$elm_css_util$Css_Helpers$toCssIdentifier = function (identifier) {
 	return A4(
 		_elm_lang$core$Regex$replace,
@@ -20090,81 +20051,6 @@ var _mbylstra$elmfirebaseauth$SimpleDialog$view = F3(
 		}
 	});
 var _mbylstra$elmfirebaseauth$SimpleDialog$Open = {ctor: 'Open'};
-var _mbylstra$elmfirebaseauth$Mbylstra_Json_Encode$maybeString = function (maybeString$) {
-	var _p0 = maybeString$;
-	if (_p0.ctor === 'Just') {
-		return _elm_lang$core$Json_Encode$string(_p0._0);
-	} else {
-		return _elm_lang$core$Json_Encode$null;
-	}
-};
-var _mbylstra$elmfirebaseauth$User$encoder = function (model) {
-	return _elm_lang$core$Json_Encode$object(
-		_elm_lang$core$Native_List.fromArray(
-			[
-				{
-				ctor: '_Tuple2',
-				_0: 'uid',
-				_1: _elm_lang$core$Json_Encode$string(model.uid)
-			},
-				{
-				ctor: '_Tuple2',
-				_0: 'displayName',
-				_1: _elm_lang$core$Json_Encode$string(model.displayName)
-			},
-				{
-				ctor: '_Tuple2',
-				_0: 'imageUrl',
-				_1: _mbylstra$elmfirebaseauth$Mbylstra_Json_Encode$maybeString(model.imageUrl)
-			}
-			]));
-};
-var _mbylstra$elmfirebaseauth$User$view = function (user) {
-	var displayName = A2(
-		_elm_lang$html$Html$span,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html$text(user.displayName)
-			]));
-	var photo = A2(
-		_mbylstra$elmfirebaseauth$HtmlHelpers$maybeView,
-		function (url) {
-			return A2(
-				_elm_lang$html$Html$img,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$src(url),
-						_elm_lang$html$Html_Attributes$class('avatar')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[]));
-		},
-		user.imageUrl);
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Attributes$class('user')
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[displayName, photo]));
-};
-var _mbylstra$elmfirebaseauth$User$dummyModel = {uid: 'abcdefg', displayName: 'Michael', imageUrl: _elm_lang$core$Maybe$Nothing};
-var _mbylstra$elmfirebaseauth$User$Model = F3(
-	function (a, b, c) {
-		return {uid: a, displayName: b, imageUrl: c};
-	});
-var _mbylstra$elmfirebaseauth$User$decoder = A4(
-	_elm_lang$core$Json_Decode$object3,
-	_mbylstra$elmfirebaseauth$User$Model,
-	A2(_elm_lang$core$Json_Decode_ops[':='], 'uid', _elm_lang$core$Json_Decode$string),
-	A2(_elm_lang$core$Json_Decode_ops[':='], 'displayName', _elm_lang$core$Json_Decode$string),
-	A2(
-		_elm_lang$core$Json_Decode_ops[':='],
-		'imageUrl',
-		A2(_elm_lang$core$Json_Decode$map, _elm_lang$core$Maybe$Just, _elm_lang$core$Json_Decode$string)));
 var _mbylstra$elmfirebaseauth$UserSettingsForm$Model = F3(
 	function (a, b, c) {
 		return {userModel: a, errors$: b, submitHitAtLeastOnce: c};
@@ -20255,6 +20141,124 @@ var _mbylstra$elmfirebaseauth$UserSettingsForm$view = function (model) {
 					]))
 			]));
 };
+var _mbylstra$elmfirebaseauth$Main_Http_Firebase$databaseUrl = 'https://faust-instant.firebaseio.com';
+var _mbylstra$elmfirebaseauth$Main_Http_Firebase$postFaustProgram = F2(
+	function (authToken, model) {
+		return A5(
+			_mbylstra$elmfirebaseauth$FirebaseRest$post,
+			_mbylstra$elmfirebaseauth$Main_Http_Firebase$databaseUrl,
+			'faustPrograms',
+			_mbylstra$elmfirebaseauth$FaustProgram$encoder,
+			_elm_lang$core$Maybe$Just(authToken),
+			model);
+	});
+var _mbylstra$elmfirebaseauth$Main_Http_Firebase$putFaustProgram = F3(
+	function (authToken, id, model) {
+		return A6(
+			_mbylstra$elmfirebaseauth$FirebaseRest$put,
+			_mbylstra$elmfirebaseauth$Main_Http_Firebase$databaseUrl,
+			'faustPrograms',
+			_mbylstra$elmfirebaseauth$FaustProgram$encoder,
+			_elm_lang$core$Maybe$Just(authToken),
+			id,
+			model);
+	});
+var _mbylstra$elmfirebaseauth$Main_Http_Firebase$getFaustPrograms = function (params) {
+	return A5(_mbylstra$elmfirebaseauth$FirebaseRest$getMany, _mbylstra$elmfirebaseauth$Main_Http_Firebase$databaseUrl, 'faustPrograms', _mbylstra$elmfirebaseauth$FaustProgram$decoder, params, _elm_lang$core$Maybe$Nothing);
+};
+var _mbylstra$elmfirebaseauth$Main_Http_Firebase$getStaffPicks = _mbylstra$elmfirebaseauth$Main_Http_Firebase$getFaustPrograms(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			{ctor: '_Tuple2', _0: 'orderBy', _1: 'staffPick'},
+			{ctor: '_Tuple2', _0: 'equalTo', _1: 'true'}
+		]));
+var _mbylstra$elmfirebaseauth$Main_Http_Firebase$getUserFaustPrograms = function (user) {
+	return _mbylstra$elmfirebaseauth$Main_Http_Firebase$getFaustPrograms(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				{ctor: '_Tuple2', _0: 'orderBy', _1: 'authorUid'},
+				{ctor: '_Tuple2', _0: 'equalTo', _1: user.uid}
+			]));
+};
+var _mbylstra$elmfirebaseauth$ProgramList$update = F2(
+	function (action, model) {
+		var _p0 = action;
+		switch (_p0.ctor) {
+			case 'NoOp':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'Error':
+				var _p1 = _elm_lang$core$Native_Utils.crash(
+					'ProgramList',
+					{
+						start: {line: 54, column: 13},
+						end: {line: 54, column: 24}
+					})(
+					_elm_lang$core$Basics$toString(_p0._0));
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'FetchedStaffPicks':
+				var newModel = A2(_elm_lang$core$List$map, _elm_lang$core$Basics$snd, _p0._0);
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					newModel,
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			default:
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+		}
+	});
+var _mbylstra$elmfirebaseauth$ProgramList$NoOp = {ctor: 'NoOp'};
+var _mbylstra$elmfirebaseauth$ProgramList$OpenProgram = function (a) {
+	return {ctor: 'OpenProgram', _0: a};
+};
+var _mbylstra$elmfirebaseauth$ProgramList$buttonView = function (faustProgram) {
+	return A2(
+		_elm_lang$html$Html$button,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('example'),
+				_elm_lang$html$Html_Events$onClick(
+				_mbylstra$elmfirebaseauth$ProgramList$OpenProgram(faustProgram))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(faustProgram.title)
+			]));
+};
+var _mbylstra$elmfirebaseauth$ProgramList$view = function (model) {
+	var buttons = A2(_elm_lang$core$List$map, _mbylstra$elmfirebaseauth$ProgramList$buttonView, model);
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		buttons);
+};
+var _mbylstra$elmfirebaseauth$ProgramList$FetchedStaffPicks = function (a) {
+	return {ctor: 'FetchedStaffPicks', _0: a};
+};
+var _mbylstra$elmfirebaseauth$ProgramList$Error = function (a) {
+	return {ctor: 'Error', _0: a};
+};
+var _mbylstra$elmfirebaseauth$ProgramList$init = function () {
+	var cmd = A3(_elm_lang$core$Task$perform, _mbylstra$elmfirebaseauth$ProgramList$Error, _mbylstra$elmfirebaseauth$ProgramList$FetchedStaffPicks, _mbylstra$elmfirebaseauth$Main_Http_Firebase$getStaffPicks);
+	return A2(
+		_elm_lang$core$Platform_Cmd_ops['!'],
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[cmd]));
+}();
 var _mbylstra$elmfirebaseauth$Main_Types$Model = function (a) {
 	return function (b) {
 		return function (c) {
@@ -20273,7 +20277,7 @@ var _mbylstra$elmfirebaseauth$Main_Types$Model = function (a) {
 															return function (p) {
 																return function (q) {
 																	return function (r) {
-																		return {faustProgram: a, compilationError: b, hotKeys: c, examples: d, mainVolume: e, fftData: f, uiInputs: g, polyphony: h, bufferSize: i, loading: j, arpeggiator: k, arpeggiatorOn: l, signupView: m, user: n, authToken: o, mdl: p, userSettingsDialog: q, userSettingsForm: r};
+																		return {faustProgram: a, compilationError: b, hotKeys: c, programList: d, mainVolume: e, fftData: f, uiInputs: g, polyphony: h, bufferSize: i, loading: j, arpeggiator: k, arpeggiatorOn: l, signupView: m, user: n, authToken: o, mdl: p, userSettingsDialog: q, userSettingsForm: r};
 																	};
 																};
 															};
@@ -20316,11 +20320,9 @@ var _mbylstra$elmfirebaseauth$Main_Types$FaustProgramPosted = function (a) {
 };
 var _mbylstra$elmfirebaseauth$Main_Types$Save = {ctor: 'Save'};
 var _mbylstra$elmfirebaseauth$Main_Types$GeneralError = {ctor: 'GeneralError'};
-var _mbylstra$elmfirebaseauth$Main_Types$SuccessfulPut = function (a) {
-	return {ctor: 'SuccessfulPut', _0: a};
-};
-var _mbylstra$elmfirebaseauth$Main_Types$Success = function (a) {
-	return {ctor: 'Success', _0: a};
+var _mbylstra$elmfirebaseauth$Main_Types$SuccessfulPut = {ctor: 'SuccessfulPut'};
+var _mbylstra$elmfirebaseauth$Main_Types$FirebaseLoginSuccess = function (a) {
+	return {ctor: 'FirebaseLoginSuccess', _0: a};
 };
 var _mbylstra$elmfirebaseauth$Main_Types$Error = function (a) {
 	return {ctor: 'Error', _0: a};
@@ -20350,8 +20352,8 @@ var _mbylstra$elmfirebaseauth$Main_Types$NewFFTData = function (a) {
 var _mbylstra$elmfirebaseauth$Main_Types$VolumeSliderMsg = function (a) {
 	return {ctor: 'VolumeSliderMsg', _0: a};
 };
-var _mbylstra$elmfirebaseauth$Main_Types$ExamplesMsg = function (a) {
-	return {ctor: 'ExamplesMsg', _0: a};
+var _mbylstra$elmfirebaseauth$Main_Types$ProgramListMsg = function (a) {
+	return {ctor: 'ProgramListMsg', _0: a};
 };
 var _mbylstra$elmfirebaseauth$Main_Types$HotKeysMsg = function (a) {
 	return {ctor: 'HotKeysMsg', _0: a};
@@ -20454,17 +20456,47 @@ var _mbylstra$elmfirebaseauth$Main_Commands$fetchCurrentFirebaseUser = function 
 		_mbylstra$elmfirebaseauth$Main_Types$CurrentFirebaseUserFetched,
 		task);
 }();
+var _mbylstra$elmfirebaseauth$Main_Model$updateUser = F2(
+	function (maybeUser, model) {
+		var faustProgram = model.faustProgram;
+		var _p0 = maybeUser;
+		if (_p0.ctor === 'Just') {
+			var _p1 = _p0._0;
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{
+					user: _elm_lang$core$Maybe$Just(_p1),
+					faustProgram: _elm_lang$core$Native_Utils.update(
+						faustProgram,
+						{
+							authorUid: _elm_lang$core$Maybe$Just(_p1.uid)
+						})
+				});
+		} else {
+			return _elm_lang$core$Native_Utils.update(
+				model,
+				{
+					user: _elm_lang$core$Maybe$Nothing,
+					faustProgram: _elm_lang$core$Native_Utils.update(
+						faustProgram,
+						{authorUid: _elm_lang$core$Maybe$Nothing})
+				});
+		}
+	});
 var _mbylstra$elmfirebaseauth$Main_Model$init = function () {
-	var _p0 = _mbylstra$elmfirebaseauth$HotKeys$init;
-	var hotKeys = _p0._0;
-	var hotKeysCommand = _p0._1;
+	var _p2 = _mbylstra$elmfirebaseauth$ProgramList$init;
+	var programList = _p2._0;
+	var programListCommand = _p2._1;
+	var _p3 = _mbylstra$elmfirebaseauth$HotKeys$init;
+	var hotKeys = _p3._0;
+	var hotKeysCommand = _p3._1;
 	return A2(
 		_elm_lang$core$Platform_Cmd_ops['!'],
 		{
 			faustProgram: _mbylstra$elmfirebaseauth$FaustProgram$init,
 			compilationError: _elm_lang$core$Maybe$Nothing,
 			hotKeys: hotKeys,
-			examples: _mbylstra$elmfirebaseauth$Examples$init,
+			programList: programList,
 			mainVolume: _mbylstra$elmfirebaseauth$Slider$init(1.0),
 			fftData: _elm_lang$core$Native_List.fromArray(
 				[]),
@@ -20484,33 +20516,12 @@ var _mbylstra$elmfirebaseauth$Main_Model$init = function () {
 		_elm_lang$core$Native_List.fromArray(
 			[
 				A2(_elm_lang$core$Platform_Cmd$map, _mbylstra$elmfirebaseauth$Main_Types$HotKeysMsg, hotKeysCommand),
+				A2(_elm_lang$core$Platform_Cmd$map, _mbylstra$elmfirebaseauth$Main_Types$ProgramListMsg, programListCommand),
 				_mbylstra$elmfirebaseauth$Main_Ports$elmAppInitialRender(
 				{ctor: '_Tuple0'}),
 				_mbylstra$elmfirebaseauth$Main_Commands$fetchCurrentFirebaseUser
 			]));
 }();
-var _mbylstra$elmfirebaseauth$Main_Http_Firebase$databaseUrl = 'https://faust-instant.firebaseio.com';
-var _mbylstra$elmfirebaseauth$Main_Http_Firebase$putUser = F3(
-	function (authToken, id, model) {
-		return A6(
-			_mbylstra$elmfirebaseauth$FirebaseRest$put,
-			_mbylstra$elmfirebaseauth$Main_Http_Firebase$databaseUrl,
-			'users',
-			_mbylstra$elmfirebaseauth$User$encoder,
-			_elm_lang$core$Maybe$Just(authToken),
-			id,
-			model);
-	});
-var _mbylstra$elmfirebaseauth$Main_Http_Firebase$postFaustProgram = F2(
-	function (authToken, model) {
-		return A5(
-			_mbylstra$elmfirebaseauth$FirebaseRest$post,
-			_mbylstra$elmfirebaseauth$Main_Http_Firebase$databaseUrl,
-			'faustPrograms',
-			_mbylstra$elmfirebaseauth$FaustProgram$encoder,
-			_elm_lang$core$Maybe$Just(authToken),
-			model);
-	});
 var _mbylstra$elmfirebaseauth$Main_Update$update = F2(
 	function (action, model) {
 		var _p0 = A2(_elm_lang$core$Debug$log, 'action:', action);
@@ -20582,51 +20593,16 @@ var _mbylstra$elmfirebaseauth$Main_Update$update = F2(
 						model,
 						{hotKeys: hotKeys, loading: loading}),
 					commands);
-			case 'ExamplesMsg':
-				var result = A2(_mbylstra$elmfirebaseauth$Examples$update, _p0._0, model.examples);
-				var _p3 = function () {
-					var _p4 = result.code;
-					if (_p4.ctor === 'Just') {
-						var faustProgram = model.faustProgram;
-						var newFaustProgram = _elm_lang$core$Native_Utils.update(
-							faustProgram,
-							{code: _p4._0});
-						var newModel$ = _elm_lang$core$Native_Utils.update(
-							model,
-							{faustProgram: newFaustProgram, loading: true});
-						return {
-							ctor: '_Tuple2',
-							_0: newModel$,
-							_1: _elm_lang$core$Native_List.fromArray(
-								[
-									_mbylstra$elmfirebaseauth$Main_Commands$createCompileCommand(newModel$)
-								])
-						};
-					} else {
-						var newModel$ = _elm_lang$core$Native_Utils.update(
-							model,
-							{loading: true});
-						return {
-							ctor: '_Tuple2',
-							_0: newModel$,
-							_1: _elm_lang$core$Native_List.fromArray(
-								[])
-						};
-					}
-				}();
-				var newModel = _p3._0;
-				var cmds = _p3._1;
+			case 'ProgramListMsg':
+				var _p3 = A2(_mbylstra$elmfirebaseauth$ProgramList$update, _p0._0, model.programList);
+				var programList = _p3._0;
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
-					newModel,
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_mbylstra$elmfirebaseauth$Main_Ports$updateFaustCode(newModel.faustProgram.code),
-								A2(_elm_lang$core$Platform_Cmd$map, _mbylstra$elmfirebaseauth$Main_Types$ExamplesMsg, result.cmd)
-							]),
-						cmds));
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{programList: programList}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
 			case 'VolumeSliderMsg':
 				var newModel = _elm_lang$core$Native_Utils.update(
 					model,
@@ -20666,34 +20642,34 @@ var _mbylstra$elmfirebaseauth$Main_Update$update = F2(
 							{ctor: '_Tuple0'})
 						]));
 			case 'SliderChanged':
-				var _p6 = _p0._1;
-				var _p5 = _p0._0;
+				var _p5 = _p0._1;
+				var _p4 = _p0._0;
 				var uiInput = _mbylstra$elmfirebaseauth$Util$unsafeMaybe(
-					A2(_elm_lang$core$Array$get, _p5, model.uiInputs));
+					A2(_elm_lang$core$Array$get, _p4, model.uiInputs));
 				var uiInput$ = _elm_lang$core$Native_Utils.update(
 					uiInput,
-					{init: _p6});
+					{init: _p5});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
 						{
-							uiInputs: A3(_elm_lang$core$Array$set, _p5, uiInput$, model.uiInputs)
+							uiInputs: A3(_elm_lang$core$Array$set, _p4, uiInput$, model.uiInputs)
 						}),
 					_elm_lang$core$Native_List.fromArray(
 						[
 							_mbylstra$elmfirebaseauth$Main_Ports$setControlValue(
-							{ctor: '_Tuple2', _0: uiInput.address, _1: _p6})
+							{ctor: '_Tuple2', _0: uiInput.address, _1: _p5})
 						]));
 			case 'PianoKeyMouseDown':
-				var _p8 = _p0._0;
-				var _p7 = A2(_elm_lang$core$Debug$log, 'pitch', _p8);
+				var _p7 = _p0._0;
+				var _p6 = A2(_elm_lang$core$Debug$log, 'pitch', _p7);
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					model,
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_mbylstra$elmfirebaseauth$Main_Ports$setPitch(_p8)
+							_mbylstra$elmfirebaseauth$Main_Ports$setPitch(_p7)
 						]));
 			case 'BufferSizeChanged':
 				var newModel = _elm_lang$core$Native_Utils.update(
@@ -20707,9 +20683,9 @@ var _mbylstra$elmfirebaseauth$Main_Update$update = F2(
 							_mbylstra$elmfirebaseauth$Main_Commands$createCompileCommand(newModel)
 						]));
 			case 'ArpeggiatorMsg':
-				var _p9 = A2(_mbylstra$elmfirebaseauth$Arpeggiator$update, _p0._0, model.arpeggiator);
-				var arp2 = _p9._0;
-				var pitch = _p9._1;
+				var _p8 = A2(_mbylstra$elmfirebaseauth$Arpeggiator$update, _p0._0, model.arpeggiator);
+				var arp2 = _p8._0;
+				var pitch = _p8._1;
 				var newModel = _elm_lang$core$Native_Utils.update(
 					model,
 					{arpeggiator: arp2});
@@ -20723,16 +20699,16 @@ var _mbylstra$elmfirebaseauth$Main_Update$update = F2(
 						]));
 			case 'SignupViewMsg':
 				var githubLoginTask = _mbylstra$elmfirebaseauth$FirebaseAuth$githubSignInWithPopup(_mbylstra$elmfirebaseauth$Main_Constants$firebaseConfig);
-				var performSignUpCommand = A3(_elm_lang$core$Task$perform, _mbylstra$elmfirebaseauth$Main_Types$Error, _mbylstra$elmfirebaseauth$Main_Types$Success, githubLoginTask);
+				var performSignUpCommand = A3(_elm_lang$core$Task$perform, _mbylstra$elmfirebaseauth$Main_Types$Error, _mbylstra$elmfirebaseauth$Main_Types$FirebaseLoginSuccess, githubLoginTask);
 				var facebookLoginTask = _mbylstra$elmfirebaseauth$FirebaseAuth$facebookSignInWithPopup(_mbylstra$elmfirebaseauth$Main_Constants$firebaseConfig);
-				var _p10 = A2(_mbylstra$elmfirebaseauth$SignupView$update, _p0._0, model.signupView);
-				var signupView = _p10._0;
-				var maybeOutMsg = _p10._1;
+				var _p9 = A2(_mbylstra$elmfirebaseauth$SignupView$update, _p0._0, model.signupView);
+				var signupView = _p9._0;
+				var maybeOutMsg = _p9._1;
 				var cmds = function () {
-					var _p11 = maybeOutMsg;
-					if (_p11.ctor === 'Just') {
-						var _p12 = _p11._0;
-						if (_p12.ctor === 'SignUpButtonClicked') {
+					var _p10 = maybeOutMsg;
+					if (_p10.ctor === 'Just') {
+						var _p11 = _p10._0;
+						if (_p11.ctor === 'SignUpButtonClicked') {
 							return _elm_lang$core$Native_List.fromArray(
 								[performSignUpCommand]);
 						} else {
@@ -20751,19 +20727,22 @@ var _mbylstra$elmfirebaseauth$Main_Update$update = F2(
 						{signupView: signupView}),
 					cmds);
 			case 'CurrentFirebaseUserFetched':
-				var _p13 = _p0._0;
-				if (_p13.ctor === 'Just') {
-					var _p14 = _p13._0;
-					var user = {uid: _p14.uid, displayName: _p14.displayName, imageUrl: _p14.photoURL};
+				var _p12 = _p0._0;
+				if (_p12.ctor === 'Just') {
+					var _p13 = _p12._0;
+					var user = {uid: _p13.uid, displayName: _p13.displayName, imageUrl: _p13.photoURL};
+					var model2 = A2(
+						_mbylstra$elmfirebaseauth$Main_Model$updateUser,
+						_elm_lang$core$Maybe$Just(user),
+						model);
 					return A2(
 						_elm_lang$core$Platform_Cmd_ops['!'],
 						_elm_lang$core$Native_Utils.update(
-							model,
+							model2,
 							{
-								user: _elm_lang$core$Maybe$Just(user),
 								userSettingsForm: _elm_lang$core$Maybe$Just(
 									_mbylstra$elmfirebaseauth$UserSettingsForm$init(user)),
-								authToken: _elm_lang$core$Maybe$Just(_p14.token)
+								authToken: _elm_lang$core$Maybe$Just(_p13.token)
 							}),
 						_elm_lang$core$Native_List.fromArray(
 							[]));
@@ -20774,40 +20753,34 @@ var _mbylstra$elmfirebaseauth$Main_Update$update = F2(
 						_elm_lang$core$Native_List.fromArray(
 							[]));
 				}
-			case 'Success':
-				var _p17 = _p0._0;
-				var user = {uid: _p17.uid, displayName: _p17.displayName, imageUrl: _p17.photoURL};
-				var task = A3(_mbylstra$elmfirebaseauth$Main_Http_Firebase$putUser, _p17.token, _p17.uid, user);
-				var cmd = A3(
-					_elm_lang$core$Task$perform,
-					function (_p15) {
-						return _mbylstra$elmfirebaseauth$Main_Types$GeneralError;
-					},
-					function (_p16) {
-						return _mbylstra$elmfirebaseauth$Main_Types$SuccessfulPut(_elm_lang$core$Maybe$Nothing);
-					},
-					task);
+			case 'FirebaseLoginSuccess':
+				var _p14 = _p0._0;
+				var faustProgram = model.faustProgram;
+				var user = {uid: _p14.uid, displayName: _p14.displayName, imageUrl: _p14.photoURL};
+				var model2 = A2(
+					_mbylstra$elmfirebaseauth$Main_Model$updateUser,
+					_elm_lang$core$Maybe$Just(user),
+					model);
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
-						model,
+						model2,
 						{
-							user: _elm_lang$core$Maybe$Just(user),
 							userSettingsForm: _elm_lang$core$Maybe$Just(
 								_mbylstra$elmfirebaseauth$UserSettingsForm$init(user)),
-							authToken: _elm_lang$core$Maybe$Just(_p17.token)
+							authToken: _elm_lang$core$Maybe$Just(_p14.token)
 						}),
 					_elm_lang$core$Native_List.fromArray(
-						[cmd]));
+						[]));
 			case 'SuccessfulPut':
-				var _p18 = A2(_elm_lang$core$Debug$log, 'SuccessfulPut', 1);
+				var _p15 = A2(_elm_lang$core$Debug$log, 'SuccessfulPut', 1);
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					model,
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'GeneralError':
-				var _p19 = A2(_elm_lang$core$Debug$log, 'GeneralError', 1);
+				var _p16 = A2(_elm_lang$core$Debug$log, 'GeneralError', 1);
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					model,
@@ -20820,27 +20793,60 @@ var _mbylstra$elmfirebaseauth$Main_Update$update = F2(
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'Save':
-				var _p20 = model.authToken;
-				if (_p20.ctor === 'Just') {
-					var task = A2(_mbylstra$elmfirebaseauth$Main_Http_Firebase$postFaustProgram, _p20._0, model.faustProgram);
+				var _p17 = model.authToken;
+				if (_p17.ctor === 'Just') {
+					var _p22 = _p17._0;
+					var cmd = function () {
+						var _p18 = model.faustProgram.databaseId;
+						if (_p18.ctor === 'Just') {
+							var task = A3(_mbylstra$elmfirebaseauth$Main_Http_Firebase$putFaustProgram, _p22, _p18._0, model.faustProgram);
+							return A3(
+								_elm_lang$core$Task$perform,
+								function (_p19) {
+									return _mbylstra$elmfirebaseauth$Main_Types$GeneralError;
+								},
+								function (_p20) {
+									return _mbylstra$elmfirebaseauth$Main_Types$SuccessfulPut;
+								},
+								task);
+						} else {
+							var task = A2(_mbylstra$elmfirebaseauth$Main_Http_Firebase$postFaustProgram, _p22, model.faustProgram);
+							return A3(
+								_elm_lang$core$Task$perform,
+								function (_p21) {
+									return _mbylstra$elmfirebaseauth$Main_Types$GeneralError;
+								},
+								_mbylstra$elmfirebaseauth$Main_Types$FaustProgramPosted,
+								task);
+						}
+					}();
 					return A2(
 						_elm_lang$core$Platform_Cmd_ops['!'],
 						model,
 						_elm_lang$core$Native_List.fromArray(
-							[]));
+							[cmd]));
 				} else {
 					return _elm_lang$core$Native_Utils.crashCase(
 						'Main.Update',
 						{
-							start: {line: 243, column: 7},
-							end: {line: 252, column: 84}
+							start: {line: 246, column: 7},
+							end: {line: 264, column: 84}
 						},
-						_p20)('we need to do something about save if user is not logged in');
+						_p17)('We need to do something about save if user is not logged in');
 				}
 			case 'FaustProgramPosted':
+				var faustProgram = model.faustProgram;
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
-					model,
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							faustProgram: _elm_lang$core$Native_Utils.update(
+								faustProgram,
+								{
+									databaseId: _elm_lang$core$Maybe$Just(_p0._0)
+								})
+						}),
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'MenuMsg':
@@ -20880,678 +20886,65 @@ var _mbylstra$elmfirebaseauth$Main_Update$update = F2(
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			default:
-				var model2 = function () {
-					var _p22 = model.userSettingsForm;
-					if (_p22.ctor === 'Just') {
-						var _p23 = A2(_mbylstra$elmfirebaseauth$UserSettingsForm$update, _p0._0, _p22._0);
-						var userSettingsForm = _p23._0;
-						var maybeUser = _p23._1;
-						var _p24 = maybeUser;
-						if (_p24.ctor === 'Just') {
-							var userSettingsDialog = A2(_mbylstra$elmfirebaseauth$SimpleDialog$update, _mbylstra$elmfirebaseauth$SimpleDialog$Close, model.userSettingsDialog);
-							return _elm_lang$core$Native_Utils.update(
+				var _p24 = model.userSettingsForm;
+				if (_p24.ctor === 'Just') {
+					var _p25 = A2(_mbylstra$elmfirebaseauth$UserSettingsForm$update, _p0._0, _p24._0);
+					var userSettingsForm = _p25._0;
+					var maybeUser = _p25._1;
+					var _p26 = maybeUser;
+					if (_p26.ctor === 'Just') {
+						var _p31 = _p26._0;
+						var userSettingsDialog = A2(_mbylstra$elmfirebaseauth$SimpleDialog$update, _mbylstra$elmfirebaseauth$SimpleDialog$Close, model.userSettingsDialog);
+						var updateUserProfileTask = A2(
+							_mbylstra$elmfirebaseauth$FirebaseAuth$updateUserProfile,
+							_mbylstra$elmfirebaseauth$Main_Constants$firebaseConfig,
+							{displayName: _p31.displayName, photoURL: _p31.imageUrl});
+						var updateUserProfileCommand = A3(
+							_elm_lang$core$Task$perform,
+							function (_p27) {
+								var _p28 = _p27;
+								return _mbylstra$elmfirebaseauth$Main_Types$NoOp;
+							},
+							function (_p29) {
+								var _p30 = _p29;
+								return _mbylstra$elmfirebaseauth$Main_Types$NoOp;
+							},
+							updateUserProfileTask);
+						return A2(
+							_elm_lang$core$Platform_Cmd_ops['!'],
+							_elm_lang$core$Native_Utils.update(
 								model,
 								{
-									user: _elm_lang$core$Maybe$Just(_p24._0),
+									user: _elm_lang$core$Maybe$Just(_p31),
 									userSettingsDialog: userSettingsDialog,
 									userSettingsForm: _elm_lang$core$Maybe$Just(userSettingsForm)
-								});
-						} else {
-							return _elm_lang$core$Native_Utils.update(
+								}),
+							_elm_lang$core$Native_List.fromArray(
+								[updateUserProfileCommand]));
+					} else {
+						return A2(
+							_elm_lang$core$Platform_Cmd_ops['!'],
+							_elm_lang$core$Native_Utils.update(
 								model,
 								{
 									userSettingsForm: _elm_lang$core$Maybe$Just(userSettingsForm)
-								});
-						}
-					} else {
-						return model;
+								}),
+							_elm_lang$core$Native_List.fromArray(
+								[]));
 					}
-				}();
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					model2,
-					_elm_lang$core$Native_List.fromArray(
-						[]));
-		}
-	});
-var _mbylstra$elmfirebaseauth$SliderNoModel$decodeSliderValue = function (result) {
-	return A2(
-		_elm_lang$core$Result$withDefault,
-		0.0,
-		_elm_lang$core$String$toFloat(result));
-};
-var _mbylstra$elmfirebaseauth$SliderNoModel$onSliderInput = function (tagger) {
-	var mapper = function (_p0) {
-		return tagger(
-			_mbylstra$elmfirebaseauth$SliderNoModel$decodeSliderValue(_p0));
-	};
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'input',
-		A2(_elm_lang$core$Json_Decode$map, mapper, _elm_lang$html$Html_Events$targetValue));
-};
-var _mbylstra$elmfirebaseauth$SliderNoModel$view = F3(
-	function (attrs, tagger, model) {
-		return A2(
-			_elm_lang$html$Html$input,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$type$('range'),
-					_elm_lang$html$Html_Attributes$min(
-					_elm_lang$core$Basics$toString(attrs.min)),
-					_elm_lang$html$Html_Attributes$max(
-					_elm_lang$core$Basics$toString(attrs.max)),
-					_elm_lang$html$Html_Attributes$step(
-					_elm_lang$core$Basics$toString(attrs.step)),
-					_elm_lang$html$Html_Attributes$value(
-					_elm_lang$core$Basics$toString(model)),
-					_mbylstra$elmfirebaseauth$SliderNoModel$onSliderInput(tagger)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[]));
-	});
-var _mbylstra$elmfirebaseauth$Piano$pitchToFrequency = function (pitch) {
-	return Math.pow(2, (pitch - 49.0) / 12.0) * 440.0;
-};
-var _mbylstra$elmfirebaseauth$Piano$ColorScheme = F2(
-	function (a, b) {
-		return {whiteKey: a, blackKey: b};
-	});
-var _mbylstra$elmfirebaseauth$Piano$White = {ctor: 'White'};
-var _mbylstra$elmfirebaseauth$Piano$Black = {ctor: 'Black'};
-var _mbylstra$elmfirebaseauth$Piano$view = F4(
-	function (colorScheme, numOctaves, bottomPitch, tagger) {
-		var pianoKey = F2(
-			function (keyType, pitch) {
-				var _p0 = false;
-				var _p1 = keyType;
-				if (_p1.ctor === 'Black') {
-					return A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('black-key-wrapper')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								A2(
-								_elm_lang$html$Html$div,
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html_Attributes$class('black-key'),
-										_elm_lang$html$Html_Events$onMouseEnter(
-										tagger(pitch)),
-										_elm_lang$html$Html_Attributes$style(
-										_elm_lang$core$Native_List.fromArray(
-											[
-												{
-												ctor: '_Tuple2',
-												_0: 'background-color',
-												_1: _mbylstra$elmfirebaseauth$ColorExtra$toCssRgb(colorScheme.blackKey)
-											}
-											]))
-									]),
-								_elm_lang$core$Native_List.fromArray(
-									[]))
-							]));
 				} else {
 					return A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('white-key'),
-								_elm_lang$html$Html_Events$onMouseEnter(
-								tagger(pitch)),
-								_elm_lang$html$Html_Attributes$style(
-								_elm_lang$core$Native_List.fromArray(
-									[
-										{
-										ctor: '_Tuple2',
-										_0: 'background-color',
-										_1: _mbylstra$elmfirebaseauth$ColorExtra$toCssRgb(colorScheme.whiteKey)
-									}
-									]))
-							]),
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						model,
 						_elm_lang$core$Native_List.fromArray(
 							[]));
 				}
-			});
-		var pianoOctave = function (cPitch) {
-			return _elm_lang$core$Native_List.fromArray(
-				[
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$White, cPitch),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$Black, cPitch + 1.0),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$White, cPitch + 2.0),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$Black, cPitch + 3.0),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$White, cPitch + 4.0),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$White, cPitch + 5.0),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$Black, cPitch + 6.0),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$White, cPitch + 7.0),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$Black, cPitch + 8.0),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$White, cPitch + 9.0),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$Black, cPitch + 10.0),
-					A2(pianoKey, _mbylstra$elmfirebaseauth$Piano$White, cPitch + 11.0)
-				]);
-		};
-		var bottomPitches = A2(
-			_elm_lang$core$List$map,
-			function (n) {
-				return bottomPitch + (_elm_lang$core$Basics$toFloat(n) * 12.0);
-			},
-			_elm_lang$core$Native_List.range(1, numOctaves));
-		var pianoOctaves = A2(
-			_elm_lang$core$List$concatMap,
-			function (octaveBottomPitch) {
-				return pianoOctave(octaveBottomPitch);
-			},
-			bottomPitches);
-		return A2(
-			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('piano')
-				]),
-			pianoOctaves);
-	});
-var _mbylstra$elmfirebaseauth$Main_View_UserMenu$view = F2(
-	function (mdlMsg, mdlModel) {
-		return A5(
-			_debois$elm_mdl$Material_Menu$render,
-			mdlMsg,
-			_elm_lang$core$Native_List.fromArray(
-				[0]),
-			mdlModel,
-			_elm_lang$core$Native_List.fromArray(
-				[_debois$elm_mdl$Material_Menu$bottomRight]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A3(
-					_debois$elm_mdl$Material_Menu$Item,
-					false,
-					true,
-					A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Events$onClick(_mbylstra$elmfirebaseauth$Main_Types$OpenUserSettingsDialog)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Edit Profile')
-							]))),
-					A3(
-					_debois$elm_mdl$Material_Menu$Item,
-					false,
-					true,
-					A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Events$onClick(_mbylstra$elmfirebaseauth$Main_Types$LogOutClicked)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Log Out')
-							])))
-				]));
-	});
-var _mbylstra$elmfirebaseauth$Main_View_UserMenu$item = function (str) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Events$onClick(_mbylstra$elmfirebaseauth$Main_Types$LogOutClicked)
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html$text(str)
-			]));
-};
-var _mbylstra$elmfirebaseauth$Main_View_UserSettingsDialog$view = function (model) {
-	var _p0 = model.user;
-	if (_p0.ctor === 'Just') {
-		var _p1 = model.userSettingsForm;
-		if (_p1.ctor === 'Just') {
-			var innerHtml = A2(
-				_elm_lang$html$Html_App$map,
-				_mbylstra$elmfirebaseauth$Main_Types$UserSettingsFormMsg,
-				_mbylstra$elmfirebaseauth$UserSettingsForm$view(_p1._0));
-			return A3(_mbylstra$elmfirebaseauth$SimpleDialog$view, _mbylstra$elmfirebaseauth$Main_Types$UserSettingsDialogMsg, innerHtml, model.userSettingsDialog);
-		} else {
-			return _mbylstra$elmfirebaseauth$HtmlHelpers$emptyHtml;
 		}
-	} else {
-		return _mbylstra$elmfirebaseauth$HtmlHelpers$emptyHtml;
-	}
-};
-var _mbylstra$elmfirebaseauth$Main_View$pianoView = function (model) {
-	return _mbylstra$elmfirebaseauth$FaustControls$showPiano(model.uiInputs) ? A4(
-		_mbylstra$elmfirebaseauth$Piano$view,
-		{blackKey: _elm_lang$core$Color$black, whiteKey: _elm_lang$core$Color$white},
-		6,
-		12,
-		_mbylstra$elmfirebaseauth$Main_Types$PianoKeyMouseDown) : A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[]));
-};
-var _mbylstra$elmfirebaseauth$Main_View$getBufferSizeMillis = function (bufferSize) {
-	return _elm_lang$core$Basics$round(
-		((1.0 / _mbylstra$elmfirebaseauth$Main_Constants$sampleRate) * _elm_lang$core$Basics$toFloat(bufferSize)) * 1000.0);
-};
-var _mbylstra$elmfirebaseauth$Main_View$bufferSizes = _elm_lang$core$Native_List.fromArray(
-	[256, 512, 1024, 2048, 4096]);
-var _mbylstra$elmfirebaseauth$Main_View$bufferSizeSelectView = function (model) {
-	var parseInt = function (s) {
-		return A2(
-			_elm_lang$core$Maybe$withDefault,
-			_mbylstra$elmfirebaseauth$Main_Constants$defaultBufferSize,
-			_elm_lang$core$Result$toMaybe(
-				_elm_lang$core$String$toInt(s)));
-	};
-	var onChange = A2(
-		_elm_lang$html$Html_Events$on,
-		'change',
-		A2(
-			_elm_lang$core$Json_Decode$map,
-			function (v) {
-				return _mbylstra$elmfirebaseauth$Main_Types$BufferSizeChanged(
-					parseInt(v));
-			},
-			_elm_lang$html$Html_Events$targetValue));
-	var renderOption = function (bufferSize) {
-		return A2(
-			_elm_lang$html$Html$option,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$value(
-					_elm_lang$core$Basics$toString(bufferSize)),
-					_elm_lang$html$Html_Attributes$selected(
-					_elm_lang$core$Native_Utils.eq(bufferSize, model.bufferSize))
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text(
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(
-							_mbylstra$elmfirebaseauth$Main_View$getBufferSizeMillis(bufferSize)),
-						'ms'))
-				]));
-	};
-	return A2(
-		_elm_lang$html$Html$select,
-		_elm_lang$core$Native_List.fromArray(
-			[onChange]),
-		A2(_elm_lang$core$List$map, renderOption, _mbylstra$elmfirebaseauth$Main_View$bufferSizes));
-};
-var _mbylstra$elmfirebaseauth$Main_View$view = function (model) {
-	var sliders = function () {
-		var renderSlider = F2(
-			function (i, uiInput) {
-				return A2(
-					_elm_lang$html$Html$label,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('slider-container')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							A3(
-							_mbylstra$elmfirebaseauth$SliderNoModel$view,
-							{min: uiInput.min, max: uiInput.max, step: uiInput.step},
-							_mbylstra$elmfirebaseauth$Main_Types$SliderChanged(i),
-							uiInput.init),
-							A2(
-							_elm_lang$html$Html$span,
-							_elm_lang$core$Native_List.fromArray(
-								[]),
-							_elm_lang$core$Native_List.fromArray(
-								[
-									_elm_lang$html$Html$text(uiInput.label)
-								]))
-						]));
-			});
-		return _elm_lang$core$Array$toList(
-			A2(_elm_lang$core$Array$indexedMap, renderSlider, model.uiInputs));
-	}();
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Attributes$class('main-wrap')
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_mbylstra$elmfirebaseauth$Main_View_UserSettingsDialog$view(model),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('main-header')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('main-header-left')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								A2(
-								_elm_lang$html$Html$h1,
-								_elm_lang$core$Native_List.fromArray(
-									[]),
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html$text('Faust Instant')
-									]))
-							])),
-						A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('main-header-right')
-							]),
-						function () {
-							var _p0 = model.user;
-							if (_p0.ctor === 'Just') {
-								return _elm_lang$core$Native_List.fromArray(
-									[
-										_mbylstra$elmfirebaseauth$User$view(_p0._0),
-										A2(_mbylstra$elmfirebaseauth$Main_View_UserMenu$view, _mbylstra$elmfirebaseauth$Main_Types$MDL, model.mdl)
-									]);
-							} else {
-								return _elm_lang$core$Native_List.fromArray(
-									[
-										A3(
-										_mbylstra$elmfirebaseauth$HtmlHelpers$aButton,
-										_mbylstra$elmfirebaseauth$Main_Types$SignupViewMsg(_mbylstra$elmfirebaseauth$SignupView$OpenSignInDialog),
-										_elm_lang$core$Native_List.fromArray(
-											[]),
-										_elm_lang$core$Native_List.fromArray(
-											[
-												_elm_lang$html$Html$text('Log In')
-											])),
-										A3(
-										_mbylstra$elmfirebaseauth$HtmlHelpers$aButton,
-										_mbylstra$elmfirebaseauth$Main_Types$SignupViewMsg(_mbylstra$elmfirebaseauth$SignupView$OpenSignUpDialog),
-										_elm_lang$core$Native_List.fromArray(
-											[]),
-										_elm_lang$core$Native_List.fromArray(
-											[
-												_elm_lang$html$Html$text('Sign Up')
-											]))
-									]);
-							}
-						}())
-					])),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('main-row')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('code-editor-column')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								A2(
-								_elm_lang$html$Html$div,
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html_Attributes$id('code-editor-holder'),
-										_elm_lang$html$Html_Attributes$class('code-editor')
-									]),
-								_elm_lang$core$Native_List.fromArray(
-									[
-										A2(
-										_elm_lang$html$Html$textarea,
-										_elm_lang$core$Native_List.fromArray(
-											[
-												_elm_lang$html$Html_Attributes$id('codemirror')
-											]),
-										_elm_lang$core$Native_List.fromArray(
-											[]))
-									])),
-								A2(
-								_elm_lang$html$Html$div,
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html_Attributes$class('code-editor-buttons')
-									]),
-								_elm_lang$core$Native_List.fromArray(
-									[
-										A2(
-										_elm_lang$html$Html$div,
-										_elm_lang$core$Native_List.fromArray(
-											[
-												_elm_lang$html$Html_Attributes$class('spinner-holder')
-											]),
-										_elm_lang$core$Native_List.fromArray(
-											[
-												model.loading ? _mbylstra$elmfirebaseauth$GoogleSpinner$view : A2(
-												_elm_lang$html$Html$span,
-												_elm_lang$core$Native_List.fromArray(
-													[]),
-												_elm_lang$core$Native_List.fromArray(
-													[]))
-											])),
-										A2(
-										_elm_lang$html$Html$label,
-										_elm_lang$core$Native_List.fromArray(
-											[]),
-										_elm_lang$core$Native_List.fromArray(
-											[
-												_elm_lang$html$Html$text('Latency')
-											])),
-										_mbylstra$elmfirebaseauth$Main_View$bufferSizeSelectView(model),
-										A2(
-										_elm_lang$html$Html$button,
-										_elm_lang$core$Native_List.fromArray(
-											[
-												_elm_lang$html$Html_Events$onClick(_mbylstra$elmfirebaseauth$Main_Types$Compile)
-											]),
-										_elm_lang$core$Native_List.fromArray(
-											[
-												_elm_lang$html$Html$text('Compile '),
-												A2(
-												_elm_lang$html$Html$span,
-												_elm_lang$core$Native_List.fromArray(
-													[]),
-												_elm_lang$core$Native_List.fromArray(
-													[
-														_elm_lang$html$Html$text('(CTRL-ENTER)')
-													]))
-											])),
-										A2(
-										_mbylstra$elmfirebaseauth$HtmlHelpers$maybeView,
-										function (_p1) {
-											return A3(
-												_mbylstra$elmfirebaseauth$HtmlHelpers$aButton,
-												_mbylstra$elmfirebaseauth$Main_Types$Save,
-												_elm_lang$core$Native_List.fromArray(
-													[
-														_elm_lang$html$Html_Attributes$class('save-button')
-													]),
-												_elm_lang$core$Native_List.fromArray(
-													[
-														_elm_lang$html$Html$text('Save')
-													]));
-										},
-										model.user)
-									]))
-							])),
-						A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('examples')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								A2(
-								_elm_lang$html$Html_App$map,
-								_mbylstra$elmfirebaseauth$Main_Types$ExamplesMsg,
-								_mbylstra$elmfirebaseauth$Examples$view(model.examples))
-							]))
-					])),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('main-footer')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$p,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text(
-								A2(_elm_lang$core$Maybe$withDefault, '', model.compilationError))
-							])),
-						A2(
-						_elm_lang$html$Html$div,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('sliders')
-							]),
-						sliders),
-						_mbylstra$elmfirebaseauth$Main_View$pianoView(model)
-					])),
-				function () {
-				var defaults = _mbylstra$elmfirebaseauth$SignupView$defaults;
-				var config = _elm_lang$core$Native_Utils.update(
-					defaults,
-					{
-						branding: _elm_lang$core$Maybe$Just(
-							A2(
-								_elm_lang$html$Html$h1,
-								_elm_lang$core$Native_List.fromArray(
-									[]),
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html$text('Faust Instant')
-									]))),
-						signUpEnticer: _elm_lang$core$Maybe$Just(
-							A2(
-								_elm_lang$html$Html$p,
-								_elm_lang$core$Native_List.fromArray(
-									[]),
-								_elm_lang$core$Native_List.fromArray(
-									[
-										_elm_lang$html$Html$text('Sign up to save, share & star Faust programs')
-									])))
-					});
-				return A2(
-					_elm_lang$html$Html_App$map,
-					_mbylstra$elmfirebaseauth$Main_Types$SignupViewMsg,
-					A2(_mbylstra$elmfirebaseauth$SignupView$view, config, model.signupView));
-			}()
-			]));
-};
-var _mbylstra$elmfirebaseauth$Main_Subscriptions$subscriptions = function (model) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_mbylstra$elmfirebaseauth$Main_Ports$incomingFaustCode(_mbylstra$elmfirebaseauth$Main_Types$FaustCodeChanged),
-				_mbylstra$elmfirebaseauth$Main_Ports$incomingCompilationErrors(_mbylstra$elmfirebaseauth$Main_Types$CompilationError),
-				A2(_elm_lang$core$Platform_Sub$map, _mbylstra$elmfirebaseauth$Main_Types$HotKeysMsg, _mbylstra$elmfirebaseauth$HotKeys$subscription),
-				_mbylstra$elmfirebaseauth$Main_Ports$incomingFFTData(_mbylstra$elmfirebaseauth$Main_Types$NewFFTData),
-				_mbylstra$elmfirebaseauth$Main_Ports$incomingDSPCompiled(_mbylstra$elmfirebaseauth$Main_Types$DSPCompiled)
-			]),
-		model.arpeggiatorOn ? _elm_lang$core$Native_List.fromArray(
-			[
-				A2(
-				_elm_lang$core$Platform_Sub$map,
-				_mbylstra$elmfirebaseauth$Main_Types$ArpeggiatorMsg,
-				_mbylstra$elmfirebaseauth$Arpeggiator$subscription(model.arpeggiator))
-			]) : _elm_lang$core$Native_List.fromArray(
-			[]));
-};
-var _rtfeldman$elm_css$Css_File$compile = _rtfeldman$elm_css$Css$compile;
-var _rtfeldman$elm_css$Css_File$toFileStructure = function (stylesheets) {
-	var asTuple = function (_p0) {
-		var _p1 = _p0;
-		return {
-			success: _elm_lang$core$List$isEmpty(_p1._1.warnings),
-			filename: _p1._0,
-			content: _p1._1.css
-		};
-	};
-	return A2(_elm_lang$core$List$map, asTuple, stylesheets);
-};
-var _mbylstra$elmfirebaseauth$Stylesheets$cssFiles = _rtfeldman$elm_css$Css_File$toFileStructure(
-	_elm_lang$core$Native_List.fromArray(
-		[
-			{
-			ctor: '_Tuple2',
-			_0: 'main.css',
-			_1: _rtfeldman$elm_css$Css_File$compile(_mbylstra$elmfirebaseauth$SimpleDialog_Stylesheet$css)
-		}
-		]));
-var _mbylstra$elmfirebaseauth$Stylesheets$files = _elm_lang$core$Native_Platform.outgoingPort(
-	'files',
-	function (v) {
-		return _elm_lang$core$Native_List.toArray(v).map(
-			function (v) {
-				return {filename: v.filename, content: v.content, success: v.success};
-			});
 	});
-var _mbylstra$elmfirebaseauth$Stylesheets$main = {
-	main: _elm_lang$html$Html_App$program(
-		{
-			init: {
-				ctor: '_Tuple2',
-				_0: {ctor: '_Tuple0'},
-				_1: _mbylstra$elmfirebaseauth$Stylesheets$files(_mbylstra$elmfirebaseauth$Stylesheets$cssFiles)
-			},
-			view: function (_p0) {
-				return A2(
-					_elm_lang$html$Html$div,
-					_elm_lang$core$Native_List.fromArray(
-						[]),
-					_elm_lang$core$Native_List.fromArray(
-						[]));
-			},
-			update: F2(
-				function (_p2, _p1) {
-					return {
-						ctor: '_Tuple2',
-						_0: {ctor: '_Tuple0'},
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}),
-			subscriptions: function (_p3) {
-				return _elm_lang$core$Platform_Sub$none;
-			}
-		})
-};
-var _mbylstra$elmfirebaseauth$Main$subscriptions = function (model) {
-	return _elm_lang$core$Platform_Sub$batch(
-		_mbylstra$elmfirebaseauth$Main_Subscriptions$subscriptions(model));
-};
-var _mbylstra$elmfirebaseauth$Main$main = {
-	main: _elm_lang$html$Html_App$program(
-		{init: _mbylstra$elmfirebaseauth$Main_Model$init, update: _mbylstra$elmfirebaseauth$Main_Update$update, view: _mbylstra$elmfirebaseauth$Main_View$view, subscriptions: _mbylstra$elmfirebaseauth$Main$subscriptions})
-};
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
-_elm_lang$core$Native_Platform.addPublicModule(Elm['Main'], 'Main', typeof _mbylstra$elmfirebaseauth$Main$main === 'undefined' ? null : _mbylstra$elmfirebaseauth$Main$main);
+Elm['Main']['Update'] = Elm['Main']['Update'] || {};
+_elm_lang$core$Native_Platform.addPublicModule(Elm['Main']['Update'], 'Main.Update', typeof _mbylstra$elmfirebaseauth$Main_Update$main === 'undefined' ? null : _mbylstra$elmfirebaseauth$Main_Update$main);
 
 if (typeof define === "function" && define['amd'])
 {
@@ -21582,4 +20975,4 @@ for (var publicModule in Elm)
 }
 
 }).call(this);
-</script></head><body><script type="text/javascript">Elm.Main.fullscreen()</script></body></html>
+</script></head><body><script type="text/javascript">Elm.Main.Update.fullscreen()</script></body></html>

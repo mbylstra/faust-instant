@@ -36,7 +36,6 @@ import SignupView exposing
   )
 
 -- project components
-import Examples
 import SliderNoModel
 import Piano
 import Color
@@ -45,7 +44,7 @@ import FaustControls
 import User
 -- import FaustProgram
 import FaustControls
-import SimpleDialog
+import ProgramList
 
 -- component modules
 -- import Main.Http.Firebase as FirebaseHttp
@@ -129,7 +128,7 @@ view model =
             ]
           ]
         , div [ class "examples"]
-          [ App.map ExamplesMsg (Examples.view model.examples) ]
+          [ App.map ProgramListMsg (ProgramList.view model.programList) ]
         ]
       , div [ class "main-footer" ]
         [ p []

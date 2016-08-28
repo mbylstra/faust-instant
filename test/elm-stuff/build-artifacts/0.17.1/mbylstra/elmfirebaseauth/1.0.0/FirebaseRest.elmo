@@ -1,0 +1,104 @@
+var _mbylstra$elmfirebaseauth$FirebaseRest$keyResponseBodyDecoder = A2(_elm_lang$core$Json_Decode_ops[':='], 'name', _elm_lang$core$Json_Decode$string);
+var _mbylstra$elmfirebaseauth$FirebaseRest$ignoreResponseBodyDecoder = _elm_lang$core$Json_Decode$succeed(
+	{ctor: '_Tuple0'});
+var _mbylstra$elmfirebaseauth$FirebaseRest$restUrl = F3(
+	function (databaseUrl, path, maybeAuthToken) {
+		var normalisedPath = _elm_lang$core$Native_Utils.eq(
+			A2(_elm_lang$core$String$startsWith, '/', path),
+			true) ? path : A2(_elm_lang$core$Basics_ops['++'], '/', path);
+		return A2(
+			_evancz$elm_http$Http$url,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				databaseUrl,
+				A2(_elm_lang$core$Basics_ops['++'], normalisedPath, '.json')),
+			function () {
+				var _p0 = maybeAuthToken;
+				if (_p0.ctor === 'Just') {
+					return _elm_lang$core$Native_List.fromArray(
+						[
+							{ctor: '_Tuple2', _0: 'auth', _1: _p0._0}
+						]);
+				} else {
+					return _elm_lang$core$Native_List.fromArray(
+						[]);
+				}
+			}());
+	});
+var _mbylstra$elmfirebaseauth$FirebaseRest$put = F6(
+	function (databaseUrl, path, encoder, maybeAuthToken, id, model) {
+		var body = A2(
+			_elm_lang$core$Json_Encode$encode,
+			0,
+			encoder(model));
+		var path$ = A2(
+			_elm_lang$core$Basics_ops['++'],
+			path,
+			A2(_elm_lang$core$Basics_ops['++'], '/', id));
+		var url = A3(_mbylstra$elmfirebaseauth$FirebaseRest$restUrl, databaseUrl, path$, maybeAuthToken);
+		var task = A2(
+			_elm_lang$core$Task$map,
+			function (_) {
+				return _.data;
+			},
+			A3(
+				_lukewestby$elm_http_builder$HttpBuilder$send,
+				_lukewestby$elm_http_builder$HttpBuilder$jsonReader(_mbylstra$elmfirebaseauth$FirebaseRest$ignoreResponseBodyDecoder),
+				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+				A2(
+					_lukewestby$elm_http_builder$HttpBuilder$withStringBody,
+					body,
+					_lukewestby$elm_http_builder$HttpBuilder$put(url))));
+		return task;
+	});
+var _mbylstra$elmfirebaseauth$FirebaseRest$post = F5(
+	function (databaseUrl, path, encoder, maybeAuthToken, model) {
+		var body = A2(
+			_elm_lang$core$Json_Encode$encode,
+			0,
+			encoder(model));
+		var url = A3(_mbylstra$elmfirebaseauth$FirebaseRest$restUrl, databaseUrl, path, maybeAuthToken);
+		var task = A2(
+			_elm_lang$core$Task$map,
+			function (_) {
+				return _.data;
+			},
+			A3(
+				_lukewestby$elm_http_builder$HttpBuilder$send,
+				_lukewestby$elm_http_builder$HttpBuilder$jsonReader(_mbylstra$elmfirebaseauth$FirebaseRest$keyResponseBodyDecoder),
+				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+				A2(
+					_lukewestby$elm_http_builder$HttpBuilder$withStringBody,
+					body,
+					_lukewestby$elm_http_builder$HttpBuilder$post(url))));
+		return task;
+	});
+var _mbylstra$elmfirebaseauth$FirebaseRest$getOne = F4(
+	function (databaseUrl, path, decoder, maybeAuthToken) {
+		var url = A3(_mbylstra$elmfirebaseauth$FirebaseRest$restUrl, databaseUrl, path, maybeAuthToken);
+		return A2(
+			_elm_lang$core$Task$map,
+			function (_) {
+				return _.data;
+			},
+			A3(
+				_lukewestby$elm_http_builder$HttpBuilder$send,
+				_lukewestby$elm_http_builder$HttpBuilder$jsonReader(decoder),
+				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+				_lukewestby$elm_http_builder$HttpBuilder$get(url)));
+	});
+var _mbylstra$elmfirebaseauth$FirebaseRest$getMany = F4(
+	function (databaseUrl, path, singleDecoder, maybeAuthToken) {
+		var manyDecoder = _elm_lang$core$Json_Decode$keyValuePairs(singleDecoder);
+		var url = A3(_mbylstra$elmfirebaseauth$FirebaseRest$restUrl, databaseUrl, path, maybeAuthToken);
+		return A2(
+			_elm_lang$core$Task$map,
+			function (_) {
+				return _.data;
+			},
+			A3(
+				_lukewestby$elm_http_builder$HttpBuilder$send,
+				_lukewestby$elm_http_builder$HttpBuilder$jsonReader(manyDecoder),
+				_lukewestby$elm_http_builder$HttpBuilder$stringReader,
+				_lukewestby$elm_http_builder$HttpBuilder$get(url)));
+	});

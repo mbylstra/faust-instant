@@ -1,0 +1,118 @@
+var _debois$elm_dom$DOM$className = A2(
+	_elm_lang$core$Json_Decode$at,
+	_elm_lang$core$Native_List.fromArray(
+		['className']),
+	_elm_lang$core$Json_Decode$string);
+var _debois$elm_dom$DOM$scrollTop = A2(_elm_lang$core$Json_Decode_ops[':='], 'scrollTop', _elm_lang$core$Json_Decode$float);
+var _debois$elm_dom$DOM$scrollLeft = A2(_elm_lang$core$Json_Decode_ops[':='], 'scrollLeft', _elm_lang$core$Json_Decode$float);
+var _debois$elm_dom$DOM$offsetTop = A2(_elm_lang$core$Json_Decode_ops[':='], 'offsetTop', _elm_lang$core$Json_Decode$float);
+var _debois$elm_dom$DOM$offsetLeft = A2(_elm_lang$core$Json_Decode_ops[':='], 'offsetLeft', _elm_lang$core$Json_Decode$float);
+var _debois$elm_dom$DOM$offsetHeight = A2(_elm_lang$core$Json_Decode_ops[':='], 'offsetHeight', _elm_lang$core$Json_Decode$float);
+var _debois$elm_dom$DOM$offsetWidth = A2(_elm_lang$core$Json_Decode_ops[':='], 'offsetWidth', _elm_lang$core$Json_Decode$float);
+var _debois$elm_dom$DOM$childNodes = function (decoder) {
+	var loop = F2(
+		function (idx, xs) {
+			return A2(
+				_elm_lang$core$Json_Decode$andThen,
+				_elm_lang$core$Json_Decode$maybe(
+					A2(
+						_elm_lang$core$Json_Decode_ops[':='],
+						_elm_lang$core$Basics$toString(idx),
+						decoder)),
+				function (_p0) {
+					return A2(
+						_elm_lang$core$Maybe$withDefault,
+						_elm_lang$core$Json_Decode$succeed(xs),
+						A2(
+							_elm_lang$core$Maybe$map,
+							function (x) {
+								return A2(
+									loop,
+									idx + 1,
+									A2(_elm_lang$core$List_ops['::'], x, xs));
+							},
+							_p0));
+				});
+		});
+	return A2(
+		_elm_lang$core$Json_Decode$map,
+		_elm_lang$core$List$reverse,
+		A2(
+			_elm_lang$core$Json_Decode_ops[':='],
+			'childNodes',
+			A2(
+				loop,
+				0,
+				_elm_lang$core$Native_List.fromArray(
+					[]))));
+};
+var _debois$elm_dom$DOM$childNode = function (idx) {
+	return _elm_lang$core$Json_Decode$at(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				'childNodes',
+				_elm_lang$core$Basics$toString(idx)
+			]));
+};
+var _debois$elm_dom$DOM$parentElement = function (decoder) {
+	return A2(_elm_lang$core$Json_Decode_ops[':='], 'parentElement', decoder);
+};
+var _debois$elm_dom$DOM$previousSibling = function (decoder) {
+	return A2(_elm_lang$core$Json_Decode_ops[':='], 'previousSibling', decoder);
+};
+var _debois$elm_dom$DOM$nextSibling = function (decoder) {
+	return A2(_elm_lang$core$Json_Decode_ops[':='], 'nextSibling', decoder);
+};
+var _debois$elm_dom$DOM$offsetParent = F2(
+	function (x, decoder) {
+		return _elm_lang$core$Json_Decode$oneOf(
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$core$Json_Decode_ops[':='],
+					'offsetParent',
+					_elm_lang$core$Json_Decode$null(x)),
+					A2(_elm_lang$core$Json_Decode_ops[':='], 'offsetParent', decoder)
+				]));
+	});
+var _debois$elm_dom$DOM$position = F2(
+	function (x, y) {
+		return A2(
+			_elm_lang$core$Json_Decode$andThen,
+			A5(
+				_elm_lang$core$Json_Decode$object4,
+				F4(
+					function (scrollLeft, scrollTop, offsetLeft, offsetTop) {
+						return {ctor: '_Tuple2', _0: (x + offsetLeft) - scrollLeft, _1: (y + offsetTop) - scrollTop};
+					}),
+				_debois$elm_dom$DOM$scrollLeft,
+				_debois$elm_dom$DOM$scrollTop,
+				_debois$elm_dom$DOM$offsetLeft,
+				_debois$elm_dom$DOM$offsetTop),
+			function (_p1) {
+				var _p2 = _p1;
+				var _p4 = _p2._1;
+				var _p3 = _p2._0;
+				return A2(
+					_debois$elm_dom$DOM$offsetParent,
+					{ctor: '_Tuple2', _0: _p3, _1: _p4},
+					A2(_debois$elm_dom$DOM$position, _p3, _p4));
+			});
+	});
+var _debois$elm_dom$DOM$boundingClientRect = A4(
+	_elm_lang$core$Json_Decode$object3,
+	F3(
+		function (_p5, width, height) {
+			var _p6 = _p5;
+			return {top: _p6._1, left: _p6._0, width: width, height: height};
+		}),
+	A2(_debois$elm_dom$DOM$position, 0, 0),
+	_debois$elm_dom$DOM$offsetWidth,
+	_debois$elm_dom$DOM$offsetHeight);
+var _debois$elm_dom$DOM$target = function (decoder) {
+	return A2(_elm_lang$core$Json_Decode_ops[':='], 'target', decoder);
+};
+var _debois$elm_dom$DOM$Rectangle = F4(
+	function (a, b, c, d) {
+		return {top: a, left: b, width: c, height: d};
+	});

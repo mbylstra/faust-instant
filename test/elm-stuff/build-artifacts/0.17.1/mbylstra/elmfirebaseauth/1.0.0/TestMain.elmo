@@ -1,0 +1,81 @@
+var _mbylstra$elmfirebaseauth$TestMain$view = function (model) {
+	var renderFaustProgram = function (_p0) {
+		var _p1 = _p0;
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(
+					_elm_lang$core$Basics$toString(_p1._1.authorUid))
+				]));
+	};
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		A2(_elm_lang$core$List$map, renderFaustProgram, model.faustPrograms));
+};
+var _mbylstra$elmfirebaseauth$TestMain$update = F2(
+	function (action, model) {
+		var _p2 = action;
+		switch (_p2.ctor) {
+			case 'Error':
+				var _p3 = _elm_lang$core$Native_Utils.crash(
+					'TestMain',
+					{
+						start: {line: 75, column: 13},
+						end: {line: 75, column: 24}
+					})(
+					_elm_lang$core$Basics$toString(_p2._0));
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'FetchedFaustProgram':
+				var _p4 = A2(_elm_lang$core$Debug$log, 'faustProgram', _p2._0);
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			default:
+				var _p6 = _p2._0;
+				var _p5 = A2(_elm_lang$core$Debug$log, 'faustProgramList', _p6);
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{faustPrograms: _p6}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+		}
+	});
+var _mbylstra$elmfirebaseauth$TestMain$databaseUrl = 'https://faust-instant.firebaseio.com';
+var _mbylstra$elmfirebaseauth$TestMain$getOneTask = A4(_mbylstra$elmfirebaseauth$FirebaseRest$getOne, _mbylstra$elmfirebaseauth$TestMain$databaseUrl, 'faustPrograms/-KQAR9MLgqaLBz2NUMOJ', _mbylstra$elmfirebaseauth$FaustProgram$decoder, _elm_lang$core$Maybe$Nothing);
+var _mbylstra$elmfirebaseauth$TestMain$getManyTask = A4(_mbylstra$elmfirebaseauth$FirebaseRest$getMany, _mbylstra$elmfirebaseauth$TestMain$databaseUrl, 'faustPrograms', _mbylstra$elmfirebaseauth$FaustProgram$decoder, _elm_lang$core$Maybe$Nothing);
+var _mbylstra$elmfirebaseauth$TestMain$Model = function (a) {
+	return {faustPrograms: a};
+};
+var _mbylstra$elmfirebaseauth$TestMain$FetchedFaustProgramList = function (a) {
+	return {ctor: 'FetchedFaustProgramList', _0: a};
+};
+var _mbylstra$elmfirebaseauth$TestMain$FetchedFaustProgram = function (a) {
+	return {ctor: 'FetchedFaustProgram', _0: a};
+};
+var _mbylstra$elmfirebaseauth$TestMain$Error = function (a) {
+	return {ctor: 'Error', _0: a};
+};
+var _mbylstra$elmfirebaseauth$TestMain$init = A2(
+	_elm_lang$core$Platform_Cmd_ops['!'],
+	{
+		faustPrograms: _elm_lang$core$Native_List.fromArray(
+			[])
+	},
+	_elm_lang$core$Native_List.fromArray(
+		[
+			A3(_elm_lang$core$Task$perform, _mbylstra$elmfirebaseauth$TestMain$Error, _mbylstra$elmfirebaseauth$TestMain$FetchedFaustProgram, _mbylstra$elmfirebaseauth$TestMain$getOneTask),
+			A3(_elm_lang$core$Task$perform, _mbylstra$elmfirebaseauth$TestMain$Error, _mbylstra$elmfirebaseauth$TestMain$FetchedFaustProgramList, _mbylstra$elmfirebaseauth$TestMain$getManyTask)
+		]));

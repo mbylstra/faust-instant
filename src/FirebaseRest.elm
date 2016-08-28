@@ -27,17 +27,19 @@ import HttpBuilder
 --   }
 
 
-restUrl : String -> String -> Maybe String -> String
-restUrl databaseUrl path maybeAuthToken =
+restUrl : String -> String -> List (String, String) -> Maybe String -> String
+restUrl databaseUrl path params maybeAuthToken =
   let
     normalisedPath =
       if (String.startsWith "/" path == True) then path else ("/" ++ path)
   in
     Http.url
       ( databaseUrl ++ normalisedPath ++ ".json" )
-      ( case maybeAuthToken of
-          Just authToken -> [("auth", authToken)]
-          Nothing -> []
+      ( params ++
+        ( case maybeAuthToken of
+            Just authToken -> [("auth", authToken)]
+            Nothing -> []
+        )
       )
 
 
@@ -52,18 +54,15 @@ put :
 put databaseUrl path encoder maybeAuthToken id model =
   let
     path' = path ++ "/" ++ id
-    url = restUrl databaseUrl path' maybeAuthToken
+    url = restUrl databaseUrl path' [] maybeAuthToken
 
     body : String
     body =
       Json.Encode.encode 0 (encoder model)
 
-    requestBuilder =
+    task =
       HttpBuilder.put url
       |> HttpBuilder.withStringBody body
-
-    task =
-      requestBuilder
       |> HttpBuilder.send
           (HttpBuilder.jsonReader ignoreResponseBodyDecoder)
           HttpBuilder.stringReader
@@ -80,24 +79,55 @@ post :
   -> Task (HttpBuilder.Error String) String
 post databaseUrl path encoder maybeAuthToken model =
   let
-    url = restUrl databaseUrl path maybeAuthToken
+    url = restUrl databaseUrl path [] maybeAuthToken
 
     body : String
     body =
       Json.Encode.encode 0 (encoder model)
 
-    requestBuilder =
+    task =
       HttpBuilder.post url
       |> HttpBuilder.withStringBody body
-
-    task =
-      requestBuilder
       |> HttpBuilder.send
           (HttpBuilder.jsonReader keyResponseBodyDecoder)
           HttpBuilder.stringReader
       |> Task.map .data
   in
     task
+
+getOne :
+  String
+  -> String
+  -> Json.Decode.Decoder model
+  -> Maybe String
+  -> Task (HttpBuilder.Error String) model
+getOne databaseUrl path decoder maybeAuthToken =
+  let
+    url = restUrl databaseUrl path [] maybeAuthToken
+  in
+    HttpBuilder.get url
+    |> HttpBuilder.send
+        (HttpBuilder.jsonReader decoder)
+        HttpBuilder.stringReader
+    |> Task.map .data
+
+getMany :
+  String
+  -> String
+  -> Json.Decode.Decoder model
+  -> List (String, String)
+  -> Maybe String
+  -> Task (HttpBuilder.Error String) (List (String, model))
+getMany databaseUrl path singleDecoder params maybeAuthToken =
+  let
+    url = restUrl databaseUrl path params maybeAuthToken
+    manyDecoder = Json.Decode.keyValuePairs singleDecoder
+  in
+    HttpBuilder.get url
+    |> HttpBuilder.send
+        (HttpBuilder.jsonReader manyDecoder)
+        HttpBuilder.stringReader
+    |> Task.map .data
 
 
 ignoreResponseBodyDecoder : Json.Decode.Decoder ()

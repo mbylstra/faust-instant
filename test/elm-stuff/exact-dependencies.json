@@ -1,0 +1,21 @@
+{
+    "rtfeldman/elm-css-helpers": "2.0.0",
+    "lorenzo/elm-string-addons": "2.0.1",
+    "debois/elm-mdl": "6.1.0",
+    "elm-lang/virtual-dom": "1.1.1",
+    "rtfeldman/elm-css-util": "1.0.1",
+    "evancz/elm-http": "3.0.1",
+    "evancz/elm-graphics": "1.0.0",
+    "ohanhi/keyboard-extra": "1.1.0",
+    "elm-lang/dom": "1.1.0",
+    "debois/elm-parts": "3.0.0",
+    "elm-lang/html": "1.1.0",
+    "elm-lang/keyboard": "1.0.0",
+    "rtfeldman/elm-css": "4.0.2",
+    "ggb/numeral-elm": "1.2.1",
+    "elm-lang/svg": "1.1.1",
+    "lukewestby/elm-http-builder": "2.1.0",
+    "debois/elm-dom": "1.2.2",
+    "elm-lang/window": "1.0.0",
+    "elm-lang/core": "4.0.5"
+}

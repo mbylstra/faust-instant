@@ -1,0 +1,117 @@
+var _lorenzo$elm_string_addons$String_Addons$softBreak = F2(
+	function (width, string) {
+		return (_elm_lang$core$Native_Utils.cmp(width, 0) < 1) ? _elm_lang$core$Native_List.fromArray(
+			[]) : A2(
+			_elm_lang$core$List$map,
+			function (_) {
+				return _.match;
+			},
+			A3(
+				_elm_lang$core$Regex$find,
+				_elm_lang$core$Regex$All,
+				_elm_lang$core$Regex$regex(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'.{1,',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(width),
+							'}(\\s|$)|\\S+?(\\s|$)'))),
+				string));
+	});
+var _lorenzo$elm_string_addons$String_Addons$breaker = F3(
+	function (width, string, acc) {
+		breaker:
+		while (true) {
+			var _p0 = string;
+			if (_p0 === '') {
+				return _elm_lang$core$List$reverse(acc);
+			} else {
+				var _v1 = width,
+					_v2 = A2(_elm_lang$core$String$dropLeft, width, string),
+					_v3 = A2(
+					_elm_lang$core$List_ops['::'],
+					A3(_elm_lang$core$String$slice, 0, width, string),
+					acc);
+				width = _v1;
+				string = _v2;
+				acc = _v3;
+				continue breaker;
+			}
+		}
+	});
+var _lorenzo$elm_string_addons$String_Addons$break = F2(
+	function (width, string) {
+		return (_elm_lang$core$Native_Utils.eq(width, 0) || _elm_lang$core$Native_Utils.eq(string, '')) ? _elm_lang$core$Native_List.fromArray(
+			[string]) : A3(
+			_lorenzo$elm_string_addons$String_Addons$breaker,
+			width,
+			string,
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});
+var _lorenzo$elm_string_addons$String_Addons$replaceSlice = F4(
+	function (substitution, start, end, string) {
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			A3(_elm_lang$core$String$slice, 0, start, string),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				substitution,
+				A3(
+					_elm_lang$core$String$slice,
+					end,
+					_elm_lang$core$String$length(string),
+					string)));
+	});
+var _lorenzo$elm_string_addons$String_Addons$replace = F3(
+	function (search, substitution, string) {
+		return A4(
+			_elm_lang$core$Regex$replace,
+			_elm_lang$core$Regex$All,
+			_elm_lang$core$Regex$regex(
+				_elm_lang$core$Regex$escape(search)),
+			function (_p1) {
+				return substitution;
+			},
+			string);
+	});
+var _lorenzo$elm_string_addons$String_Addons$toSentenceCase = function (word) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		'',
+		A2(
+			_elm_lang$core$Maybe$map,
+			function (_p2) {
+				var _p3 = _p2;
+				return A2(
+					_elm_lang$core$String$cons,
+					_elm_lang$core$Char$toUpper(_p3._0),
+					_p3._1);
+			},
+			_elm_lang$core$String$uncons(word)));
+};
+var _lorenzo$elm_string_addons$String_Addons$uppercaseMatch = function (match) {
+	return A4(
+		_elm_lang$core$Regex$replace,
+		_elm_lang$core$Regex$All,
+		_elm_lang$core$Regex$regex('\\w+'),
+		function (_p4) {
+			return _lorenzo$elm_string_addons$String_Addons$toSentenceCase(
+				function (_) {
+					return _.match;
+				}(_p4));
+		},
+		match);
+};
+var _lorenzo$elm_string_addons$String_Addons$toTitleCase = function (ws) {
+	return A4(
+		_elm_lang$core$Regex$replace,
+		_elm_lang$core$Regex$All,
+		_elm_lang$core$Regex$regex('^([a-z])|\\s+([a-z])'),
+		function (_p5) {
+			var _p6 = _p5;
+			return _lorenzo$elm_string_addons$String_Addons$uppercaseMatch(_p6.match);
+		},
+		ws);
+};

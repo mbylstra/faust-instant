@@ -1,0 +1,24 @@
+var _debois$elm_mdl$Material$update = F3(
+	function (lift, msg, model) {
+		return A2(
+			_debois$elm_mdl$Material_Helpers$map1st,
+			function (_p0) {
+				return A2(
+					_elm_lang$core$Maybe$withDefault,
+					model,
+					A2(
+						_elm_lang$core$Maybe$map,
+						function (mdl) {
+							return _elm_lang$core$Native_Utils.update(
+								model,
+								{mdl: mdl});
+						},
+						_p0));
+			},
+			A3(_debois$elm_parts$Parts$update$, lift, msg, model.mdl));
+	});
+var _debois$elm_mdl$Material$model = {button: _elm_lang$core$Dict$empty, textfield: _elm_lang$core$Dict$empty, menu: _elm_lang$core$Dict$empty, snackbar: _elm_lang$core$Maybe$Nothing, layout: _debois$elm_mdl$Material_Layout$defaultModel, toggles: _elm_lang$core$Dict$empty, tooltip: _elm_lang$core$Dict$empty};
+var _debois$elm_mdl$Material$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {button: a, textfield: b, menu: c, snackbar: d, layout: e, toggles: f, tooltip: g};
+	});

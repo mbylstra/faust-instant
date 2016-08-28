@@ -1,0 +1,72 @@
+var _debois$elm_mdl$Material_Menu_Geometry$Geometry = F5(
+	function (a, b, c, d, e) {
+		return {button: a, menu: b, container: c, offsetTops: d, offsetHeights: e};
+	});
+var _debois$elm_mdl$Material_Menu_Geometry$Element = F4(
+	function (a, b, c, d) {
+		return {offsetTop: a, offsetLeft: b, offsetHeight: c, bounds: d};
+	});
+var _debois$elm_mdl$Material_Menu_Geometry$element = A5(_elm_lang$core$Json_Decode$object4, _debois$elm_mdl$Material_Menu_Geometry$Element, _debois$elm_dom$DOM$offsetTop, _debois$elm_dom$DOM$offsetLeft, _debois$elm_dom$DOM$offsetHeight, _debois$elm_dom$DOM$boundingClientRect);
+var _debois$elm_mdl$Material_Menu_Geometry$decode = A6(
+	_elm_lang$core$Json_Decode$object5,
+	_debois$elm_mdl$Material_Menu_Geometry$Geometry,
+	_debois$elm_dom$DOM$target(_debois$elm_mdl$Material_Menu_Geometry$element),
+	_debois$elm_dom$DOM$target(
+		_debois$elm_dom$DOM$nextSibling(
+			A2(_debois$elm_dom$DOM$childNode, 1, _debois$elm_mdl$Material_Menu_Geometry$element))),
+	_debois$elm_dom$DOM$target(
+		_debois$elm_dom$DOM$nextSibling(_debois$elm_mdl$Material_Menu_Geometry$element)),
+	_debois$elm_dom$DOM$target(
+		_debois$elm_dom$DOM$nextSibling(
+			A2(
+				_debois$elm_dom$DOM$childNode,
+				1,
+				A2(
+					_elm_lang$core$Json_Decode$andThen,
+					_debois$elm_dom$DOM$childNodes(_debois$elm_dom$DOM$offsetTop),
+					function (_p0) {
+						return _elm_lang$core$Json_Decode$succeed(
+							_elm_lang$core$Array$fromList(_p0));
+					})))),
+	_debois$elm_dom$DOM$target(
+		_debois$elm_dom$DOM$nextSibling(
+			A2(
+				_debois$elm_dom$DOM$childNode,
+				1,
+				A2(
+					_elm_lang$core$Json_Decode$andThen,
+					_debois$elm_dom$DOM$childNodes(_debois$elm_dom$DOM$offsetHeight),
+					function (_p1) {
+						return _elm_lang$core$Json_Decode$succeed(
+							_elm_lang$core$Array$fromList(_p1));
+					})))));
+var _debois$elm_mdl$Material_Menu_Geometry$decode$ = A6(
+	_elm_lang$core$Json_Decode$object5,
+	_debois$elm_mdl$Material_Menu_Geometry$Geometry,
+	_debois$elm_dom$DOM$target(
+		_debois$elm_dom$DOM$parentElement(
+			_debois$elm_dom$DOM$parentElement(
+				_debois$elm_dom$DOM$previousSibling(_debois$elm_mdl$Material_Menu_Geometry$element)))),
+	_debois$elm_dom$DOM$target(
+		_debois$elm_dom$DOM$parentElement(_debois$elm_mdl$Material_Menu_Geometry$element)),
+	_debois$elm_dom$DOM$target(
+		_debois$elm_dom$DOM$parentElement(
+			_debois$elm_dom$DOM$parentElement(_debois$elm_mdl$Material_Menu_Geometry$element))),
+	_debois$elm_dom$DOM$target(
+		_debois$elm_dom$DOM$parentElement(
+			A2(
+				_elm_lang$core$Json_Decode$andThen,
+				_debois$elm_dom$DOM$childNodes(_debois$elm_dom$DOM$offsetTop),
+				function (_p2) {
+					return _elm_lang$core$Json_Decode$succeed(
+						_elm_lang$core$Array$fromList(_p2));
+				}))),
+	_debois$elm_dom$DOM$target(
+		_debois$elm_dom$DOM$parentElement(
+			A2(
+				_elm_lang$core$Json_Decode$andThen,
+				_debois$elm_dom$DOM$childNodes(_debois$elm_dom$DOM$offsetHeight),
+				function (_p3) {
+					return _elm_lang$core$Json_Decode$succeed(
+						_elm_lang$core$Array$fromList(_p3));
+				}))));

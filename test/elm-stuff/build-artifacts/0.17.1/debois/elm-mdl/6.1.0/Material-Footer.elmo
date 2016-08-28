@@ -1,0 +1,419 @@
+var _debois$elm_mdl$Material_Footer$tempPrefix = '{{prefix}}';
+var _debois$elm_mdl$Material_Footer$prefixRegex = _elm_lang$core$Regex$regex(_debois$elm_mdl$Material_Footer$tempPrefix);
+var _debois$elm_mdl$Material_Footer$removePrefix = A3(
+	_elm_lang$core$Regex$replace,
+	_elm_lang$core$Regex$All,
+	_debois$elm_mdl$Material_Footer$prefixRegex,
+	function (_p0) {
+		return '';
+	});
+var _debois$elm_mdl$Material_Footer$prefixedClass = function (cls) {
+	return _debois$elm_mdl$Material_Options$cs(
+		A2(_elm_lang$core$Basics_ops['++'], _debois$elm_mdl$Material_Footer$tempPrefix, cls));
+};
+var _debois$elm_mdl$Material_Footer$socialBtn = _debois$elm_mdl$Material_Footer$prefixedClass('social-btn');
+var _debois$elm_mdl$Material_Footer$headingClass = _debois$elm_mdl$Material_Footer$prefixedClass('heading');
+var _debois$elm_mdl$Material_Footer$href = function (_p1) {
+	return _debois$elm_mdl$Material_Options_Internal$attribute(
+		_elm_lang$html$Html_Attributes$href(_p1));
+};
+var _debois$elm_mdl$Material_Footer$onClick = function (_p2) {
+	return _debois$elm_mdl$Material_Options_Internal$attribute(
+		_elm_lang$html$Html_Events$onClick(_p2));
+};
+var _debois$elm_mdl$Material_Footer$separator = '__';
+var _debois$elm_mdl$Material_Footer$prefix = function (tp) {
+	var _p3 = tp;
+	if (_p3.ctor === 'Mini') {
+		return 'mdl-mini-footer';
+	} else {
+		return 'mdl-mega-footer';
+	}
+};
+var _debois$elm_mdl$Material_Footer$applyPrefix = F2(
+	function (tp, prop) {
+		var sep = _debois$elm_mdl$Material_Footer$separator;
+		var pref = _debois$elm_mdl$Material_Footer$prefix(tp);
+		var _p4 = prop;
+		switch (_p4.ctor) {
+			case 'Class':
+				var _p5 = _p4._0;
+				return A2(_elm_lang$core$String$startsWith, _debois$elm_mdl$Material_Footer$tempPrefix, _p5) ? _debois$elm_mdl$Material_Options$cs(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						pref,
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							sep,
+							_debois$elm_mdl$Material_Footer$removePrefix(_p5)))) : prop;
+			case 'Many':
+				return _debois$elm_mdl$Material_Options$many(
+					A2(
+						_elm_lang$core$List$map,
+						_debois$elm_mdl$Material_Footer$applyPrefix(tp),
+						_p4._0));
+			default:
+				return prop;
+		}
+	});
+var _debois$elm_mdl$Material_Footer$toHtml = F2(
+	function (tp, _p6) {
+		var _p7 = _p6;
+		var styles$ = A2(
+			_elm_lang$core$List$map,
+			_debois$elm_mdl$Material_Footer$applyPrefix(tp),
+			_p7.styles);
+		return A3(
+			_debois$elm_mdl$Material_Options$styled,
+			_p7.elem,
+			styles$,
+			A2(
+				_elm_lang$core$List$map,
+				_debois$elm_mdl$Material_Footer$contentToHtml(tp),
+				_p7.content));
+	});
+var _debois$elm_mdl$Material_Footer$contentToHtml = F2(
+	function (tp, content) {
+		var _p8 = content;
+		if (_p8.ctor === 'HtmlContent') {
+			return _p8._0;
+		} else {
+			return A2(_debois$elm_mdl$Material_Footer$toHtml, tp, _p8._0);
+		}
+	});
+var _debois$elm_mdl$Material_Footer$sectionContent = F3(
+	function (tp, section, content) {
+		var sep = _debois$elm_mdl$Material_Footer$separator;
+		var pref = _debois$elm_mdl$Material_Footer$prefix(tp);
+		var _p9 = content;
+		if (_p9.ctor === 'HtmlContent') {
+			return A3(
+				_debois$elm_mdl$Material_Options$styled,
+				_elm_lang$html$Html$div,
+				A2(
+					_elm_lang$core$List_ops['::'],
+					_debois$elm_mdl$Material_Options$cs(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							pref,
+							A2(_elm_lang$core$Basics_ops['++'], sep, section))),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+				_elm_lang$core$Native_List.fromArray(
+					[_p9._0]));
+		} else {
+			return A3(
+				_debois$elm_mdl$Material_Options$styled,
+				_p9._0.elem,
+				A2(
+					_elm_lang$core$List_ops['::'],
+					_debois$elm_mdl$Material_Options$cs(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							pref,
+							A2(_elm_lang$core$Basics_ops['++'], sep, section))),
+					_p9._0.styles),
+				A2(
+					_elm_lang$core$List$map,
+					_debois$elm_mdl$Material_Footer$contentToHtml(tp),
+					_p9._0.content));
+		}
+	});
+var _debois$elm_mdl$Material_Footer$leftHtml = F2(
+	function (tp, left) {
+		var _p10 = left;
+		if (_p10.ctor === 'Just') {
+			return _elm_lang$core$Native_List.fromArray(
+				[
+					A3(_debois$elm_mdl$Material_Footer$sectionContent, tp, 'left-section', _p10._0._0)
+				]);
+		} else {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		}
+	});
+var _debois$elm_mdl$Material_Footer$rightHtml = F2(
+	function (tp, right) {
+		var _p11 = right;
+		if (_p11.ctor === 'Just') {
+			return _elm_lang$core$Native_List.fromArray(
+				[
+					A3(_debois$elm_mdl$Material_Footer$sectionContent, tp, 'right-section', _p11._0._0)
+				]);
+		} else {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		}
+	});
+var _debois$elm_mdl$Material_Footer$Footer = F3(
+	function (a, b, c) {
+		return {styles: a, content: b, elem: c};
+	});
+var _debois$elm_mdl$Material_Footer$MiniFooter = F2(
+	function (a, b) {
+		return {left: a, right: b};
+	});
+var _debois$elm_mdl$Material_Footer$MegaFooter = F3(
+	function (a, b, c) {
+		return {top: a, bottom: b, middle: c};
+	});
+var _debois$elm_mdl$Material_Footer$Mega = {ctor: 'Mega'};
+var _debois$elm_mdl$Material_Footer$mega = F2(
+	function (props, _p12) {
+		var _p13 = _p12;
+		var sep = _debois$elm_mdl$Material_Footer$separator;
+		var tp = _debois$elm_mdl$Material_Footer$Mega;
+		var pref = _debois$elm_mdl$Material_Footer$prefix(tp);
+		var topContent = function () {
+			var _p14 = _p13.top;
+			if (_p14.ctor === 'Nothing') {
+				return _elm_lang$core$Native_List.fromArray(
+					[]);
+			} else {
+				return _elm_lang$core$Native_List.fromArray(
+					[
+						A3(
+						_debois$elm_mdl$Material_Options$styled,
+						_elm_lang$html$Html$div,
+						A2(
+							_elm_lang$core$List_ops['::'],
+							_debois$elm_mdl$Material_Options$cs(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									pref,
+									A2(_elm_lang$core$Basics_ops['++'], sep, 'top-section'))),
+							_p14._0._0.props),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							A2(_debois$elm_mdl$Material_Footer$leftHtml, tp, _p14._0._0.left),
+							A2(_debois$elm_mdl$Material_Footer$rightHtml, tp, _p14._0._0.right)))
+					]);
+			}
+		}();
+		var middleContent = function () {
+			var _p15 = _p13.middle;
+			if (_p15.ctor === 'Nothing') {
+				return _elm_lang$core$Native_List.fromArray(
+					[]);
+			} else {
+				return _elm_lang$core$Native_List.fromArray(
+					[
+						A3(
+						_debois$elm_mdl$Material_Options$styled,
+						_elm_lang$html$Html$div,
+						A2(
+							_elm_lang$core$List_ops['::'],
+							_debois$elm_mdl$Material_Options$cs(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									pref,
+									A2(_elm_lang$core$Basics_ops['++'], sep, 'middle-section'))),
+							_p15._0._0.props),
+						A2(
+							_elm_lang$core$List$map,
+							_debois$elm_mdl$Material_Footer$contentToHtml(tp),
+							_p15._0._0.content))
+					]);
+			}
+		}();
+		var bottomContent = function () {
+			var _p16 = _p13.bottom;
+			if (_p16.ctor === 'Nothing') {
+				return _elm_lang$core$Native_List.fromArray(
+					[]);
+			} else {
+				return _elm_lang$core$Native_List.fromArray(
+					[
+						A3(
+						_debois$elm_mdl$Material_Options$styled,
+						_elm_lang$html$Html$div,
+						A2(
+							_elm_lang$core$List_ops['::'],
+							_debois$elm_mdl$Material_Options$cs(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									pref,
+									A2(_elm_lang$core$Basics_ops['++'], sep, 'bottom-section'))),
+							_p16._0._0.props),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Native_List.fromArray(
+								[]),
+							A2(
+								_elm_lang$core$List$map,
+								_debois$elm_mdl$Material_Footer$contentToHtml(tp),
+								_p16._0._0.content)))
+					]);
+			}
+		}();
+		return A3(
+			_debois$elm_mdl$Material_Options$styled,
+			_elm_lang$html$Html$footer,
+			A2(
+				_elm_lang$core$List_ops['::'],
+				_debois$elm_mdl$Material_Options$cs(pref),
+				props),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				topContent,
+				A2(_elm_lang$core$Basics_ops['++'], middleContent, bottomContent)));
+	});
+var _debois$elm_mdl$Material_Footer$Mini = {ctor: 'Mini'};
+var _debois$elm_mdl$Material_Footer$mini = F2(
+	function (props, _p17) {
+		var _p18 = _p17;
+		var tp = _debois$elm_mdl$Material_Footer$Mini;
+		var pref = _debois$elm_mdl$Material_Footer$prefix(tp);
+		var leftContent = A2(_debois$elm_mdl$Material_Footer$leftHtml, tp, _p18.left);
+		var rightContent = A2(_debois$elm_mdl$Material_Footer$rightHtml, tp, _p18.right);
+		return A3(
+			_debois$elm_mdl$Material_Options$styled,
+			_elm_lang$html$Html$footer,
+			A2(
+				_elm_lang$core$List_ops['::'],
+				_debois$elm_mdl$Material_Options$cs(pref),
+				props),
+			A2(_elm_lang$core$Basics_ops['++'], leftContent, rightContent));
+	});
+var _debois$elm_mdl$Material_Footer$FooterProperty = {ctor: 'FooterProperty'};
+var _debois$elm_mdl$Material_Footer$Content = function (a) {
+	return {ctor: 'Content', _0: a};
+};
+var _debois$elm_mdl$Material_Footer$logo = F2(
+	function (styles, content) {
+		return _debois$elm_mdl$Material_Footer$Content(
+			{
+				styles: A2(
+					_elm_lang$core$List_ops['::'],
+					_debois$elm_mdl$Material_Options$cs('mdl-logo'),
+					styles),
+				content: content,
+				elem: _elm_lang$html$Html$div
+			});
+	});
+var _debois$elm_mdl$Material_Footer$links = F2(
+	function (styles, content) {
+		return _debois$elm_mdl$Material_Footer$Content(
+			{
+				styles: A2(
+					_elm_lang$core$List_ops['::'],
+					_debois$elm_mdl$Material_Footer$prefixedClass('link-list'),
+					styles),
+				content: content,
+				elem: _elm_lang$html$Html$ul
+			});
+	});
+var _debois$elm_mdl$Material_Footer$linkItem = F2(
+	function (styles, content) {
+		return _debois$elm_mdl$Material_Footer$Content(
+			{
+				styles: _elm_lang$core$Native_List.fromArray(
+					[]),
+				content: _elm_lang$core$Native_List.fromArray(
+					[
+						_debois$elm_mdl$Material_Footer$Content(
+						{styles: styles, content: content, elem: _elm_lang$html$Html$a})
+					]),
+				elem: _elm_lang$html$Html$li
+			});
+	});
+var _debois$elm_mdl$Material_Footer$heading = F2(
+	function (styles, content) {
+		return _debois$elm_mdl$Material_Footer$Content(
+			{
+				styles: A2(_elm_lang$core$List_ops['::'], _debois$elm_mdl$Material_Footer$headingClass, styles),
+				content: content,
+				elem: _elm_lang$html$Html$h1
+			});
+	});
+var _debois$elm_mdl$Material_Footer$socialButton = F2(
+	function (styles, content) {
+		return _debois$elm_mdl$Material_Footer$Content(
+			{
+				styles: A2(_elm_lang$core$List_ops['::'], _debois$elm_mdl$Material_Footer$socialBtn, styles),
+				content: content,
+				elem: _elm_lang$html$Html$button
+			});
+	});
+var _debois$elm_mdl$Material_Footer$HtmlContent = function (a) {
+	return {ctor: 'HtmlContent', _0: a};
+};
+var _debois$elm_mdl$Material_Footer$checkbox = _debois$elm_mdl$Material_Footer$HtmlContent(
+	A2(
+		_elm_lang$html$Html$input,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('mdl-mega-footer__heading-checkbox'),
+				_elm_lang$html$Html_Attributes$type$('checkbox'),
+				A2(_elm_lang$html$Html_Attributes$attribute, 'checked', '')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[])));
+var _debois$elm_mdl$Material_Footer$dropdown = F2(
+	function (props, content) {
+		return _debois$elm_mdl$Material_Footer$Content(
+			{
+				styles: A2(
+					_elm_lang$core$List_ops['::'],
+					_debois$elm_mdl$Material_Options$cs('mdl-mega-footer__drop-down-section'),
+					props),
+				content: A2(_elm_lang$core$List_ops['::'], _debois$elm_mdl$Material_Footer$checkbox, content),
+				elem: _elm_lang$html$Html$div
+			});
+	});
+var _debois$elm_mdl$Material_Footer$html = _debois$elm_mdl$Material_Footer$HtmlContent;
+var _debois$elm_mdl$Material_Footer$link = F2(
+	function (styles, contents) {
+		return _debois$elm_mdl$Material_Footer$html(
+			A3(_debois$elm_mdl$Material_Options$styled, _elm_lang$html$Html$a, styles, contents));
+	});
+var _debois$elm_mdl$Material_Footer$li = F2(
+	function (styles, content) {
+		return _debois$elm_mdl$Material_Footer$html(
+			A3(_debois$elm_mdl$Material_Options$styled, _elm_lang$html$Html$li, styles, content));
+	});
+var _debois$elm_mdl$Material_Footer$Section = function (a) {
+	return {ctor: 'Section', _0: a};
+};
+var _debois$elm_mdl$Material_Footer$left = F2(
+	function (styles, content) {
+		return _elm_lang$core$Maybe$Just(
+			_debois$elm_mdl$Material_Footer$Section(
+				_debois$elm_mdl$Material_Footer$Content(
+					{styles: styles, content: content, elem: _elm_lang$html$Html$div})));
+	});
+var _debois$elm_mdl$Material_Footer$right = F2(
+	function (styles, content) {
+		return _elm_lang$core$Maybe$Just(
+			_debois$elm_mdl$Material_Footer$Section(
+				_debois$elm_mdl$Material_Footer$Content(
+					{styles: styles, content: content, elem: _elm_lang$html$Html$div})));
+	});
+var _debois$elm_mdl$Material_Footer$TopSection = function (a) {
+	return {ctor: 'TopSection', _0: a};
+};
+var _debois$elm_mdl$Material_Footer$top = F2(
+	function (props, _p19) {
+		var _p20 = _p19;
+		return _elm_lang$core$Maybe$Just(
+			_debois$elm_mdl$Material_Footer$TopSection(
+				{left: _p20.left, right: _p20.right, props: props}));
+	});
+var _debois$elm_mdl$Material_Footer$BottomSection = function (a) {
+	return {ctor: 'BottomSection', _0: a};
+};
+var _debois$elm_mdl$Material_Footer$bottom = F2(
+	function (props, content) {
+		return _elm_lang$core$Maybe$Just(
+			_debois$elm_mdl$Material_Footer$BottomSection(
+				{props: props, content: content}));
+	});
+var _debois$elm_mdl$Material_Footer$MiddleSection = function (a) {
+	return {ctor: 'MiddleSection', _0: a};
+};
+var _debois$elm_mdl$Material_Footer$middle = F2(
+	function (props, content) {
+		return _elm_lang$core$Maybe$Just(
+			_debois$elm_mdl$Material_Footer$MiddleSection(
+				{props: props, content: content}));
+	});

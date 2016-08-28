@@ -20,6 +20,7 @@ type alias Model =
   , public : Bool
   , authorUid : Maybe String
   , starCount : Int
+  , staffPick : Bool
   }
 
 init : Model
@@ -30,6 +31,7 @@ init =
   , public = False
   , authorUid = Nothing
   , starCount = 0
+  , staffPick = False
   }
 
 -- SERIALIZE
@@ -42,14 +44,20 @@ encoder model =
         , ( "public", JsonEncode.bool model.public )
         , ( "authorUid", maybeString model.authorUid )
         , ( "starCount", JsonEncode.int model.starCount )
+        , ( "staffPick", JsonEncode.bool model.staffPick )
         ]
 
 decoder : Decoder Model
 decoder =
-    JsonDecode.object6 Model
+    JsonDecode.object7 Model
         (JsonDecode.succeed Nothing)
         ("code" := JsonDecode.string)
         ("title" := JsonDecode.string)
         ("public" := JsonDecode.bool)
-        ("authorUid" := JsonDecode.maybe JsonDecode.string)
+        ( JsonDecode.oneOf
+          [ JsonDecode.map Just <| "authorUid" := JsonDecode.string
+          , JsonDecode.succeed Nothing
+          ]
+        )
         ("starCount" := JsonDecode.int)
+        ("staffPick" := JsonDecode.bool)

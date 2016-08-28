@@ -1,0 +1,248 @@
+var _debois$elm_mdl$Material_Ripple$styles = F2(
+	function (m, frame) {
+		var r = m.rect;
+		var toPx = function (k) {
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Basics$toString(
+					_elm_lang$core$Basics$round(k)),
+				'px');
+		};
+		var offset = A2(
+			_elm_lang$core$Basics_ops['++'],
+			'translate(',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				toPx(m.x),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					', ',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						toPx(m.y),
+						')'))));
+		var rippleSize = toPx(
+			(_elm_lang$core$Basics$sqrt((r.width * r.width) + (r.height * r.height)) * 2.0) + 2.0);
+		var scale = _elm_lang$core$Native_Utils.eq(frame, 0) ? 'scale(0.0001, 0.0001)' : '';
+		var transformString = A2(
+			_elm_lang$core$Basics_ops['++'],
+			'translate(-50%, -50%) ',
+			A2(_elm_lang$core$Basics_ops['++'], offset, scale));
+		return _elm_lang$core$Native_List.fromArray(
+			[
+				{ctor: '_Tuple2', _0: 'width', _1: rippleSize},
+				{ctor: '_Tuple2', _0: 'height', _1: rippleSize},
+				{ctor: '_Tuple2', _0: '-webkit-transform', _1: transformString},
+				{ctor: '_Tuple2', _0: '-ms-transform', _1: transformString},
+				{ctor: '_Tuple2', _0: 'transform', _1: transformString}
+			]);
+	});
+var _debois$elm_mdl$Material_Ripple$Metrics = F3(
+	function (a, b, c) {
+		return {rect: a, x: b, y: c};
+	});
+var _debois$elm_mdl$Material_Ripple$computeMetrics = function (g) {
+	var rect = g.rect;
+	var set = F2(
+		function (x, y) {
+			return _elm_lang$core$Maybe$Just(
+				{ctor: '_Tuple2', _0: x - rect.left, _1: y - rect.top});
+		});
+	return A2(
+		_elm_lang$core$Maybe$map,
+		function (_p0) {
+			var _p1 = _p0;
+			return A3(_debois$elm_mdl$Material_Ripple$Metrics, rect, _p1._0, _p1._1);
+		},
+		function () {
+			var _p2 = {ctor: '_Tuple4', _0: g.clientX, _1: g.clientY, _2: g.touchX, _3: g.touchY};
+			_v1_3:
+			do {
+				if (_p2.ctor === '_Tuple4') {
+					if ((_p2._0.ctor === 'Just') && (_p2._1.ctor === 'Just')) {
+						if ((_p2._0._0 === 0.0) && (_p2._1._0 === 0.0)) {
+							return _elm_lang$core$Maybe$Just(
+								{ctor: '_Tuple2', _0: rect.width / 2.0, _1: rect.height / 2.0});
+						} else {
+							return A2(set, _p2._0._0, _p2._1._0);
+						}
+					} else {
+						if ((_p2._2.ctor === 'Just') && (_p2._3.ctor === 'Just')) {
+							return A2(set, _p2._2._0, _p2._3._0);
+						} else {
+							break _v1_3;
+						}
+					}
+				} else {
+					break _v1_3;
+				}
+			} while(false);
+			return _elm_lang$core$Maybe$Nothing;
+		}());
+};
+var _debois$elm_mdl$Material_Ripple$Model = F3(
+	function (a, b, c) {
+		return {animation: a, metrics: b, ignoringMouseDown: c};
+	});
+var _debois$elm_mdl$Material_Ripple$DOMState = F6(
+	function (a, b, c, d, e, f) {
+		return {rect: a, clientX: b, clientY: c, touchX: d, touchY: e, type$: f};
+	});
+var _debois$elm_mdl$Material_Ripple$geometryDecoder = A7(
+	_elm_lang$core$Json_Decode$object6,
+	_debois$elm_mdl$Material_Ripple$DOMState,
+	_debois$elm_dom$DOM$target(_debois$elm_dom$DOM$boundingClientRect),
+	_elm_lang$core$Json_Decode$maybe(
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'clientX', _elm_lang$core$Json_Decode$float)),
+	_elm_lang$core$Json_Decode$maybe(
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'clientY', _elm_lang$core$Json_Decode$float)),
+	_elm_lang$core$Json_Decode$maybe(
+		A2(
+			_elm_lang$core$Json_Decode$at,
+			_elm_lang$core$Native_List.fromArray(
+				['touches', '0', 'clientX']),
+			_elm_lang$core$Json_Decode$float)),
+	_elm_lang$core$Json_Decode$maybe(
+		A2(
+			_elm_lang$core$Json_Decode$at,
+			_elm_lang$core$Native_List.fromArray(
+				['touches', '0', 'clientY']),
+			_elm_lang$core$Json_Decode$float)),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'type', _elm_lang$core$Json_Decode$string));
+var _debois$elm_mdl$Material_Ripple$Inert = {ctor: 'Inert'};
+var _debois$elm_mdl$Material_Ripple$model = {animation: _debois$elm_mdl$Material_Ripple$Inert, metrics: _elm_lang$core$Maybe$Nothing, ignoringMouseDown: false};
+var _debois$elm_mdl$Material_Ripple$Frame = function (a) {
+	return {ctor: 'Frame', _0: a};
+};
+var _debois$elm_mdl$Material_Ripple$view$ = F2(
+	function (attrs, model) {
+		var styling = function () {
+			var _p3 = {ctor: '_Tuple2', _0: model.metrics, _1: model.animation};
+			if ((_p3.ctor === '_Tuple2') && (_p3._0.ctor === 'Just')) {
+				if (_p3._1.ctor === 'Frame') {
+					return A2(_debois$elm_mdl$Material_Ripple$styles, _p3._0._0, _p3._1._0);
+				} else {
+					return A2(_debois$elm_mdl$Material_Ripple$styles, _p3._0._0, 1);
+				}
+			} else {
+				return _elm_lang$core$Native_List.fromArray(
+					[]);
+			}
+		}();
+		return A2(
+			_elm_lang$html$Html$span,
+			attrs,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$classList(
+							_elm_lang$core$Native_List.fromArray(
+								[
+									{ctor: '_Tuple2', _0: 'mdl-ripple', _1: true},
+									{
+									ctor: '_Tuple2',
+									_0: 'is-animating',
+									_1: !_elm_lang$core$Native_Utils.eq(
+										model.animation,
+										_debois$elm_mdl$Material_Ripple$Frame(0))
+								},
+									{
+									ctor: '_Tuple2',
+									_0: 'is-visible',
+									_1: !_elm_lang$core$Native_Utils.eq(model.animation, _debois$elm_mdl$Material_Ripple$Inert)
+								}
+								])),
+							_elm_lang$html$Html_Attributes$style(styling)
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[]))
+				]));
+	});
+var _debois$elm_mdl$Material_Ripple$Tick = {ctor: 'Tick'};
+var _debois$elm_mdl$Material_Ripple$update = F2(
+	function (action, model) {
+		var _p4 = action;
+		switch (_p4.ctor) {
+			case 'Down':
+				var _p5 = _p4._0;
+				return (_elm_lang$core$Native_Utils.eq(_p5.type$, 'mousedown') && model.ignoringMouseDown) ? A2(
+					_debois$elm_mdl$Material_Helpers$effect,
+					_elm_lang$core$Platform_Cmd$none,
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{ignoringMouseDown: false})) : A2(
+					_debois$elm_mdl$Material_Helpers$effect,
+					_debois$elm_mdl$Material_Helpers$cssTransitionStep(_debois$elm_mdl$Material_Ripple$Tick),
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							animation: _debois$elm_mdl$Material_Ripple$Frame(0),
+							metrics: _debois$elm_mdl$Material_Ripple$computeMetrics(_p5),
+							ignoringMouseDown: _elm_lang$core$Native_Utils.eq(_p5.type$, 'touchstart') ? true : model.ignoringMouseDown
+						}));
+			case 'Up':
+				return A2(
+					_debois$elm_mdl$Material_Helpers$effect,
+					_elm_lang$core$Platform_Cmd$none,
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{animation: _debois$elm_mdl$Material_Ripple$Inert}));
+			default:
+				return A2(
+					_debois$elm_mdl$Material_Helpers$effect,
+					_elm_lang$core$Platform_Cmd$none,
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							animation: _debois$elm_mdl$Material_Ripple$Frame(1)
+						}));
+		}
+	});
+var _debois$elm_mdl$Material_Ripple$Up = {ctor: 'Up'};
+var _debois$elm_mdl$Material_Ripple$upOn = function (name) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		name,
+		_elm_lang$core$Json_Decode$succeed(_debois$elm_mdl$Material_Ripple$Up));
+};
+var _debois$elm_mdl$Material_Ripple$Down = function (a) {
+	return {ctor: 'Down', _0: a};
+};
+var _debois$elm_mdl$Material_Ripple$downOn = function (name) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		name,
+		A2(_elm_lang$core$Json_Decode$map, _debois$elm_mdl$Material_Ripple$Down, _debois$elm_mdl$Material_Ripple$geometryDecoder));
+};
+var _debois$elm_mdl$Material_Ripple$view = function (_p6) {
+	return _debois$elm_mdl$Material_Ripple$view$(
+		A3(
+			_elm_lang$core$Basics$flip,
+			_elm_lang$core$List$append,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_debois$elm_mdl$Material_Ripple$upOn('mouseup'),
+					_debois$elm_mdl$Material_Ripple$upOn('mouseleave'),
+					_debois$elm_mdl$Material_Ripple$upOn('touchend'),
+					_debois$elm_mdl$Material_Ripple$upOn('blur'),
+					_debois$elm_mdl$Material_Ripple$downOn('mousedown'),
+					_debois$elm_mdl$Material_Ripple$downOn('touchstart')
+				]),
+			_p6));
+};
+var _debois$elm_mdl$Material_Ripple$downOn$ = F2(
+	function (f, name) {
+		return A2(
+			_elm_lang$html$Html_Events$on,
+			name,
+			A2(
+				_elm_lang$core$Json_Decode$map,
+				function (_p7) {
+					return f(
+						_debois$elm_mdl$Material_Ripple$Down(_p7));
+				},
+				_debois$elm_mdl$Material_Ripple$geometryDecoder));
+	});

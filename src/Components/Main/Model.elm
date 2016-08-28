@@ -17,9 +17,9 @@ import FaustProgram
 import HotKeys
 import Slider
 import Arpeggiator
-import Examples
 import SimpleDialog
 import User
+import ProgramList
 
 -- component modules
 import Main.Types exposing (..)
@@ -37,12 +37,13 @@ init : (Model, Cmd Msg)
 init =
   let
     (hotKeys, hotKeysCommand) = HotKeys.init
+    (programList, programListCommand) = ProgramList.init
   in
     { faustProgram = FaustProgram.init
     , compilationError = Nothing
     , hotKeys = hotKeys
+    , programList = programList
     -- , fileReader = FileReader.init
-    , examples = Examples.init
     , mainVolume = Slider.init 1.0
     , fftData = []
     , uiInputs = Array.empty
@@ -62,6 +63,7 @@ init =
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
+    , Cmd.map ProgramListMsg programListCommand
     , elmAppInitialRender ()
     , fetchCurrentFirebaseUser
     -- , Task.perform AuthTokenNotRetrievedFromLocalStorage AuthTokenRetrievedFromLocalStorage

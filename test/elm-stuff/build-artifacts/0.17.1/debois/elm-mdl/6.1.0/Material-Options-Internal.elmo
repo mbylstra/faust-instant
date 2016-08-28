@@ -1,0 +1,17 @@
+var _debois$elm_mdl$Material_Options_Internal$None = {ctor: 'None'};
+var _debois$elm_mdl$Material_Options_Internal$Set = function (a) {
+	return {ctor: 'Set', _0: a};
+};
+var _debois$elm_mdl$Material_Options_Internal$Many = function (a) {
+	return {ctor: 'Many', _0: a};
+};
+var _debois$elm_mdl$Material_Options_Internal$Attribute = function (a) {
+	return {ctor: 'Attribute', _0: a};
+};
+var _debois$elm_mdl$Material_Options_Internal$attribute = _debois$elm_mdl$Material_Options_Internal$Attribute;
+var _debois$elm_mdl$Material_Options_Internal$CSS = function (a) {
+	return {ctor: 'CSS', _0: a};
+};
+var _debois$elm_mdl$Material_Options_Internal$Class = function (a) {
+	return {ctor: 'Class', _0: a};
+};

@@ -1,0 +1,10 @@
+var _debois$elm_mdl$Material_Badge$add = function (str) {
+	return _debois$elm_mdl$Material_Options$many(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(_debois$elm_mdl$Material_Options$data, 'badge', str),
+				_debois$elm_mdl$Material_Options$cs('mdl-badge')
+			]));
+};
+var _debois$elm_mdl$Material_Badge$overlap = _debois$elm_mdl$Material_Options$cs('mdl-badge--overlap');
+var _debois$elm_mdl$Material_Badge$noBackground = _debois$elm_mdl$Material_Options$cs('mdl-badge--no-background');

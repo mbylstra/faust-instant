@@ -6,8 +6,6 @@ module Main.Types exposing (..)
 import Json.Decode
 import Array exposing (Array)
 
--- external libs
-import HttpBuilder
 
 -- external components
 import FirebaseAuth exposing (AuthProvider(..), SignInWithPopupError(..))
@@ -25,6 +23,7 @@ import FaustProgram
 import User
 import SimpleDialog
 import UserSettingsForm
+import ProgramList
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -33,7 +32,7 @@ type alias Model =
   { faustProgram : FaustProgram.Model
   , compilationError : Maybe String
   , hotKeys : HotKeys.Model
-  , examples : List (String, String)
+  , programList : ProgramList.Model
   , mainVolume : Slider.Model
   , fftData : List Float
   , uiInputs : UiInputs
@@ -57,7 +56,7 @@ type Msg
   | CompilationError (Maybe String)
   | FaustCodeChanged String
   | HotKeysMsg HotKeys.Msg
-  | ExamplesMsg Examples.Msg
+  | ProgramListMsg ProgramList.Msg
   | VolumeSliderMsg Slider.Msg
   | NewFFTData (List Float)
   | DSPCompiled (List Json.Decode.Value)

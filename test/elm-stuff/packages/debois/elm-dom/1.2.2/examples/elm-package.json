@@ -1,0 +1,17 @@
+{
+    "version": "1.1.1",
+    "summary": "DOM traversal for Elm event-handlers",
+    "repository": "https://github.com/debois/elm-dom.git",
+    "license": "BSD3",
+    "source-directories": [
+        "../src",
+        "examples"
+    ],
+    "exposed-modules": [
+    ],
+    "dependencies": {
+        "elm-lang/core": "4.0.0 <= v < 5.0.0",
+        "elm-lang/html": "1.0.0 <= v < 2.0.0"
+    },
+    "elm-version": "0.16.0 <= v < 0.17.0"
+}

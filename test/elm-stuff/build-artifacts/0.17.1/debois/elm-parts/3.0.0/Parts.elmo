@@ -1,0 +1,208 @@
+var _debois$elm_parts$Parts$map2nd = F2(
+	function (f, _p0) {
+		var _p1 = _p0;
+		return {
+			ctor: '_Tuple2',
+			_0: _p1._0,
+			_1: f(_p1._1)
+		};
+	});
+var _debois$elm_parts$Parts$map1st = F2(
+	function (f, _p2) {
+		var _p3 = _p2;
+		return {
+			ctor: '_Tuple2',
+			_0: f(_p3._0),
+			_1: _p3._1
+		};
+	});
+var _debois$elm_parts$Parts$update$ = F3(
+	function (fwd, _p4, c) {
+		var _p5 = _p4;
+		return A2(
+			_debois$elm_parts$Parts$map2nd,
+			_elm_lang$core$Platform_Cmd$map(fwd),
+			_p5._0(c));
+	});
+var _debois$elm_parts$Parts$update = F3(
+	function (fwd, _p6, c) {
+		var _p7 = _p6;
+		return A2(
+			_debois$elm_parts$Parts$map2nd,
+			_elm_lang$core$Platform_Cmd$map(fwd),
+			A2(
+				_debois$elm_parts$Parts$map1st,
+				_elm_lang$core$Maybe$withDefault(c),
+				_p7._0(c)));
+	});
+var _debois$elm_parts$Parts$indexed = F3(
+	function (get, set, model0) {
+		return {
+			ctor: '_Tuple2',
+			_0: F2(
+				function (idx, c) {
+					return A2(
+						_elm_lang$core$Maybe$withDefault,
+						model0,
+						A2(
+							_elm_lang$core$Dict$get,
+							idx,
+							get(c)));
+				}),
+			_1: F3(
+				function (idx, model, c) {
+					return A2(
+						set,
+						A3(
+							_elm_lang$core$Dict$insert,
+							idx,
+							model,
+							get(c)),
+						c);
+				})
+		};
+	});
+var _debois$elm_parts$Parts$accessors = F4(
+	function (get0, set0, model0, idx) {
+		var _p8 = A3(_debois$elm_parts$Parts$indexed, get0, set0, model0);
+		var get = _p8._0;
+		var set = _p8._1;
+		return {
+			get: get(idx),
+			set: set(idx),
+			map: F2(
+				function (f, c) {
+					return A3(
+						_elm_lang$core$Basics$flip,
+						set(idx),
+						c,
+						f(
+							A2(get, idx, c)));
+				}),
+			reset: function (c) {
+				return function (m) {
+					return A2(set0, m, c);
+				}(
+					A2(
+						_elm_lang$core$Dict$remove,
+						idx,
+						get0(c)));
+			}
+		};
+	});
+var _debois$elm_parts$Parts$embedUpdate$ = F5(
+	function (get, set, update, msg, c) {
+		return A2(
+			_debois$elm_parts$Parts$map1st,
+			_elm_lang$core$Maybe$map(
+				function (x) {
+					return A2(set, x, c);
+				}),
+			A2(
+				update,
+				msg,
+				get(c)));
+	});
+var _debois$elm_parts$Parts$embedUpdate = F5(
+	function (get, set, update, msg, c) {
+		return A2(
+			_debois$elm_parts$Parts$map1st,
+			A2(_elm_lang$core$Basics$flip, set, c),
+			A2(
+				update,
+				msg,
+				get(c)));
+	});
+var _debois$elm_parts$Parts$embedView = F2(
+	function (get, view) {
+		return function (_p9) {
+			return view(
+				get(_p9));
+		};
+	});
+var _debois$elm_parts$Parts$Accessors = F4(
+	function (a, b, c, d) {
+		return {get: a, set: b, map: c, reset: d};
+	});
+var _debois$elm_parts$Parts$Msg = function (a) {
+	return {ctor: 'Msg', _0: a};
+};
+var _debois$elm_parts$Parts$pack = F2(
+	function (upd, msg) {
+		return _debois$elm_parts$Parts$Msg(
+			function (c) {
+				return A2(
+					_debois$elm_parts$Parts$map2nd,
+					_elm_lang$core$Platform_Cmd$map(
+						_debois$elm_parts$Parts$pack(upd)),
+					A2(
+						_debois$elm_parts$Parts$map1st,
+						_elm_lang$core$Maybe$Just,
+						A2(upd, msg, c)));
+			});
+	});
+var _debois$elm_parts$Parts$create = F5(
+	function (view, update, get0, set0, model0) {
+		var _p10 = A3(_debois$elm_parts$Parts$indexed, get0, set0, model0);
+		var get = _p10._0;
+		var set = _p10._1;
+		var embeddedUpdate = function (idx) {
+			return A3(
+				_debois$elm_parts$Parts$embedUpdate,
+				get(idx),
+				set(idx),
+				update);
+		};
+		return F3(
+			function (f, idx, c) {
+				return A2(
+					view,
+					function (_p11) {
+						return f(
+							A2(
+								_debois$elm_parts$Parts$pack,
+								embeddedUpdate(idx),
+								_p11));
+					},
+					A2(get, idx, c));
+			});
+	});
+var _debois$elm_parts$Parts$create1 = F4(
+	function (view, update, get, set) {
+		var embeddedUpdate = A3(_debois$elm_parts$Parts$embedUpdate, get, set, update);
+		return function (f) {
+			return A2(
+				_debois$elm_parts$Parts$embedView,
+				get,
+				view(
+					function (_p12) {
+						return f(
+							A2(_debois$elm_parts$Parts$pack, embeddedUpdate, _p12));
+					}));
+		};
+	});
+var _debois$elm_parts$Parts$pack$ = F2(
+	function (upd, msg) {
+		return _debois$elm_parts$Parts$Msg(
+			function (c) {
+				return A2(
+					_debois$elm_parts$Parts$map2nd,
+					_elm_lang$core$Platform_Cmd$map(
+						_debois$elm_parts$Parts$pack$(upd)),
+					A2(upd, msg, c));
+			});
+	});
+var _debois$elm_parts$Parts$create1$ = F4(
+	function (view, upd$, get, set) {
+		var embeddedUpdate = A3(_debois$elm_parts$Parts$embedUpdate$, get, set, upd$);
+		return function (f) {
+			return A2(
+				_debois$elm_parts$Parts$embedView,
+				get,
+				view(
+					function (_p13) {
+						return f(
+							A2(_debois$elm_parts$Parts$pack$, embeddedUpdate, _p13));
+					}));
+		};
+	});

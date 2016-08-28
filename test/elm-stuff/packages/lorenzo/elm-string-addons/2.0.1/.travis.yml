@@ -1,0 +1,17 @@
+sudo: false
+language: node_js
+  - "4.3"
+
+install:
+  - npm install -g elm
+  - elm-package install -y
+
+cache:
+  directories:
+    - ./tests/elm-stuff/build-artifacts
+
+before_script:
+    - cd tests
+    - elm-make AddonsTest.elm --yes --output test.js
+
+script: node test.js

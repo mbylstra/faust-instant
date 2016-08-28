@@ -1,0 +1,127 @@
+var _debois$elm_mdl$Material_Button$icon = _debois$elm_mdl$Material_Options$cs('mdl-button--icon');
+var _debois$elm_mdl$Material_Button$minifab = _debois$elm_mdl$Material_Options$cs('mdl-button--mini-fab');
+var _debois$elm_mdl$Material_Button$fab = _debois$elm_mdl$Material_Options$cs('mdl-button--fab');
+var _debois$elm_mdl$Material_Button$raised = _debois$elm_mdl$Material_Options$cs('mdl-button--raised');
+var _debois$elm_mdl$Material_Button$flat = _debois$elm_mdl$Material_Options$nop;
+var _debois$elm_mdl$Material_Button$blurAndForward = function (event) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		A2(_elm_lang$core$Basics_ops['++'], 'on', event),
+		'this.blur(); (function(self) { var e = document.createEvent(\'Event\'); e.initEvent(\'touchcancel\', true, true); self.lastChild.dispatchEvent(e); }(this));');
+};
+var _debois$elm_mdl$Material_Button$accent = _debois$elm_mdl$Material_Options$cs('mdl-button--accent');
+var _debois$elm_mdl$Material_Button$primary = _debois$elm_mdl$Material_Options$cs('mdl-button--primary');
+var _debois$elm_mdl$Material_Button$colored = _debois$elm_mdl$Material_Options$cs('mdl-button--colored');
+var _debois$elm_mdl$Material_Button$plain = _debois$elm_mdl$Material_Options$cs('mdl-button--colored');
+var _debois$elm_mdl$Material_Button$disabled = _debois$elm_mdl$Material_Options$set(
+	function (options) {
+		return _elm_lang$core$Native_Utils.update(
+			options,
+			{disabled: true});
+	});
+var _debois$elm_mdl$Material_Button$ripple = _debois$elm_mdl$Material_Options$set(
+	function (options) {
+		return _elm_lang$core$Native_Utils.update(
+			options,
+			{ripple: true});
+	});
+var _debois$elm_mdl$Material_Button$onClick = function (x) {
+	return _debois$elm_mdl$Material_Options$set(
+		function (options) {
+			return _elm_lang$core$Native_Utils.update(
+				options,
+				{
+					onClick: _elm_lang$core$Maybe$Just(
+						_elm_lang$html$Html_Events$onClick(x))
+				});
+		});
+};
+var _debois$elm_mdl$Material_Button$defaultConfig = {ripple: false, onClick: _elm_lang$core$Maybe$Nothing, disabled: false};
+var _debois$elm_mdl$Material_Button$view = F4(
+	function (lift, model, config, html) {
+		var summary = A2(_debois$elm_mdl$Material_Options$collect, _debois$elm_mdl$Material_Button$defaultConfig, config);
+		var startListeners = summary.config.ripple ? _elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$core$Maybe$Just(
+				A2(_debois$elm_mdl$Material_Ripple$downOn$, lift, 'mousedown')),
+				_elm_lang$core$Maybe$Just(
+				A2(_debois$elm_mdl$Material_Ripple$downOn$, lift, 'touchstart'))
+			]) : _elm_lang$core$Native_List.fromArray(
+			[]);
+		var stopListeners = function () {
+			var handle = function (_p0) {
+				return _elm_lang$core$Maybe$Just(
+					(summary.config.ripple ? _debois$elm_mdl$Material_Button$blurAndForward : _debois$elm_mdl$Material_Helpers$blurOn)(_p0));
+			};
+			return _elm_lang$core$Native_List.fromArray(
+				[
+					handle('mouseup'),
+					handle('mouseleave'),
+					handle('touchend')
+				]);
+		}();
+		var misc = _elm_lang$core$Native_List.fromArray(
+			[
+				summary.config.onClick,
+				summary.config.disabled ? _elm_lang$core$Maybe$Just(
+				_elm_lang$html$Html_Attributes$disabled(true)) : _elm_lang$core$Maybe$Nothing
+			]);
+		return A5(
+			_debois$elm_mdl$Material_Options$apply,
+			summary,
+			_elm_lang$html$Html$button,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_debois$elm_mdl$Material_Options$cs('mdl-button'),
+					_debois$elm_mdl$Material_Options$cs('mdl-js-button'),
+					A2(
+					_debois$elm_mdl$Material_Options$when,
+					_debois$elm_mdl$Material_Options$cs('mdl-js-ripple-effect'),
+					summary.config.ripple)
+				]),
+			_elm_lang$core$List$concat(
+				_elm_lang$core$Native_List.fromArray(
+					[startListeners, stopListeners, misc])),
+			summary.config.ripple ? _elm_lang$core$List$concat(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						html,
+						_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html_App$map,
+							lift,
+							A2(
+								_debois$elm_mdl$Material_Ripple$view$,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html_Attributes$class('mdl-button__ripple-container'),
+										_debois$elm_mdl$Material_Ripple$upOn('blur'),
+										_debois$elm_mdl$Material_Ripple$upOn('touchcancel')
+									]),
+								model))
+						])
+					])) : html);
+	});
+var _debois$elm_mdl$Material_Button$update = function (action) {
+	return _debois$elm_mdl$Material_Ripple$update(action);
+};
+var _debois$elm_mdl$Material_Button$render = A5(
+	_debois$elm_parts$Parts$create,
+	_debois$elm_mdl$Material_Button$view,
+	_debois$elm_mdl$Material_Button$update,
+	function (_) {
+		return _.button;
+	},
+	F2(
+		function (x, y) {
+			return _elm_lang$core$Native_Utils.update(
+				y,
+				{button: x});
+		}),
+	_debois$elm_mdl$Material_Ripple$model);
+var _debois$elm_mdl$Material_Button$defaultModel = _debois$elm_mdl$Material_Ripple$model;
+var _debois$elm_mdl$Material_Button$Config = F3(
+	function (a, b, c) {
+		return {ripple: a, onClick: b, disabled: c};
+	});

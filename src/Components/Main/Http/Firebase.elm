@@ -4,7 +4,7 @@ import FirebaseRest
 import Task
 import HttpBuilder
 
--- import User
+import User
 import FaustProgram
 
 databaseUrl : String
@@ -32,3 +32,29 @@ putFaustProgram
   -> Task.Task (HttpBuilder.Error String) ()
 putFaustProgram authToken id model =
   FirebaseRest.put databaseUrl "faustPrograms" FaustProgram.encoder (Just authToken) id model
+
+
+getFaustPrograms
+  : List (String, String)
+  -> Task.Task (HttpBuilder.Error String) (List (String, FaustProgram.Model))
+getFaustPrograms params =
+  FirebaseRest.getMany databaseUrl "faustPrograms" FaustProgram.decoder params Nothing
+
+
+getStaffPicks
+  : Task.Task (HttpBuilder.Error String) (List (String, FaustProgram.Model))
+getStaffPicks =
+  getFaustPrograms
+    [ ("orderBy", "\"staffPick\"")
+    , ("equalTo", "true")
+    ]
+
+
+getUserFaustPrograms
+  : User.Model
+  -> Task.Task (HttpBuilder.Error String) (List (String, FaustProgram.Model))
+getUserFaustPrograms user =
+  getFaustPrograms
+    [ ("orderBy", "\"authorUid\"")
+    , ("equalTo", user.uid)
+    ]

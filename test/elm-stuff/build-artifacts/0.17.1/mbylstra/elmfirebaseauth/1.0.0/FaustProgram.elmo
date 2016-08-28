@@ -1,0 +1,59 @@
+var _mbylstra$elmfirebaseauth$FaustProgram$encoder = function (model) {
+	return _elm_lang$core$Json_Encode$object(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				{
+				ctor: '_Tuple2',
+				_0: 'code',
+				_1: _elm_lang$core$Json_Encode$string(model.code)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'title',
+				_1: _elm_lang$core$Json_Encode$string(model.title)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'public',
+				_1: _elm_lang$core$Json_Encode$bool(model.$public)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'authorUid',
+				_1: _mbylstra$elmfirebaseauth$Json_Encode_Extra$maybeString(model.authorUid)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'starCount',
+				_1: _elm_lang$core$Json_Encode$int(model.starCount)
+			},
+				{
+				ctor: '_Tuple2',
+				_0: 'staffPick',
+				_1: _elm_lang$core$Json_Encode$bool(model.staffPick)
+			}
+			]));
+};
+var _mbylstra$elmfirebaseauth$FaustProgram$init = {databaseId: _elm_lang$core$Maybe$Nothing, code: '', title: 'Untitled', $public: false, authorUid: _elm_lang$core$Maybe$Nothing, starCount: 0, staffPick: false};
+var _mbylstra$elmfirebaseauth$FaustProgram$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {databaseId: a, code: b, title: c, $public: d, authorUid: e, starCount: f, staffPick: g};
+	});
+var _mbylstra$elmfirebaseauth$FaustProgram$decoder = A8(
+	_elm_lang$core$Json_Decode$object7,
+	_mbylstra$elmfirebaseauth$FaustProgram$Model,
+	_elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'code', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'title', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'public', _elm_lang$core$Json_Decode$bool),
+	_elm_lang$core$Json_Decode$oneOf(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$core$Json_Decode$map,
+				_elm_lang$core$Maybe$Just,
+				A2(_elm_lang$core$Json_Decode_ops[':='], 'authorUid', _elm_lang$core$Json_Decode$string)),
+				_elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing)
+			])),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'starCount', _elm_lang$core$Json_Decode$int),
+	A2(_elm_lang$core$Json_Decode_ops[':='], 'staffPick', _elm_lang$core$Json_Decode$bool));

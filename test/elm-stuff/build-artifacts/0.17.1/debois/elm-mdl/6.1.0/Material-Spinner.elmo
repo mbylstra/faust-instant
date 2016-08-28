@@ -1,0 +1,89 @@
+var _debois$elm_mdl$Material_Spinner$createLayer = function (n) {
+	return A2(
+		_debois$elm_mdl$Material_Options$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_debois$elm_mdl$Material_Options$cs(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'mdl-spinner__layer mdl-spinner__layer-',
+					_elm_lang$core$Basics$toString(n)))
+			]),
+		A2(
+			_elm_lang$core$List$map,
+			F2(
+				function (x, y) {
+					return y(x);
+				})(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_debois$elm_mdl$Material_Options$div,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_debois$elm_mdl$Material_Options$cs('mdl-spinner__circle')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_debois$elm_mdl$Material_Options$div(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_debois$elm_mdl$Material_Options$cs('mdl-spinner__circle-clipper mdl-spinner__left')
+						])),
+					_debois$elm_mdl$Material_Options$div(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_debois$elm_mdl$Material_Options$cs('mdl-spinner__gap-patch')
+						])),
+					_debois$elm_mdl$Material_Options$div(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_debois$elm_mdl$Material_Options$cs('mdl-spinner__circle-clipper mdl-spinner__right')
+						]))
+				])));
+};
+var _debois$elm_mdl$Material_Spinner$defaultConfig = {active: false, singleColor: false};
+var _debois$elm_mdl$Material_Spinner$singleColor = function (value) {
+	return _debois$elm_mdl$Material_Options$set(
+		function (config) {
+			return _elm_lang$core$Native_Utils.update(
+				config,
+				{singleColor: value});
+		});
+};
+var _debois$elm_mdl$Material_Spinner$active = function (value) {
+	return _debois$elm_mdl$Material_Options$set(
+		function (config) {
+			return _elm_lang$core$Native_Utils.update(
+				config,
+				{active: value});
+		});
+};
+var _debois$elm_mdl$Material_Spinner$spinner = function (options) {
+	var _p0 = A2(_debois$elm_mdl$Material_Options$collect, _debois$elm_mdl$Material_Spinner$defaultConfig, options);
+	var summary = _p0;
+	var config = _p0.config;
+	return A5(
+		_debois$elm_mdl$Material_Options$apply,
+		summary,
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_debois$elm_mdl$Material_Options$cs('mdl-spinner mdl-js-spinner is-upgraded'),
+				config.active ? _debois$elm_mdl$Material_Options$cs('is-active') : _debois$elm_mdl$Material_Options$nop,
+				config.singleColor ? _debois$elm_mdl$Material_Options$cs('mdl-spinner--single-color') : _debois$elm_mdl$Material_Options$nop
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		A2(
+			_elm_lang$core$List$map,
+			_debois$elm_mdl$Material_Spinner$createLayer,
+			_elm_lang$core$Native_List.range(1, 4)));
+};
+var _debois$elm_mdl$Material_Spinner$Config = F2(
+	function (a, b) {
+		return {active: a, singleColor: b};
+	});

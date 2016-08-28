@@ -1,0 +1,7 @@
+var _mbylstra$elmfirebaseauth$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _mbylstra$elmfirebaseauth$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{init: _mbylstra$elmfirebaseauth$TestMain$init, update: _mbylstra$elmfirebaseauth$TestMain$update, view: _mbylstra$elmfirebaseauth$TestMain$view, subscriptions: _mbylstra$elmfirebaseauth$Main$subscriptions})
+};

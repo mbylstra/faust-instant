@@ -1,0 +1,44 @@
+var _debois$elm_mdl$Material_Icon$size48 = A2(_debois$elm_mdl$Material_Options$css, 'font-size', '48px');
+var _debois$elm_mdl$Material_Icon$size36 = A2(_debois$elm_mdl$Material_Options$css, 'font-size', '36px');
+var _debois$elm_mdl$Material_Icon$size24 = A2(_debois$elm_mdl$Material_Options$css, 'font-size', '24px');
+var _debois$elm_mdl$Material_Icon$size18 = A2(_debois$elm_mdl$Material_Options$css, 'font-size', '18px');
+var _debois$elm_mdl$Material_Icon$onClick = function (x) {
+	return _debois$elm_mdl$Material_Options$set(
+		function (config) {
+			return _elm_lang$core$Native_Utils.update(
+				config,
+				{
+					onClick: _elm_lang$core$Maybe$Just(
+						_elm_lang$html$Html_Events$onClick(x))
+				});
+		});
+};
+var _debois$elm_mdl$Material_Icon$defaultConfig = {onClick: _elm_lang$core$Maybe$Nothing};
+var _debois$elm_mdl$Material_Icon$view = F2(
+	function (name, options) {
+		var summary = A2(_debois$elm_mdl$Material_Options$collect, _debois$elm_mdl$Material_Icon$defaultConfig, options);
+		return A5(
+			_debois$elm_mdl$Material_Options$apply,
+			summary,
+			_elm_lang$html$Html$i,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_debois$elm_mdl$Material_Options$cs('material-icons')
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[summary.config.onClick]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text(name)
+				]));
+	});
+var _debois$elm_mdl$Material_Icon$i = function (name) {
+	return A2(
+		_debois$elm_mdl$Material_Icon$view,
+		name,
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
+var _debois$elm_mdl$Material_Icon$Config = function (a) {
+	return {onClick: a};
+};
