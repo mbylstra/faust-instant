@@ -1,19 +1,24 @@
-input[type=text] {
-  font-family: $roboto-font-family;
-  border: 0px;
-  outline: none;
-  padding: 10px;
-  font-size: 18px;
-  background-color: black;
-  color: $body-font-color;
-  border: 1px solid white;
-}
 
-label {
-  font-size: 18px;
-  margin-bottom: 40px;
+form {
 
-  > span {
-    margin-bottom: 10px;
+  input[type=text] {
+    font-family: $roboto-font-family;
+    border: 0px;
+    outline: none;
+    padding: 10px;
+    font-size: 18px;
+    background-color: black;
+    color: $body-font-color;
+    border: 1px solid white;
   }
+
+  label {
+    font-size: 18px;
+    margin-bottom: 40px;
+
+    > span {
+      margin-bottom: 10px;
+    }
+  }
+
 }

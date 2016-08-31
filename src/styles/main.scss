@@ -11,7 +11,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:100');
 
 
-// hellozzz
+// hello
 
 body {
   font-family: $body-font;
@@ -95,52 +95,89 @@ h1 {
     // flex-grow: 1;
   }
 
-  .code-editor-buttons {
-    padding: 10px;
+  .code-editor-top {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
     align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
 
-    button {
-      margin-left: 30px;
+    h2, h3 {
+      font-weight: normal;
+      font-size: 20px;
     }
 
-    select {
-      border: 1px solid $body-font-color;
-      background-color: black;
-      color: $body-font-color;
-      font-family: $body-font;
-      font-size: 20px;
-      height: 41px;
-      &:focus {
-        outline: 0;
+    h3 {
+      font-size: 16px;
+      border-left: 1px solid #333;
+      padding-left: 20px;
+    }
+
+
+    .code-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      > * {
+        margin: 0 10px;
       }
     }
-    label {
-      margin-right: 10px;
-      margin-left: 20px;
-    }
-    .spinner-holder {
-      width: 60px;
-    }
 
+    .code-editor-buttons {
+
+      padding: 10px;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      align-self: flex-end;
+
+      > * {
+        margin: 0px 10px;
+      }
+
+
+      button {
+        span {
+          margin-left: 10px;
+        }
+      }
+
+      select {
+        border: 1px solid $body-font-color;
+        background-color: black;
+        color: $body-font-color;
+        font-family: $body-font;
+        font-size: 20px;
+        &:focus {
+          outline: 0;
+        }
+      }
+      label {
+        margin-right: 10px;
+        margin-left: 20px;
+      }
+      .spinner-holder {
+        width: 60px;
+      }
+
+    }
   }
+
 }
 
 button, .save-button {
+  display: flex;
+  align-items: center;
   border: 1px solid $body-font-color;
   background-color: black;
   color: $body-font-color;
   font-family: $body-font;
   font-size: 20px;
-  line-height: 27px;
   padding: 5px 10px;
   &:focus {
     outline: 0;
   }
-  // line-height: 30px;
-  // vertical-align: middle;
 
   &:hover {
     background-color: $body-font-color;
@@ -150,7 +187,6 @@ button, .save-button {
   span {
     font-size: 10px;
     font-weight: bold;
-    // line-height: 30px;
   }
 }
 

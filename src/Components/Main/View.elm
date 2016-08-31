@@ -107,23 +107,29 @@ view model =
         ]
       , div [ class "main-row" ]
         [ div [ class "code-editor-column" ]
-          [ div [ id "code-editor-holder", class "code-editor"]
+          [ div [ class "code-editor-top" ]
+            [ div [ class "code-header" ]
+              [ h2 [] [ text "Spooky Blah Blah" ]
+              , h3 [] [ text "by Michael Bylstra" ]
+              ]
+            , div [ class "code-editor-buttons" ]
+              [ div [ class "spinner-holder" ]
+                  [ if model.loading then GoogleSpinner.view else span [] [] ]
+              , label [] [ text "Latency: "]
+              , bufferSizeSelectView model
+              , button [ onClick Compile ]
+                [ text "Compile "
+                , span [] [ text "(CTRL-ENTER)" ]
+                ]
+              , maybeView
+                  (\_ -> aButton Save [ class "save-button" ] [ text "Save" ] )
+                  model.user
+              ]
+            ]
+          , div [ id "code-editor-holder", class "code-editor"]
             [ textarea
               [ id "codemirror" ]
               []
-            ]
-          , div [ class "code-editor-buttons" ]
-            [ div [ class "spinner-holder" ]
-                [ if model.loading then GoogleSpinner.view else span [] [] ]
-            , label [] [ text "Latency"]
-            , bufferSizeSelectView model
-            , button [ onClick Compile ]
-              [ text "Compile "
-              , span [] [ text "(CTRL-ENTER)" ]
-              ]
-            , maybeView
-                (\_ -> aButton Save [ class "save-button" ] [ text "Save" ] )
-                model.user
             ]
           ]
         , div [ class "examples"]
