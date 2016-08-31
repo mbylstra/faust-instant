@@ -109,8 +109,10 @@ view model =
         [ div [ class "code-editor-column" ]
           [ div [ class "code-editor-top" ]
             [ div [ class "code-header" ]
-              [ h2 [] [ text "Spooky Blah Blah" ]
-              , h3 [] [ text "by Michael Bylstra" ]
+              [ h2 [] [ text model.faustProgram.title ]
+              , maybeView
+                (\user -> h3 [] [ text <| "by " ++ user.displayName ])
+                model.user
               ]
             , div [ class "code-editor-buttons" ]
               [ div [ class "spinner-holder" ]
