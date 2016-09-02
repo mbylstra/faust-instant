@@ -253,6 +253,15 @@ function updateCodeMirrorSize() {
     // console.log(codeMirrorHolder);
 }
 
+elm.ports.measureText.subscribe(function(s) {
+  var textMeasurer = document.getElementById('measure-text');
+  textMeasurer.innerText = s;
+  var width = textMeasurer.offsetWidth;
+  console.log('width', width);
+  elm.ports.incomingTextMeasurements.send(width);
+})
+
+
 // function sendFFTData() {
 //   analyserNode.getFloatFrequencyData(analyserDataArray);
 //   var floatData = Array.prototype.slice.call(analyserDataArray);

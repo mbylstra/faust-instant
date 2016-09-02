@@ -21,6 +21,7 @@ subscriptions model =
     , Sub.map HotKeysMsg HotKeys.subscription
     , incomingFFTData NewFFTData
     , incomingDSPCompiled DSPCompiled
+    , incomingTextMeasurements NewTextMeasurement
     ]
     ++ (
       if model.arpeggiatorOn

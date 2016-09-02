@@ -18,7 +18,7 @@ import Html exposing
   )
 import Html.Attributes exposing
   ( style, class, id, title, hidden, type', checked, placeholder, selected
-  , name, href, target, src, height, width, alt, value
+  , name, href, target, src, height, width, alt, value, defaultValue
   )
 import Html.Events exposing
   ( on, targetValue, targetChecked, keyCode, onBlur, onFocus, onSubmit, onInput
@@ -45,6 +45,7 @@ import User
 -- import FaustProgram
 import FaustControls
 import Main.View.ProgramList as ProgramList
+import MeasureText
 
 -- component modules
 -- import Main.Http.Firebase as FirebaseHttp
@@ -75,6 +76,7 @@ view : Model -> Html Msg
 view model =
 
   let
+    _ = Debug.log "width:" model.textMeasurementWidth
     sliders =
       let
         renderSlider i uiInput =
@@ -89,7 +91,8 @@ view model =
         Array.indexedMap renderSlider model.uiInputs |> Array.toList
   in
     div [ class "main-wrap" ]
-      [ UserSettingsDialog.view model
+      [ MeasureText.view
+      , UserSettingsDialog.view model
       , div [ class "main-header" ]
         [ div [ class "main-header-left" ]
             [ h1 [] [ text "Faust Instant" ] ]
@@ -109,7 +112,14 @@ view model =
         [ div [ class "code-editor-column" ]
           [ div [ class "code-editor-top" ]
             [ div [ class "code-header" ]
-              [ h2 [] [ text model.faustProgram.title ]
+              [ input
+                [ type' "text"
+                , class "edit-title"
+                , value model.faustProgram.title
+                , style [("width", (toString <| (Maybe.withDefault 0 model.textMeasurementWidth) + 5 ) ++ "px")]
+                , onInput TitleUpdated
+                ]
+                []
               , maybeView
                 (\user -> h3 [] [ text <| "by " ++ user.displayName ])
                 model.user

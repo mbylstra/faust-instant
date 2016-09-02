@@ -62,12 +62,14 @@ init =
     , userSettingsForm = Nothing
     , staffPicks = []
     , myPrograms = []
+    , textMeasurementWidth = Nothing
     }
     !
     [ Cmd.map HotKeysMsg hotKeysCommand
     , elmAppInitialRender ()
     , fetchCurrentFirebaseUser
     , Task.perform HttpBuilderError FetchedStaffPicks Main.Http.Firebase.getStaffPicks
+    , measureText "Untitled"
     ]
 
 updateUser : Maybe User.Model -> Model -> Model

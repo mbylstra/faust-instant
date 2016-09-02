@@ -47,6 +47,7 @@ type alias Model =
   , userSettingsForm : Maybe UserSettingsForm.Model
   , staffPicks : List FaustProgram.Model
   , myPrograms : List FaustProgram.Model
+  , textMeasurementWidth : Maybe Int
   }
 
 type Msg
@@ -81,6 +82,8 @@ type Msg
   | FetchedStaffPicks (List (String, FaustProgram.Model))
   | FetchedUserPrograms (List (String, FaustProgram.Model))
   | OpenProgram FaustProgram.Model
+  | TitleUpdated String
+  | NewTextMeasurement Int
 
   -- Material Design Lite
   | MDL Material.Msg

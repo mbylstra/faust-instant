@@ -3,7 +3,6 @@ port module Main.Ports exposing (..)
 --------------------------------------------------------------------------------
 
 import Json.Decode
-
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
@@ -43,3 +42,9 @@ port incomingDSPCompiled
 
 port elmAppInitialRender
   : () -> Cmd msg
+
+port measureText
+  :  String -> Cmd msg
+
+port incomingTextMeasurements
+  : (Int -> msg) -> Sub msg

@@ -35,6 +35,7 @@ import Main.Ports exposing
   , layoutUpdated
   , setControlValue
   , setPitch
+  , measureText
   )
 import Main.Constants exposing (firebaseConfig)
 import Main.Http.Firebase as FirebaseHttp
@@ -74,7 +75,7 @@ update action model =
         faustProgram =  model.faustProgram
         newFaustProgram = { faustProgram | code = s }
       in
-      { model | faustProgram = newFaustProgram } ! []
+      { model | faustProgram = newFaustProgram } ! [ measureText faustProgram.title ]
 
     HotKeysMsg msg ->
       -- I think you have to get HotKeys to update the model here!
@@ -323,12 +324,24 @@ update action model =
         newModel !
           [ updateFaustCode newModel.faustProgram.code
           , createCompileCommand newModel
+          , measureText newModel.faustProgram.title
           ]
     HttpBuilderError httpBuilderError ->
       let
         _ = Debug.crash (toString httpBuilderError)
       in
         model ! []
+
+    TitleUpdated title ->
+      let
+        faustProgram = model.faustProgram
+      in
+        { model | faustProgram =
+          { faustProgram | title = title }
+        } ! [ measureText title ]
+
+    NewTextMeasurement width ->
+      { model | textMeasurementWidth = Just width } ! []
 
 
     -- _ ->
