@@ -343,6 +343,9 @@ update action model =
     NewTextMeasurement width ->
       { model | textMeasurementWidth = Just width } ! []
 
+    WebfontsActive ->
+      model ! [ measureText model.faustProgram.title ]
+
 
     -- _ ->
     --   Debug.crash ""

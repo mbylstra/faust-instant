@@ -22,6 +22,7 @@ subscriptions model =
     , incomingFFTData NewFFTData
     , incomingDSPCompiled DSPCompiled
     , incomingTextMeasurements NewTextMeasurement
+    , incomingWebfontsActive (\_ -> WebfontsActive)
     ]
     ++ (
       if model.arpeggiatorOn

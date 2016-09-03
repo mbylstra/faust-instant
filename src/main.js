@@ -14,6 +14,9 @@ require('codemirror/mode/clike/clike.js');
 require('./js/codemirror-faust-mode/faust.js');
 var CodeMirror = require('codemirror/lib/codemirror.js');
 
+var WebFont = require('webfontloader');
+
+
 
 // This is SUPER important if you want elm-css-webpack-loader to do anything!
 // It doesn't work at the moment :(
@@ -260,6 +263,18 @@ elm.ports.measureText.subscribe(function(s) {
   console.log('width', width);
   elm.ports.incomingTextMeasurements.send(width);
 })
+
+WebFont.load({
+  google: {
+    families: [
+      'Bungee Hairline',
+      'Roboto:100',
+    ]
+  },
+  active: function() {
+    elm.ports.incomingWebfontsActive.send({});
+  },
+});
 
 
 // function sendFFTData() {

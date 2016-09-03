@@ -7,8 +7,8 @@
 @import 'signup-view.scss';
 @import 'range-flat-square.scss';
 
-@import url('https://fonts.googleapis.com/css?family=Bungee+Hairline');
-@import url('https://fonts.googleapis.com/css?family=Roboto:100');
+
+// See main.js for loading of webfonts
 
 @mixin title-text() {
   background-color: black;
@@ -118,8 +118,12 @@ h1 {
     }
 
     .edit-title {
-      border: 0;
       @include title-text();
+      border: 1px solid rgba(0,0,0,0);
+
+      &:hover {
+        border: 1px solid #333;
+      }
     }
 
 

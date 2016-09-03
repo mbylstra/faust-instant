@@ -48,3 +48,6 @@ port measureText
 
 port incomingTextMeasurements
   : (Int -> msg) -> Sub msg
+
+port incomingWebfontsActive
+  : ({} -> msg) -> Sub msg -- https://github.com/elm-lang/elm-compiler/issues/1367

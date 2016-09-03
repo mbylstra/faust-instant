@@ -84,6 +84,7 @@ type Msg
   | OpenProgram FaustProgram.Model
   | TitleUpdated String
   | NewTextMeasurement Int
+  | WebfontsActive
 
   -- Material Design Lite
   | MDL Material.Msg
