@@ -55,6 +55,6 @@ getUserFaustPrograms
   -> Task.Task (HttpBuilder.Error String) (List (String, FaustProgram.Model))
 getUserFaustPrograms user =
   getFaustPrograms
-    [ ("orderBy", "\"authorUid\"")
+    [ ("orderBy", "\"author/uid\"")
     , ("equalTo", "\"" ++ user.uid ++ "\"")
     ]

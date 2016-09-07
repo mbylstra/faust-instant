@@ -7,6 +7,10 @@ import Array
 import Task
 import Json.Decode
 
+-- external libs
+
+import HttpBuilder exposing (Error(..))
+
 -- project libs
 import Util exposing (unsafeMaybe, unsafeResult)
 
@@ -23,7 +27,6 @@ import Arpeggiator
 import FaustControls
 -- import User
 import SimpleDialog
-import FaustProgram
 
 -- component modules
 import Main.Model as Model exposing (firebaseUserLoggedIn)
@@ -47,8 +50,8 @@ import UserSettingsForm
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
-  case Debug.log "action:" action of
-  -- case action of
+  -- case Debug.log "action:" action of
+  case action of
 
     NoOp ->
       model ! []
@@ -240,6 +243,8 @@ update action model =
             model ! [ cmd ]
         Nothing ->
           Debug.crash "We need to do something about save if user is not logged in"
+    Fork ->
+      Debug.crash "TODO"
 
     FaustProgramPosted key ->
       -- key is the newly generated key
@@ -302,22 +307,26 @@ update action model =
           model ! []
 
     FetchedStaffPicks staffPicks ->
+      -- TODO: I think we need to add the db ids
       { model | staffPicks = List.map snd staffPicks } ! []
+      -- TODO: I think we need to add the db ids
 
     FetchedUserPrograms faustPrograms ->
       { model | myPrograms = List.map snd faustPrograms } ! []
 
     OpenProgram faustProgram ->
+      -- TOOD: for some reason DB ids aren't in here. Maybe because
+      -- They aren't getting added when we fetch the results?
       let
-        defaultFaustProgram = FaustProgram.default
-        newFaustProgram =
-          { defaultFaustProgram
-          | title = faustProgram.title
-          , code = faustProgram.code
-          }
+        -- defaultFaustProgram = FaustProgram.default
+        -- newFaustProgram =
+        --   { defaultFaustProgram
+        --   | title = faustProgram.title
+        --   , code = faustProgram.code
+        --   }
         newModel =
           { model
-          | faustProgram = newFaustProgram
+          | faustProgram = faustProgram
           , loading = True
           }
       in
@@ -327,10 +336,11 @@ update action model =
           , measureText newModel.faustProgram.title
           ]
     HttpBuilderError httpBuilderError ->
-      let
-        _ = Debug.crash (toString httpBuilderError)
-      in
-        model ! []
+      case httpBuilderError of
+        NetworkError ->
+          { model | online = False } ! []
+        _ ->
+          Debug.crash (toString httpBuilderError)
 
     TitleUpdated title ->
       let

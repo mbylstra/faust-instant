@@ -14,7 +14,7 @@ import FirebaseAuth
 import Material
 
 -- project components
-import FaustProgram
+import FaustProgram exposing (hasAuthor, hasBeenSavedToDatabase)
 import HotKeys
 import Slider
 import Arpeggiator
@@ -22,6 +22,7 @@ import SimpleDialog
 import User
 import Main.Http.Firebase
 import UserSettingsForm
+import User
 
 -- component modules
 import Main.Types exposing (..)
@@ -41,6 +42,7 @@ init =
     (hotKeys, hotKeysCommand) = HotKeys.init
   in
     { faustProgram = FaustProgram.init
+    , online = True -- assume we're online
     , compilationError = Nothing
     , hotKeys = hotKeys
     -- , fileReader = FileReader.init
@@ -81,12 +83,12 @@ updateUser maybeUser model =
       Just user ->
         { model
         | user = Just user
-        , faustProgram = { faustProgram | authorUid = Just user.uid }
+        , faustProgram = { faustProgram | author = Just user }
         }
       Nothing ->
         { model
         | user = Nothing,
-          faustProgram = { faustProgram | authorUid = Nothing }
+          faustProgram = { faustProgram | author = Nothing }
         }
 
 isLoggedIn : Model -> Bool
@@ -111,3 +113,31 @@ firebaseUserLoggedIn firebaseUser model =
       }
     , fetchUserPrograms user
     )
+
+userOwnsProgram : User.Model -> FaustProgram.Model -> Bool
+userOwnsProgram user faustProgram =
+  case faustProgram.author of
+    Just author ->
+        if author.uid == user.uid
+        then True
+        else False
+    Nothing ->
+      False
+
+canSaveProgram : Model -> Bool
+canSaveProgram model =
+  let
+    faustProgram = model.faustProgram
+  in
+    case model.user of
+      Just user ->
+        if userOwnsProgram user faustProgram
+        then True
+        else False
+      Nothing ->
+        if hasAuthor model.faustProgram
+        then False
+        else
+          if hasBeenSavedToDatabase faustProgram
+          then False
+          else True

@@ -2,14 +2,21 @@ module FaustProgram exposing
   ( Model
   , init
   , default
+  , hasAuthor
+  , hasBeenSavedToDatabase
   , encoder
   , decoder
   )
 
+
+import Maybe.Extra exposing (isNothing, isJust)
+
 import Json.Decode as JsonDecode exposing (Decoder, (:=))
 import Json.Encode as JsonEncode exposing (Value)
 
-import Json.Encode.Extra exposing (maybeString)
+import Json.Encode.Extra exposing (maybeString, maybe)
+
+import User
 
 
 -- MODEL
@@ -19,10 +26,11 @@ type alias Model =
   , code : String
   , title : String
   , public : Bool
-  , authorUid : Maybe String
+  , author : Maybe User.Model
   , starCount : Int
   , staffPick : Bool
   }
+
 
 default : Model
 default =
@@ -30,13 +38,22 @@ default =
   , code = ""
   , title = "Untitled"
   , public = False
-  , authorUid = Nothing
+  , author = Nothing
   , starCount = 0
   , staffPick = False
   }
 
 init : Model
 init = default
+
+hasAuthor : Model -> Bool
+hasAuthor model =
+  isJust model.author
+
+hasBeenSavedToDatabase : Model -> Bool
+hasBeenSavedToDatabase model =
+  isJust (Debug.log "db id" model.databaseId)
+
 
 -- SERIALIZE
 
@@ -46,7 +63,7 @@ encoder model =
         [ ( "code", JsonEncode.string model.code )
         , ( "title", JsonEncode.string model.title )
         , ( "public", JsonEncode.bool model.public )
-        , ( "authorUid", maybeString model.authorUid )
+        , ( "author", maybe model.author User.encoder )
         , ( "starCount", JsonEncode.int model.starCount )
         , ( "staffPick", JsonEncode.bool model.staffPick )
         ]
@@ -61,7 +78,7 @@ decoder =
         ("title" := JsonDecode.string)
         ("public" := JsonDecode.bool)
         ( JsonDecode.oneOf
-          [ JsonDecode.map Just <| "authorUid" := JsonDecode.string
+          [ JsonDecode.map Just <| "author" := User.decoder
           , JsonDecode.succeed Nothing
           ]
         )

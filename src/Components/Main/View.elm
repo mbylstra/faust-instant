@@ -28,7 +28,7 @@ import Html.Events exposing
 
 
 -- external libs
-import HtmlHelpers exposing (aButton, maybeView)
+import HtmlHelpers exposing (aButton, maybeView, boolView)
 
 -- external components
 import SignupView exposing
@@ -56,6 +56,7 @@ import Main.Constants exposing (defaultBufferSize)
 -- component views
 import Main.View.UserMenu as UserMenu
 import Main.View.UserSettingsDialog as UserSettingsDialog
+import Main.Model exposing (canSaveProgram)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -76,7 +77,7 @@ view : Model -> Html Msg
 view model =
 
   let
-    _ = Debug.log "width:" model.textMeasurementWidth
+    -- _ = Debug.log "width:" model.textMeasurementWidth
     sliders =
       let
         renderSlider i uiInput =
@@ -122,7 +123,7 @@ view model =
                 []
               , maybeView
                 (\user -> h3 [] [ text <| "by " ++ user.displayName ])
-                model.user
+                model.faustProgram.author
               ]
             , div [ class "code-editor-buttons" ]
               [ div [ class "spinner-holder" ]
@@ -133,9 +134,10 @@ view model =
                 [ text "Compile "
                 , span [] [ text "(CTRL-ENTER)" ]
                 ]
-              , maybeView
-                  (\_ -> aButton Save [ class "save-button" ] [ text "Save" ] )
-                  model.user
+              , boolView
+                  ( aButton Save [ class "save-button" ] [ text "Save" ] )
+                  ( canSaveProgram model )
+              , aButton Fork [ class "save-button" ] [ text "Fork" ]
               ]
             ]
           , div [ id "code-editor-holder", class "code-editor"]

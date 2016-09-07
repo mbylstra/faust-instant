@@ -28,6 +28,7 @@ import UserSettingsForm
 
 type alias Model =
   { faustProgram : FaustProgram.Model
+  , online : Bool -- Do we have internet?
   , compilationError : Maybe String
   , hotKeys : HotKeys.Model
   , mainVolume : Slider.Model
@@ -73,6 +74,7 @@ type Msg
   | SuccessfulPut
   | GeneralError -- beacuse I'm lazy
   | Save
+  | Fork
   | FaustProgramPosted String
   | LogOutClicked
   | UserSignedOut
