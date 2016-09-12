@@ -276,6 +276,49 @@ WebFont.load({
   },
 });
 
+// elm.ports.requestMidiAccess.subscribe(function() {
+//  For now, we just try to connect midi anyway
+if (typeof(navigator.requestMIDIAccess) != 'undefined') {
+  navigator
+    .requestMIDIAccess({'sysex': true}) //TODO: make sysex optional
+    .then(
+      function(midi) {
+        // outputs = midi.outputs()
+        // lexiconOutput = outputs[0]
+        // lexiconOutput.send(bytes)
+        var midiInputs = midi.inputs.values();
+        if (midiInputs.length > 0) {
+          var midiInput = midiInputs[0];
+          midiInput.onmidimessage = function(midiMessage) {
+              console.log(msg);
+              var midiEventTypeValue = msg.data[0];
+              console.log('note', msg.data[1]);
+              // this is a total guess! (no internet)
+              var elmData = {
+                ctor: 'tuple3',
+                0: msg.data[0],
+                1: msg.data[1],
+                2: msg.data[2],
+              }
+              elm.ports.rawMidiInputEvents.send(elmData);
+
+              //TODO:
+              //  convert uint8array to a 3-tuple of ints
+              //  This stuff should be done in elm:
+              //    144 == note on
+              //    128 == note off
+              //  we should do most of this stuff in elm. Just turn the 8intarray into a regular array of ints
+          }
+        } else {
+          console.log('TODO: midi is supported, but no inputs connected');
+        }
+      },
+      function(error) {
+        console.log("uh-oh! Something went wrong!  Error code: " + err.code)
+        //TODO: make a midi connection error event
+      }
+    )
+  }
 
 // function sendFFTData() {
 //   analyserNode.getFloatFrequencyData(analyserDataArray);

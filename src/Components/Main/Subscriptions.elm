@@ -23,6 +23,7 @@ subscriptions model =
     , incomingDSPCompiled DSPCompiled
     , incomingTextMeasurements NewTextMeasurement
     , incomingWebfontsActive (\_ -> WebfontsActive)
+    , rawMidiInputEvents RawMidiInputEvent
     ]
     ++ (
       if model.arpeggiatorOn

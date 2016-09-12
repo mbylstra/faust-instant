@@ -22,6 +22,7 @@ import FaustProgram
 import User
 import SimpleDialog
 import UserSettingsForm
+import Midi
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -87,6 +88,10 @@ type Msg
   | TitleUpdated String
   | NewTextMeasurement Int
   | WebfontsActive
+
+  -- Midi
+  | RawMidiInputEvent (Int, Int, Int)
+  | MidiInputEvent Midi.MidiInputEvent
 
   -- Material Design Lite
   | MDL Material.Msg

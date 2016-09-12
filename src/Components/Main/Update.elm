@@ -42,6 +42,7 @@ import Main.Ports exposing
   )
 import Main.Constants exposing (firebaseConfig)
 import Main.Http.Firebase as FirebaseHttp
+import Midi
 
 import UserSettingsForm
 --------------------------------------------------------------------------------
@@ -356,6 +357,20 @@ update action model =
     WebfontsActive ->
       model ! [ measureText model.faustProgram.title ]
 
+    RawMidiInputEvent data ->
+      let
+        midiMessage = Midi.parseRawMidiEvent data
+      in
+      -- model ! [Task.perform ? (Midi.parseRawMidiEvent data)] -- TODO: some shit with never and crap (should be a library function)
+        model ! [] -- TODO: some shit with never and crap (should be a library function)
+
+    MidiInputEvent midiEvent ->
+      case midiEvent of
+        Midi.NoteOn (midiNote, velocity) ->
+          model ! [ setPitch (toFloat midiNote) ]
+          -- TODO something (like the piano keyboard)
+        _ ->
+          model ! []
 
     -- _ ->
     --   Debug.crash ""

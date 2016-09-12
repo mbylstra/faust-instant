@@ -51,3 +51,6 @@ port incomingTextMeasurements
 
 port incomingWebfontsActive
   : ({} -> msg) -> Sub msg -- https://github.com/elm-lang/elm-compiler/issues/1367
+
+port rawMidiInputEvents
+  : ((Int, Int, Int) -> msg) -> Sub msg
