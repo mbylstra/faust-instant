@@ -361,8 +361,14 @@ update action model =
       let
         midiMessage = Midi.parseRawMidiEvent data
       in
-      -- model ! [Task.perform ? (Midi.parseRawMidiEvent data)] -- TODO: some shit with never and crap (should be a library function)
-        model ! [] -- TODO: some shit with never and crap (should be a library function)
+        case midiMessage of
+          Midi.NoteOn (midiNote, velocity) ->
+            model ! [ setPitch (toFloat midiNote) ]
+          _ ->
+            model ! []
+      -- in
+      -- -- model ! [Task.perform ? (Midi.parseRawMidiEvent data)] -- TODO: some shit with never and crap (should be a library function)
+      --   model ! [] -- TODO: some shit with never and crap (should be a library function)
 
     MidiInputEvent midiEvent ->
       case midiEvent of

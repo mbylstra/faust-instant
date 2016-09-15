@@ -280,26 +280,37 @@ WebFont.load({
 //  For now, we just try to connect midi anyway
 if (typeof(navigator.requestMIDIAccess) != 'undefined') {
   navigator
-    .requestMIDIAccess({'sysex': true}) //TODO: make sysex optional
+    //.requestMIDIAccess({'sysex': true}) //TODO: make sysex optional
+    // sysex causes wierd permissions issues in OSX, and we don't need it
+    .requestMIDIAccess()
     .then(
       function(midi) {
         // outputs = midi.outputs()
         // lexiconOutput = outputs[0]
         // lexiconOutput.send(bytes)
-        var midiInputs = midi.inputs.values();
-        if (midiInputs.length > 0) {
+        console.log('midi', midi);
+        console.log('midiInputs', midiInputs);
+        console.log('>>midi.inputs.size', midi.inputs.size);
+        var midiInputs = Array.from(midi.inputs.values());
+        console.log('midi.inputs.keys()', midi.inputs.keys());
+        if (midi.inputs.size > 0) {
           var midiInput = midiInputs[0];
           midiInput.onmidimessage = function(midiMessage) {
-              console.log(msg);
-              var midiEventTypeValue = msg.data[0];
-              console.log('note', msg.data[1]);
+              console.log(midiMessage);
+              var midiEventTypeValue = midiMessage.data[0];
+              console.log('note', midiMessage.data[1]);
               // this is a total guess! (no internet)
-              var elmData = {
-                ctor: 'tuple3',
-                0: msg.data[0],
-                1: msg.data[1],
-                2: msg.data[2],
-              }
+              // var elmData = {
+              //   _ctor: 'Tuple3',
+              //   _0: midiMessage.data[0],
+              //   _1: midiMessage.data[1],
+              //   _2: midiMessage.data[2],
+              // }
+              var elmData = [
+                midiMessage.data[0],
+                midiMessage.data[1],
+                midiMessage.data[2],
+              ]
               elm.ports.rawMidiInputEvents.send(elmData);
 
               //TODO:
@@ -314,7 +325,7 @@ if (typeof(navigator.requestMIDIAccess) != 'undefined') {
         }
       },
       function(error) {
-        console.log("uh-oh! Something went wrong!  Error code: " + err.code)
+        console.log("uh-oh! Something went wrong!  Error code: " + error.code)
         //TODO: make a midi connection error event
       }
     )
