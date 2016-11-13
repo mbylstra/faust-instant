@@ -1,10 +1,11 @@
-module FaustControls exposing (..)
+module Components.FaustControls exposing (..)
 
 import Json.Decode exposing (..)
 
-import Util exposing (unsafeResult)
 import String
 import Array exposing (Array)
+
+import Util exposing (unsafeResult)
 
 type alias SliderData =
   { address: String

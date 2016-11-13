@@ -1,4 +1,4 @@
-module Midi exposing (MidiInputEvent(..), parseRawMidiEvent)
+module Components.Midi exposing (MidiInputEvent(..), parseRawMidiEvent)
 
 type MidiInputEvent
   = NoteOn (Int, Float)

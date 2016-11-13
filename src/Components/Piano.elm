@@ -1,4 +1,4 @@
-module Piano exposing (view)
+module Components.Piano exposing (view)
 
 import Html exposing (..)
 import Html.Attributes exposing(..)

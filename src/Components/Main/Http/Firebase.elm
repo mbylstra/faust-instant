@@ -1,11 +1,11 @@
-module Main.Http.Firebase exposing (..)
+module Components.Main.Http.Firebase exposing (..)
 
 import FirebaseRest
 import Task
 import HttpBuilder
 
-import User
-import FaustProgram
+import Components.User as User
+import Components.FaustProgram as FaustProgram
 
 databaseUrlBase : String
 databaseUrlBase = "https://faust-instant.firebaseio.com"

@@ -1,4 +1,4 @@
-module Main.Constants exposing (..)
+module Components.Main.Constants exposing (..)
 
 -------------------------------------------------------------------------------
 import FirebaseAuth

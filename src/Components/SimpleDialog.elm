@@ -1,4 +1,4 @@
-module SimpleDialog exposing (Model, init, view, update, Msg(Open, Close))
+module Components.SimpleDialog exposing (Model, init, view, update, Msg(Open, Close))
 
 import HtmlHelpers exposing (maybeHtml, emptyHtml)
 import HtmlHelpers.Events exposing (stopClickPropagation)
@@ -21,7 +21,7 @@ import Html.Events exposing
   )
 
 
-import SimpleDialog.Stylesheet exposing (..)
+import Components.SimpleDialog.Stylesheet exposing (..)
 
 
 

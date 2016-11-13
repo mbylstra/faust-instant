@@ -6,14 +6,14 @@ import Html.App as Html
 
 
 -- import HomepageCss as Homepage zz
-import SimpleDialog.Stylesheet
+import Components.SimpleDialog.Stylesheet as SimpleDialogStylesheet
 
 
 port files : CssFileStructure -> Cmd msg
 
 cssFiles : CssFileStructure
 cssFiles =
-  toFileStructure [ ( "main.css", compile SimpleDialog.Stylesheet.css ) ]
+  toFileStructure [ ( "main.css", compile SimpleDialogStylesheet.css ) ]
 
 main : Program Never
 main =

@@ -1,4 +1,4 @@
-module Main.View.ProgramList exposing (view)
+module Components.Main.View.ProgramList exposing (view)
 
 import Html exposing
   -- delete what you don't need
@@ -17,11 +17,11 @@ import Html.Events exposing
   , onClick, onDoubleClick
   , onMouseDown, onMouseUp, onMouseEnter, onMouseLeave, onMouseOver, onMouseOut
   )
-import Main.Types exposing (..)
+import Components.Main.Types exposing (..)
 
-import FaustProgram
+import Components.FaustProgram as FaustProgram
 
-import Main.Model exposing (isLoggedIn)
+import Components.Main.Model exposing (isLoggedIn)
 
 
 

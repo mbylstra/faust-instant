@@ -1,4 +1,4 @@
-module Main.Model exposing (..)
+module Components.Main.Model exposing (..)
 
 --------------------------------------------------------------------------------
 
@@ -13,20 +13,19 @@ import FirebaseAuth
 import Material
 
 -- project components
-import FaustProgram exposing (hasAuthor, hasBeenSavedToDatabase)
-import HotKeys
-import Slider
-import Arpeggiator
-import SimpleDialog
-import User
-import UserSettingsForm
-import User
+import Components.FaustProgram as FaustProgram exposing (hasAuthor, hasBeenSavedToDatabase)
+import Components.HotKeys as HotKeys
+import Components.Slider as Slider
+import Components.Arpeggiator as Arpeggiator
+import Components.SimpleDialog as SimpleDialog
+import Components.User as User
+import Components.UserSettingsForm as UserSettingsForm
 
 -- component modules
-import Main.Types exposing (..)
-import Main.Ports exposing (..)
-import Main.Constants
-import Main.Commands exposing
+import Components.Main.Types exposing (..)
+import Components.Main.Ports exposing (..)
+import Components.Main.Constants
+import Components.Main.Commands exposing
   ( fetchCurrentFirebaseUser
   , fetchUserPrograms
   , fetchStaffPicks
@@ -53,7 +52,7 @@ init =
     , fftData = []
     , uiInputs = Array.empty
     , polyphony = Monophonic
-    , bufferSize = Main.Constants.defaultBufferSize
+    , bufferSize = Components.Main.Constants.defaultBufferSize
     , loading = False
     , arpeggiator = Arpeggiator.init
     , arpeggiatorOn = False

@@ -1,4 +1,4 @@
-module Main.Types exposing (..)
+module Components.Main.Types exposing (..)
 
 --------------------------------------------------------------------------------
 
@@ -11,18 +11,18 @@ import FirebaseAuth exposing (AuthProvider(..), SignInWithPopupError(..))
 import Material
 import Material.Menu
 import HttpBuilder
+import SignupView
 
 -- project components
-import HotKeys
-import Slider
-import Arpeggiator
-import SignupView
-import FaustControls
-import FaustProgram
-import User
-import SimpleDialog
-import UserSettingsForm
-import Midi
+import Components.HotKeys as HotKeys
+import Components.Slider as Slider
+import Components.Arpeggiator as Arpeggiator
+import Components.FaustControls as FaustControls
+import Components.FaustProgram as FaustProgram
+import Components.User as User
+import Components.SimpleDialog as SimpleDialog
+import Components.UserSettingsForm as UserSettingsForm
+import Components.Midi as Midi
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------

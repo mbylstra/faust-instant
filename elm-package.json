@@ -4,10 +4,8 @@
     "repository": "https://github.com/mbylstra/elmfirebaseauth.git",
     "license": "BSD3",
     "source-directories": [
-        "src/Lib",
-        "src/HtmlLib",
-        "src/Components",
-        "src"
+        "src",
+        "src/Lib"
     ],
     "exposed-modules": [],
     "native-modules": true,

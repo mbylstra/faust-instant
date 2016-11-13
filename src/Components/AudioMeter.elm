@@ -1,4 +1,4 @@
-module AudioMeter exposing (Model, Msg(Updated), init, update, view)
+module Components.AudioMeter exposing (Model, Msg(Updated), init, update, view)
 
 import Html exposing
   -- delete what you don't need

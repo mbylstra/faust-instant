@@ -1,14 +1,14 @@
-module Main.Subscriptions exposing (subscriptions)
+module Components.Main.Subscriptions exposing (subscriptions)
 
 --------------------------------------------------------------------------------
 
-import HotKeys
+import Components.HotKeys as HotKeys
 
-import Main.Types exposing (..)
+import Components.Main.Types exposing (..)
 
-import Arpeggiator
+import Components.Arpeggiator as Arpeggiator
 
-import Main.Ports exposing(..)
+import Components.Main.Ports exposing(..)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-module FaustProgram exposing
+module Components.FaustProgram exposing
   ( Model
   , init
   , default
@@ -16,7 +16,7 @@ import Json.Encode as JsonEncode exposing (Value)
 
 import Json.Encode.Extra exposing (maybeString, maybe)
 
-import User
+import Components.User as User
 
 
 -- MODEL

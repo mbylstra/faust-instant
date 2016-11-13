@@ -1,4 +1,4 @@
-module Main.Update exposing (..)
+module Components.Main.Update exposing (..)
 
 --------------------------------------------------------------------------------
 
@@ -21,22 +21,22 @@ import Material
 
 -- project components
 -- import FaustProgram
-import HotKeys
-import Slider
-import Arpeggiator
-import FaustControls
+import Components.HotKeys as HotKeys
+import Components.Slider as Slider
+import Components.Arpeggiator as Arpeggiator
+import Components.FaustControls as FaustControls
 -- import User
-import SimpleDialog
+import Components.SimpleDialog as SimpleDialog
 
 -- component modules
-import Main.Model as Model exposing (firebaseUserLoggedIn)
-import Main.Types exposing (..)
-import Main.Commands exposing
+import Components.Main.Model as Model exposing (firebaseUserLoggedIn)
+import Components.Main.Types exposing (..)
+import Components.Main.Commands exposing
   ( createCompileCommand
   , signOutFirebaseUser
   , fetchTheDemoProgram
   )
-import Main.Ports exposing
+import Components.Main.Ports exposing
   ( updateFaustCode
   , updateMainVolume
   , layoutUpdated
@@ -44,12 +44,12 @@ import Main.Ports exposing
   , setPitch
   , measureText
   )
-import FaustProgram
-import Main.Constants exposing (firebaseConfig)
-import Main.Http.Firebase as FirebaseHttp
-import Midi
+import Components.FaustProgram as FaustProgram
+import Components.Main.Constants exposing (firebaseConfig)
+import Components.Main.Http.Firebase as FirebaseHttp
+import Components.Midi as Midi
 
-import UserSettingsForm
+import Components.UserSettingsForm as UserSettingsForm
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 

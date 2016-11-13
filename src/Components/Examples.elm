@@ -1,4 +1,4 @@
-module Examples exposing (Model, Msg, update, init, view)
+module Components.Examples exposing (Model, Msg, update, init, view)
 
 import Http
 import Task exposing (Task)

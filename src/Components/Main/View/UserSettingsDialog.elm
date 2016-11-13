@@ -1,14 +1,14 @@
-module Main.View.UserSettingsDialog exposing (view)
+module Components.Main.View.UserSettingsDialog exposing (view)
 
 import Html exposing (Html)
 import Html.App as App
 
 import HtmlHelpers exposing (maybeView, emptyHtml)
 
-import SimpleDialog
+import Components.SimpleDialog as SimpleDialog
 
-import Main.Types exposing (Model, Msg(UserSettingsFormMsg, UserSettingsDialogMsg))
-import UserSettingsForm
+import Components.Main.Types exposing (Model, Msg(UserSettingsFormMsg, UserSettingsDialogMsg))
+import Components.UserSettingsForm as UserSettingsForm
 
 import Util exposing (unsafeMaybe)
 
@@ -31,7 +31,7 @@ import Html.Events exposing
   )
 
 
-view : Main.Types.Model -> Html Msg
+view : Components.Main.Types.Model -> Html Msg
 view model =
   case model.user of
     Just user ->

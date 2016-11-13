@@ -1,4 +1,4 @@
-module SimpleDialog.Stylesheet exposing (..)
+module Components.SimpleDialog.Stylesheet exposing (..)
 
 import Css exposing (..)
 import Css.Namespace exposing (namespace)

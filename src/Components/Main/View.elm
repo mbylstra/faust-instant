@@ -1,10 +1,11 @@
-module Main.View exposing (..)
+module Components.Main.View exposing (..)
 
 -- core
 import Array exposing (Array)
 import String
 import Result
 import Json.Decode
+import Color
 
 -- html
 import Html.App as App
@@ -36,27 +37,26 @@ import SignupView exposing
   )
 
 -- project components
-import SliderNoModel
-import Piano
-import Color
-import GoogleSpinner
-import FaustControls
-import User
+import Components.SliderNoModel as SliderNoModel
+import Components.Piano as Piano
+import Components.GoogleSpinner as GoogleSpinner
+import Components.FaustControls as FaustControls
+import Components.User as User
 -- import FaustProgram
-import FaustControls
-import Main.View.ProgramList as ProgramList
-import MeasureText
+import Components.FaustControls as FaustControls
+import Components.Main.View.ProgramList as ProgramList
+import Components.MeasureText as MeasureText
 
 -- component modules
 -- import Main.Http.Firebase as FirebaseHttp
 
-import Main.Types exposing (..)
-import Main.Constants exposing (defaultBufferSize)
+import Components.Main.Types exposing (..)
+import Components.Main.Constants exposing (defaultBufferSize)
 
 -- component views
-import Main.View.UserMenu as UserMenu
-import Main.View.UserSettingsDialog as UserSettingsDialog
-import Main.Model exposing (canSaveProgram)
+import Components.Main.View.UserMenu as UserMenu
+import Components.Main.View.UserSettingsDialog as UserSettingsDialog
+import Components.Main.Model exposing (canSaveProgram)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ bufferSizes =
 
 getBufferSizeMillis : Int -> Int
 getBufferSizeMillis bufferSize =
-  Basics.round ((1.0 / Main.Constants.sampleRate) * (toFloat bufferSize) * 1000.0)
+  Basics.round ((1.0 / Components.Main.Constants.sampleRate) * (toFloat bufferSize) * 1000.0)
 
 
 -- VIEW

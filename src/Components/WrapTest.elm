@@ -1,4 +1,4 @@
-module WrapTest exposing (Model, init, update, view)
+module Components.WrapTest exposing (Model, init, update, view)
 
 import Html exposing
   -- delete what you don't need

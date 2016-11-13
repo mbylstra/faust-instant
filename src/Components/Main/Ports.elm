@@ -1,4 +1,4 @@
-port module Main.Ports exposing (..)
+port module Components.Main.Ports exposing (..)
 
 --------------------------------------------------------------------------------
 

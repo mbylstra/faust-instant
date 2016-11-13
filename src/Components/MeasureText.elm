@@ -1,4 +1,4 @@
-port module MeasureText exposing (view)
+port module Components.MeasureText exposing (view)
 
 
 import Html exposing
@@ -24,7 +24,7 @@ view =
       [ ("position", "absolute")
       , ("bottom", "100000px")
       , ("right", "100000px")
-      , ("width", "5000px") 
+      , ("width", "5000px")
       ]
     ]
     [ div

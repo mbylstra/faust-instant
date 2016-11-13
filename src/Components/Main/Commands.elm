@@ -1,19 +1,19 @@
-module Main.Commands exposing (..)
+module Components.Main.Commands exposing (..)
 
 --------------------------------------------------------------------------------
 import Task
 
 import FirebaseAuth
 
-import Main.Types exposing (..)
-import Main.Ports exposing (compileFaustCode)
-import Main.Constants as Constants
-import Main.Http.Firebase exposing
+import Components.Main.Types exposing (..)
+import Components.Main.Ports exposing (compileFaustCode)
+import Components.Main.Constants as Constants
+import Components.Main.Http.Firebase exposing
   ( getUserFaustPrograms
   , getFaustProgram
   )
 
-import User
+import Components.User as User
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ fetchUserPrograms user =
 
 fetchStaffPicks : Cmd Msg
 fetchStaffPicks =
-  Task.perform HttpBuilderError FetchedStaffPicks Main.Http.Firebase.getStaffPicks
+  Task.perform HttpBuilderError FetchedStaffPicks Components.Main.Http.Firebase.getStaffPicks
 
 fetchTheDemoProgram : Cmd Msg
 fetchTheDemoProgram =

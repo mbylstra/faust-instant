@@ -1,4 +1,4 @@
-module GoogleSpinner exposing (..)
+module Components.GoogleSpinner exposing (..)
 
 import Html exposing (Html, div)
 import Html.Attributes exposing ( attribute, style, id )

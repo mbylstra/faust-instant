@@ -1,4 +1,4 @@
-module HotKeys exposing (..)
+module Components.HotKeys exposing (..)
 
 import Keyboard.Extra as Keyboard
 

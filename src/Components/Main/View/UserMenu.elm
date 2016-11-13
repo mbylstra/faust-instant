@@ -1,4 +1,4 @@
-module Main.View.UserMenu exposing (..)
+module Components.Main.View.UserMenu exposing (..)
 
 import Material.Menu as Menu exposing (Item, bottomRight)
 
@@ -6,7 +6,7 @@ import Html exposing (Html, text)
 import Html.Events exposing (onClick)
 -- import Html.App as App
 
-import Main.Types exposing (Msg(MenuMsg, LogOutClicked, OpenUserSettingsDialog))
+import Components.Main.Types exposing (Msg(MenuMsg, LogOutClicked, OpenUserSettingsDialog))
 
 item : String -> Html Msg
 item str =

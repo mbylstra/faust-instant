@@ -1,4 +1,4 @@
-module UserSettingsForm exposing (Model, Msg, init, update, view)
+module Components.UserSettingsForm exposing (Model, Msg, init, update, view)
 
 import Html exposing
   -- delete what you don't need
@@ -28,7 +28,7 @@ import Html.Events exposing
 
 import HtmlHelpers exposing (aButton, emptyHtml, labelledInput)
 
-import User
+import Components.User as User
 -- MODEL
 
 -- design:

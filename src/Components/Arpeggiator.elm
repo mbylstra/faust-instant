@@ -1,4 +1,4 @@
-module Arpeggiator exposing (Model, Msg, init, update, subscription)
+module Components.Arpeggiator exposing (Model, Msg, init, update, subscription)
 
 import Time
 import Array exposing (Array)

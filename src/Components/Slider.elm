@@ -1,4 +1,4 @@
-module Slider exposing (Model, Msg, init, update, view)
+module Components.Slider exposing (Model, Msg, init, update, view)
 
 import String
 

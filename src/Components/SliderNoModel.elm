@@ -1,4 +1,4 @@
-module SliderNoModel exposing (view)
+module Components.SliderNoModel exposing (view)
 
 import String
 
