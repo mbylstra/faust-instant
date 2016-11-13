@@ -105,7 +105,7 @@ view model =
                   ]
                 Nothing ->
                   [ aButton (SignupViewMsg SignupView.OpenSignInDialog) [] [ text "Log In" ]
-                  , aButton (SignupViewMsg SignupView.OpenSignUpDialog) [] [ text "Sign Up" ]
+                  , aButton (SignupViewMsg SignupView.OpenSignUpDialog) [] [ text "Create Account" ]
                   ]
             )
         ]
