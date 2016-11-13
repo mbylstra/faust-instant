@@ -137,7 +137,7 @@ view model =
               , boolView
                   ( aButton Save [ class "save-button" ] [ text "Save" ] )
                   ( canSaveProgram model )
-              , aButton Fork [ class "save-button" ] [ text "Fork" ]
+              -- , aButton Fork [ class "save-button" ] [ text "Fork" ]
               ]
             ]
           , div [ id "code-editor-holder", class "code-editor"]
