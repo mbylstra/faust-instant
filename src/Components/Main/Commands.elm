@@ -7,8 +7,11 @@ import FirebaseAuth
 
 import Main.Types exposing (..)
 import Main.Ports exposing (compileFaustCode)
-import Main.Constants
-import Main.Http.Firebase exposing (getUserFaustPrograms)
+import Main.Constants as Constants
+import Main.Http.Firebase exposing
+  ( getUserFaustPrograms
+  , getFaustProgram
+  )
 
 import User
 
@@ -20,14 +23,14 @@ import User
 fetchCurrentFirebaseUser : Cmd Msg
 fetchCurrentFirebaseUser =
   let
-    task = FirebaseAuth.getCurrentUser Main.Constants.firebaseConfig
+    task = FirebaseAuth.getCurrentUser Constants.firebaseConfig
   in
     Task.perform (\_ -> GeneralError) CurrentFirebaseUserFetched task
 
 signOutFirebaseUser : Cmd Msg
 signOutFirebaseUser =
   let
-    task = FirebaseAuth.signOut Main.Constants.firebaseConfig
+    task = FirebaseAuth.signOut Constants.firebaseConfig
   in
     Task.perform (\_ -> GeneralError) (\_ -> UserSignedOut) task
 
@@ -49,3 +52,12 @@ createCompileCommand model =
 fetchUserPrograms : User.Model -> Cmd Msg
 fetchUserPrograms user =
   Task.perform HttpBuilderError FetchedUserPrograms (getUserFaustPrograms user)
+
+
+fetchStaffPicks : Cmd Msg
+fetchStaffPicks =
+  Task.perform HttpBuilderError FetchedStaffPicks Main.Http.Firebase.getStaffPicks
+
+fetchTheDemoProgram : Cmd Msg
+fetchTheDemoProgram =
+  Task.perform HttpBuilderError FetchedTheDemoProgram (getFaustProgram Constants.theDemoProgramKey)

@@ -4,7 +4,6 @@ module Main.Model exposing (..)
 
 -- core
 import Array exposing (Array)
-import Task
 
 
 -- external components
@@ -20,7 +19,6 @@ import Slider
 import Arpeggiator
 import SimpleDialog
 import User
-import Main.Http.Firebase
 import UserSettingsForm
 import User
 
@@ -28,7 +26,12 @@ import User
 import Main.Types exposing (..)
 import Main.Ports exposing (..)
 import Main.Constants
-import Main.Commands exposing (fetchCurrentFirebaseUser, fetchUserPrograms)
+import Main.Commands exposing
+  ( fetchCurrentFirebaseUser
+  , fetchUserPrograms
+  , fetchStaffPicks
+  , fetchTheDemoProgram
+  )
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -56,9 +59,7 @@ init =
     , arpeggiatorOn = False
     , signupView = SignupView.init
     , user = Nothing
-    -- , user = Just User.dummyModel
     , authToken = Nothing
-    -- , authToken = Just "asdf"
     , mdl = Material.model
     , userSettingsDialog = SimpleDialog.init
     , userSettingsForm = Nothing
@@ -70,7 +71,7 @@ init =
     [ Cmd.map HotKeysMsg hotKeysCommand
     , elmAppInitialRender ()
     , fetchCurrentFirebaseUser
-    , Task.perform HttpBuilderError FetchedStaffPicks Main.Http.Firebase.getStaffPicks
+    , fetchStaffPicks
     , measureText "Untitled"
     ]
 

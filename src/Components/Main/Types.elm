@@ -84,6 +84,7 @@ type Msg
   | UserSettingsFormMsg UserSettingsForm.Msg
   | FetchedStaffPicks (List (String, FaustProgram.Model))
   | FetchedUserPrograms (List (String, FaustProgram.Model))
+  | FetchedTheDemoProgram FaustProgram.Model
   | OpenProgram FaustProgram.Model
   | TitleUpdated String
   | NewTextMeasurement Int

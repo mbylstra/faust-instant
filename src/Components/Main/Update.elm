@@ -31,7 +31,11 @@ import SimpleDialog
 -- component modules
 import Main.Model as Model exposing (firebaseUserLoggedIn)
 import Main.Types exposing (..)
-import Main.Commands exposing (createCompileCommand, signOutFirebaseUser)
+import Main.Commands exposing
+  ( createCompileCommand
+  , signOutFirebaseUser
+  , fetchTheDemoProgram
+  )
 import Main.Ports exposing
   ( updateFaustCode
   , updateMainVolume
@@ -40,6 +44,7 @@ import Main.Ports exposing
   , setPitch
   , measureText
   )
+import FaustProgram
 import Main.Constants exposing (firebaseConfig)
 import Main.Http.Firebase as FirebaseHttp
 import Midi
@@ -207,7 +212,7 @@ update action model =
           in
             model2 ! [cmd]
         Nothing ->
-          model ! []
+          model ! [ fetchTheDemoProgram ]
 
     SuccessfulPut ->
       let
@@ -315,27 +320,12 @@ update action model =
     FetchedUserPrograms faustPrograms ->
       { model | myPrograms = List.map snd faustPrograms } ! []
 
+    FetchedTheDemoProgram theDemoProgram ->
+      openProgram model theDemoProgram
+
     OpenProgram faustProgram ->
-      -- TOOD: for some reason DB ids aren't in here. Maybe because
-      -- They aren't getting added when we fetch the results?
-      let
-        -- defaultFaustProgram = FaustProgram.default
-        -- newFaustProgram =
-        --   { defaultFaustProgram
-        --   | title = faustProgram.title
-        --   , code = faustProgram.code
-        --   }
-        newModel =
-          { model
-          | faustProgram = faustProgram
-          , loading = True
-          }
-      in
-        newModel !
-          [ updateFaustCode newModel.faustProgram.code
-          , createCompileCommand newModel
-          , measureText newModel.faustProgram.title
-          ]
+      openProgram model faustProgram
+
     HttpBuilderError httpBuilderError ->
       case httpBuilderError of
         NetworkError ->
@@ -380,3 +370,20 @@ update action model =
 
     -- _ ->
     --   Debug.crash ""
+
+openProgram : Model -> FaustProgram.Model -> (Model, Cmd Msg)
+openProgram model faustProgram =
+      -- TOOD: for some reason DB ids aren't in here. Maybe because
+      -- They aren't getting added when we fetch the results?
+  let
+    newModel =
+      { model
+      | faustProgram = faustProgram
+      , loading = True
+      }
+  in
+    newModel !
+      [ updateFaustCode newModel.faustProgram.code
+      , createCompileCommand newModel
+      , measureText newModel.faustProgram.title
+        ]

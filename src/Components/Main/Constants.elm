@@ -16,3 +16,6 @@ firebaseConfig =
   , authDomain = "faust-instant.firebaseapp.com"
   , databaseURL = "https://faust-instant.firebaseio.com"
   }
+
+theDemoProgramKey : String
+theDemoProgramKey = "-KQDwqxuFDy1R8R2-5De"
