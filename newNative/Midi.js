@@ -4,24 +4,34 @@ var _mbylstra$elmmidi$Native_Midi = function() {
   var Nothing = _elm_lang$core$Maybe$Nothing;
   var Just = _elm_lang$core$Maybe$Just;
 
-  var firebaseApp = null;
-  var globalUser = null;
-
   function nullableToMaybe(v) {
     return v == null ? Nothing : Just(v);
   }
 
-  function initializeSdk(config) {
-    if (typeof(firebase) !== "undefined") {
-      if (firebaseApp == null) {
-        console.log("firebase not yet initalised. initialising");
-        firebaseApp = firebase.initializeApp(config);
-      } else {
-        console.log("firebase already initialised");
-      }
+  function requestMIDIAccess() {
+    if (typeof(navigator.requestMIDIAccess) != 'undefined') {
+      navigator
+        .requestMIDIAccess({'sysex': true}) //TODO: make sysex optional
+        .then(
+          function(midi) {
+
+          },
+          function(error) {
+            midiErrorCallback = (err) ->
+              console.log("uh-oh! Something went wrong!  Error code: " + err.code)
+          }
+        )
+      //
+      //midiSuccessCallback = (midi) ->
+      // outputs = midi.outputs()
+      // lexiconOutput = outputs[0]
+      // console.log('lexiconOutput: ', lexiconOutput)
+
     } else {
-      throw "FirebaseSdkNotAvailable";
+      //TODO return a failure type MidiNotSupported
+
     }
+      navigator.requestMIDIAccess({'sysex': true}).then(midiSuccessCallback, midiErrorCallback);
 
   }
 

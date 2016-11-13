@@ -69,7 +69,7 @@ if ( TARGET_ENV === 'development' ) {
     module: {
       loaders: [
         {
-          test:    /\.(elm|js)$/,
+          test:    /\.elm$/,
           exclude: [/elm-stuff/, /node_modules/],
           loader:  'elm-hot!elm-webpack?verbose=true&warn=true'
         },
