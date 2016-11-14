@@ -60,7 +60,7 @@ type Msg
   | FaustCodeChanged String
   | HotKeysMsg HotKeys.Msg
   | VolumeSliderMsg Slider.Msg
-  | NewFFTData (List Float)
+  -- | NewFFTData (List Float)
   | DSPCompiled (List Json.Decode.Value)
   | SliderChanged Int Float
   | PianoKeyMouseDown Float

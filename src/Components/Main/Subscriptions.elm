@@ -19,7 +19,7 @@ subscriptions model =
     , incomingCompilationErrors CompilationError
     --, Sub.map AudioMeterMsg (incomingAudioMeterValue AudioMeter.Updated)
     , Sub.map HotKeysMsg HotKeys.subscription
-    , incomingFFTData NewFFTData
+    -- , incomingFFTData NewFFTData
     , incomingDSPCompiled DSPCompiled
     , incomingTextMeasurements NewTextMeasurement
     , incomingWebfontsActive (\_ -> WebfontsActive)
