@@ -97,6 +97,8 @@ update action model =
       save model
     Fork ->
       Debug.crash "TODO"
+    NewFile ->
+      Debug.crash "TODO"
     FaustProgramPosted key ->
       faustProgramPosted key model
     MenuMsg idx action ->

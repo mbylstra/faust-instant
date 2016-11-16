@@ -183,7 +183,7 @@ h1 {
   @include title-text();
 }
 
-button, .save-button {
+button, .save-button, .button {
   display: flex;
   align-items: center;
   border: 1px solid $body-font-color;
@@ -205,6 +205,39 @@ button, .save-button {
     font-size: 10px;
     font-weight: bold;
   }
+}
+
+.side-column-button {
+  display: flex;
+  align-items: center;
+  background-color: black;
+  color: $body-font-color;
+  font-family: $body-font;
+  font-size: 18px;
+  padding: 5px 20px;
+  padding-left: 5px;
+  margin: 10px;
+  &:focus {
+    outline: 0;
+  }
+
+  &:hover {
+    background-color: $body-font-color;
+    color: black;
+  }
+
+  span {
+    font-size: 10px;
+    font-weight: bold;
+  }
+}
+
+.add-icon {
+  width: 38px;
+  height: 38px;
+  fill: white;
+  margin-right: 10px;
+  padding: 5px;
 }
 
 

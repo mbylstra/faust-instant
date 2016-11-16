@@ -77,6 +77,7 @@ type Msg
   | GeneralError -- beacuse I'm lazy
   | Save
   | Fork
+  | NewFile
   | FaustProgramPosted String
   | LogOutClicked
   | UserSignedOut

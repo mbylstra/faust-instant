@@ -58,6 +58,8 @@ import Components.Main.View.UserMenu as UserMenu
 import Components.Main.View.UserSettingsDialog as UserSettingsDialog
 import Components.Main.Model exposing (canSaveProgram)
 
+import Icons exposing (addIcon)
+
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
@@ -149,8 +151,15 @@ view model =
               []
             ]
           ]
-        , div [ class "examples"]
-          [ ProgramList.view model ]
+        , div [ class "side-column"]
+          [ div
+            []
+            [ aButton NewFile
+              [ class "side-column-button" ]
+              [ addIcon, text "New DSP File" ]
+            ]
+          , div [ ] [ ProgramList.view model ]
+          ]
         ]
       , div [ class "main-footer" ]
         [ p []
