@@ -10,6 +10,8 @@ import Json.Decode
 -- external libs
 
 import HttpBuilder exposing (Error(..))
+-- import Update.Extra.Infix exposing ((:>))
+import Update.Extra exposing (updateModel)
 
 -- project libs
 import Util exposing (unsafeMaybe, unsafeResult)
@@ -118,7 +120,7 @@ update action model =
     FetchedTheDemoProgram theDemoProgram ->
       fetchedTheDemoProgram theDemoProgram model
     OpenProgram faustProgram ->
-      openProgram model faustProgram
+      openProgram faustProgram model
     HttpBuilderError httpBuilderError ->
       handleHttpBuilderError httpBuilderError model
     TitleUpdated title ->
@@ -399,14 +401,12 @@ fetchedUserPrograms faustPrograms model =
 
 fetchedTheDemoProgram : FaustProgram.Model -> Model -> (Model, Cmd Msg)
 fetchedTheDemoProgram theDemoProgram model =
-  -- let
-  --   (newMdel, cmd) =
-  -- in
-  openProgram model theDemoProgram
+  openProgram theDemoProgram model
+  |> updateModel (\model -> { model | isDemoProgram = True })
 
 
-openProgram : Model -> FaustProgram.Model -> (Model, Cmd Msg)
-openProgram model faustProgram =
+openProgram : FaustProgram.Model -> Model -> (Model, Cmd Msg)
+openProgram faustProgram model =
       -- TOOD: for some reason DB ids aren't in here. Maybe because
       -- They aren't getting added when we fetch the results?
   let
@@ -420,7 +420,11 @@ openProgram model faustProgram =
       [ updateFaustCode newModel.faustProgram.code
       , createCompileCommand newModel
       , measureText newModel.faustProgram.title
-        ]
+      ]
+
+
+  -- model
+  -- |> openProgram
 
 
 handleHttpBuilderError : (HttpBuilder.Error String) -> Model -> (Model, Cmd Msg)

@@ -124,6 +124,9 @@ view model =
               , maybeView
                 (\user -> h3 [] [ text <| "by " ++ user.displayName ])
                 model.faustProgram.author
+              , boolView
+                (span [ class "demo-badge" ] [ text "demo" ])
+                model.isDemoProgram
               ]
             , div [ class "code-editor-buttons" ]
               [ div [ class "spinner-holder" ]

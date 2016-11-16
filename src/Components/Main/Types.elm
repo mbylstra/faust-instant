@@ -29,6 +29,7 @@ import Components.Midi as Midi
 
 type alias Model =
   { faustProgram : FaustProgram.Model
+  , isDemoProgram : Bool
   , online : Bool -- Do we have internet?
   , compilationError : Maybe String
   , hotKeys : HotKeys.Model

@@ -44,6 +44,7 @@ init =
     (hotKeys, hotKeysCommand) = HotKeys.init
   in
     { faustProgram = FaustProgram.init
+    , isDemoProgram = False
     , online = True -- assume we're online
     , compilationError = Nothing
     , hotKeys = hotKeys
@@ -129,6 +130,8 @@ canSaveProgram model =
   let
     faustProgram = model.faustProgram
   in
+    not model.isDemoProgram
+    &&
     case model.user of
       Just user ->
         if userOwnsProgram user faustProgram

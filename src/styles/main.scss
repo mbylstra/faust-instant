@@ -270,6 +270,15 @@ textarea {
   align-content: stretch;
 }
 
+.demo-badge {
+  background-color: #CCC;
+  color: black;
+  padding: 3px 6px 1px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: bold;
+}
 
 .cm-s-monokai .CodeMirror-linenumber {
     color: #444444;
