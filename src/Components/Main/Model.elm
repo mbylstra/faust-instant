@@ -43,7 +43,7 @@ init =
   let
     (hotKeys, hotKeysCommand) = HotKeys.init
   in
-    { faustProgram = FaustProgram.init
+    { faustProgram = FaustProgram.init Nothing
     , isDemoProgram = False
     , online = True -- assume we're online
     , compilationError = Nothing
@@ -130,17 +130,17 @@ canSaveProgram model =
   let
     faustProgram = model.faustProgram
   in
-    not model.isDemoProgram
+    not (Debug.log "isDemoProgram" model.isDemoProgram)
     &&
     case model.user of
       Just user ->
-        if userOwnsProgram user faustProgram
+        if (Debug.log "userOwnsProgram" userOwnsProgram) user faustProgram
         then True
         else False
       Nothing ->
-        if hasAuthor model.faustProgram
+        if (Debug.log "hasAuthor" hasAuthor) model.faustProgram
         then False
         else
-          if hasBeenSavedToDatabase faustProgram
+          if (Debug.log "hasBeenSavedToDatabase" hasBeenSavedToDatabase) faustProgram
           then False
           else True

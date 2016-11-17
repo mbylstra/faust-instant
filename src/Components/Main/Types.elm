@@ -78,6 +78,7 @@ type Msg
   | Save
   | Fork
   | NewFile
+  | DeleteCurrentFile
   | FaustProgramPosted String
   | LogOutClicked
   | UserSignedOut
@@ -97,7 +98,7 @@ type Msg
   | MidiInputEvent Midi.MidiInputEvent
 
   -- Material Design Lite
-  | MDL Material.Msg
+  | MDL (Material.Msg Msg)
   | MenuMsg Int Material.Menu.Msg
 
 type Polyphony

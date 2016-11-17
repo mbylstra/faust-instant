@@ -55,6 +55,7 @@ import Components.Main.Constants exposing (defaultBufferSize)
 
 -- component views
 import Components.Main.View.UserMenu as UserMenu
+import Components.Main.View.FileSettingsMenu as FileSettingsMenu
 import Components.Main.View.UserSettingsDialog as UserSettingsDialog
 import Components.Main.Model exposing (canSaveProgram)
 
@@ -143,6 +144,7 @@ view model =
                   ( aButton Save [ class "save-button" ] [ text "Save" ] )
                   ( canSaveProgram model )
               -- , aButton Fork [ class "save-button" ] [ text "Fork" ]
+              , FileSettingsMenu.view MDL model.mdl
               ]
             ]
           , div [ id "code-editor-holder", class "code-editor"]

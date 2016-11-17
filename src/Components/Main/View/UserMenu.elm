@@ -1,20 +1,12 @@
 module Components.Main.View.UserMenu exposing (..)
 
-import Material.Menu as Menu exposing (Item, bottomRight)
+import Material.Menu as Menu exposing (Item, bottomRight, onSelect)
 
 import Html exposing (Html, text)
 import Html.Events exposing (onClick)
 -- import Html.App as App
 
 import Components.Main.Types exposing (Msg(MenuMsg, LogOutClicked, OpenUserSettingsDialog))
-
-item : String -> Html Msg
-item str =
-  Html.div
-    [ onClick LogOutClicked ]
-    [ Html.text str ]
-
-
 
 -- Is this an Elm compiler bug? It seems impossible to annotate this type,
 -- because Material.Menu does not expose the Container type. The suggestion
@@ -34,8 +26,10 @@ view mdlMsg mdlModel =
     [ Menu.bottomRight
     -- , Menu.ripple
     ]
-    [ Menu.Item False True
-      <| Html.div [ onClick OpenUserSettingsDialog ] [ Html.text "Edit Profile" ]
-    , Menu.Item False True
-      <| Html.div [ onClick LogOutClicked ] [ Html.text "Log Out" ]
+    [ Menu.item
+      [ onSelect OpenUserSettingsDialog ]
+      [ text "Edit Profile" ]
+    , Menu.item
+      [ onSelect LogOutClicked ]
+      [ text "Log Out" ]
     ]

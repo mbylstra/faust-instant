@@ -12,6 +12,7 @@ import Json.Decode
 import HttpBuilder exposing (Error(..))
 -- import Update.Extra.Infix exposing ((:>))
 import Update.Extra exposing (updateModel)
+import Maybe.Extra exposing (isJust)
 
 -- project libs
 import Util exposing (unsafeMaybe, unsafeResult)
@@ -98,13 +99,15 @@ update action model =
     Fork ->
       Debug.crash "TODO"
     NewFile ->
-      Debug.crash "TODO"
+      newFile model
+    DeleteCurrentFile ->
+      deleteCurrentFile model
     FaustProgramPosted key ->
       faustProgramPosted key model
     MenuMsg idx action ->
       (model, Cmd.none)
     MDL msg' ->
-      Material.update MDL msg' model
+      Material.update msg' model
     LogOutClicked ->
       model ! [ signOutFirebaseUser ]
     UserSignedOut ->
@@ -339,6 +342,16 @@ save model =
     Nothing ->
       Debug.crash "We need to do something about save if user is not logged in"
 
+
+newFile : Model -> (Model, Cmd Msg)
+newFile model =
+  openProgram (FaustProgram.init model.user) model
+  |> updateModel (\model -> { model | isDemoProgram = False })
+
+deleteCurrentFile : Model -> (Model, Cmd Msg)
+deleteCurrentFile model =
+  -- TODO!
+  model ! []
 
 faustProgramPosted : String -> Model -> (Model, Cmd Msg)
 faustProgramPosted key model =

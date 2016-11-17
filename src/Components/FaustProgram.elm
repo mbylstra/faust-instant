@@ -43,8 +43,9 @@ default =
   , staffPick = False
   }
 
-init : Model
-init = default
+init : Maybe User.Model -> Model
+init maybeAuthor =
+  { default | author = maybeAuthor }
 
 hasAuthor : Model -> Bool
 hasAuthor model =
