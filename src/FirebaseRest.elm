@@ -70,6 +70,26 @@ put databaseUrl path encoder maybeAuthToken id model =
   in
     task
 
+delete :
+  String
+  -> String
+  -> Maybe String
+  -> String
+  -> Task (HttpBuilder.Error String) ()
+delete databaseUrl path maybeAuthToken id =
+  let
+    path' = path ++ "/" ++ id
+    url = restUrl databaseUrl path' [] maybeAuthToken
+
+    task =
+      HttpBuilder.delete url
+      |> HttpBuilder.send
+          (HttpBuilder.jsonReader ignoreResponseBodyDecoder)
+          HttpBuilder.stringReader
+      |> Task.map .data
+  in
+    task
+
 post :
   String
   -> String
