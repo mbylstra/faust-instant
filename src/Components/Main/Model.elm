@@ -38,9 +38,10 @@ import Components.Main.Commands exposing
 
 -- Init
 
-init : (Model, Cmd Msg)
-init =
+init : Flags -> (Model, Cmd Msg)
+init flags =
   let
+    _ = Debug.log "flags" flags
     (hotKeys, hotKeysCommand) = HotKeys.init
   in
     { faustProgram = FaustProgram.init Nothing

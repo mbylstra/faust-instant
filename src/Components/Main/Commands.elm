@@ -6,7 +6,7 @@ import Task
 import FirebaseAuth
 
 import Components.Main.Types exposing (..)
-import Components.Main.Ports exposing (compileFaustCode)
+import Components.Main.Ports exposing (compileFaustCode, saveToLocalStoragePort)
 import Components.Main.Constants as Constants
 import Components.Main.Http.Firebase exposing
   ( getUserFaustPrograms
@@ -61,3 +61,10 @@ fetchStaffPicks =
 fetchTheDemoProgram : Cmd Msg
 fetchTheDemoProgram =
   Task.perform HttpBuilderError FetchedTheDemoProgram (getFaustProgram Constants.theDemoProgramKey)
+
+saveToLocalStorage : Model -> Cmd Msg
+saveToLocalStorage model =
+  let
+    data = { title = model.faustProgram.title, code = model.faustProgram.code }
+  in
+    saveToLocalStoragePort data

@@ -27,6 +27,11 @@ import Components.Midi as Midi
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
+type alias Flags =
+  { title: String
+  , code: String
+  }
+
 type alias Model =
   { faustProgram : FaustProgram.Model
   , isDemoProgram : Bool

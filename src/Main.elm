@@ -12,9 +12,11 @@ import Stylesheets exposing (cssFiles)
 
 import Util exposing (last)
 
-main : Program Never
+import Components.Main.Types exposing (Flags)
+
+main : Program Flags
 main =
-  Html.App.program
+  Html.App.programWithFlags
     { init = Components.Main.Model.init
     , update = Components.Main.Update.update
     , view = Components.Main.View.view

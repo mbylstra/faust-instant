@@ -54,3 +54,6 @@ port incomingWebfontsActive
 
 port rawMidiInputEvents
   : ((Int, Int, Int) -> msg) -> Sub msg
+
+port saveToLocalStoragePort
+  : { title : String, code : String } -> Cmd msg

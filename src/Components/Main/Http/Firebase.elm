@@ -40,6 +40,15 @@ getFaustPrograms
 getFaustPrograms params =
   FirebaseRest.getMany databaseUrlBase "faustPrograms" FaustProgram.decoder params Nothing
 
+getFaustProgram
+  : String
+  -> Task.Task (HttpBuilder.Error String) FaustProgram.Model
+getFaustProgram key =
+  let
+    path = "faustPrograms/" ++ key
+  in
+    FirebaseRest.getOne databaseUrlBase path FaustProgram.decoder Nothing
+
 deleteFaustProgram
   : String
   -> String

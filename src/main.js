@@ -24,7 +24,19 @@ var WebFont = require('webfontloader');
 
 // inject bundled Elm app into div#main
 var Elm = require( './Main.elm' );
-var elm = Elm.Main.embed( document.getElementById( 'main' ) );
+
+// TODO: get the program in localstorage
+//
+// c
+// localstorage.g
+//
+//
+localStorage.setItem("current-file", JSON.stringify({"title": "title1", "code": "blah"}));
+
+var currentFileData = JSON.parse(localStorage.getItem("current-file"));
+
+JSON.parse(localStorage.getItem("current-file"));
+var elm = Elm.Main.embed(document.getElementById('main'), currentFileData);
 
 
 var audioContext = new AudioContext();
