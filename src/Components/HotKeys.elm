@@ -20,7 +20,7 @@ init =
         ( keyboardModel, keyboardCmd ) =
             Keyboard.init
     in
-        ( { keyboardModel  = keyboardModel
+        ( { keyboardModel = keyboardModel
           , controlShiftPressed = False
           , keyList = []
           }
@@ -35,9 +35,10 @@ update msg model =
             let
                 ( keyboardModel, keyboardCmd ) =
                     Keyboard.update keyMsg model.keyboardModel
+
                 controlShiftPressed =
-                  Keyboard.isPressed Keyboard.Control keyboardModel
-                  && Keyboard.isPressed Keyboard.Enter keyboardModel
+                    Keyboard.isPressed Keyboard.Control keyboardModel
+                        && Keyboard.isPressed Keyboard.Enter keyboardModel
             in
                 ( { model
                     | keyboardModel = keyboardModel
@@ -47,5 +48,7 @@ update msg model =
                 , Cmd.map KeyboardMsg keyboardCmd
                 )
 
+
 subscription : Sub Msg
-subscription = Sub.map KeyboardMsg Keyboard.subscriptions
+subscription =
+    Sub.map KeyboardMsg Keyboard.subscriptions
