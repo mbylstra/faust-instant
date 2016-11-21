@@ -15,8 +15,8 @@ import Http exposing (Error(..))
 
 -- import Update.Extra.Infix exposing ((:>))
 
-import Update.Extra exposing (updateModel)
-import Maybe.Extra exposing (isJust)
+import Update.Extra exposing (updateModel, andThen)
+-- import Maybe.Extra exposing (isJust)
 
 
 -- project libs
@@ -67,7 +67,7 @@ import Components.FaustProgram as FaustProgram
 import Components.Main.Constants exposing (firebaseConfig)
 import Components.Main.Http.Firebase as FirebaseHttp
     exposing
-        ( getTheDemoProgram )
+        ( getTheDemoProgram, deleteFaustProgram )
 import Components.Midi as Midi
 import Components.UserSettingsForm as UserSettingsForm
 
@@ -463,8 +463,20 @@ newFile model =
 
 deleteCurrentFile : Model -> ( Model, Cmd Msg )
 deleteCurrentFile model =
-    -- TODO!
-    model ! []
+
+    -- TODO: consider putting faustProgram in a union type like
+    -- Unsaved, Saved, OwnedByUser, etc - which makes unpacking maybe's easier
+    case model.faustProgram.databaseId of
+        Just key ->
+            case model.authToken of
+                Just authToken ->
+                    model ! [ deleteFaustProgram authToken key ]
+                Nothing ->
+                    Debug.crash "Unauthenticated user should not be abled to delete a db program"
+
+        Nothing ->
+            model ! []
+                |> andThen update NewFile
 
 
 faustProgramPosted : String -> Model -> ( Model, Cmd Msg )
@@ -532,9 +544,11 @@ userSettingsFormMsg msg_ model =
 
 
 fetchedStaffPicks : List ( String, FaustProgram.Model ) -> Model -> ( Model, Cmd Msg )
-fetchedStaffPicks staffPicks model =
-    -- TODO: I think we need to add the db ids
-    { model | staffPicks = List.map Tuple.second staffPicks } ! []
+fetchedStaffPicks staffPickPairs model =
+    let
+        staffPicks = FaustProgram.addIds staffPickPairs
+    in
+        { model | staffPicks = staffPicks } ! []
 
 
 
@@ -542,8 +556,11 @@ fetchedStaffPicks staffPicks model =
 
 
 fetchedUserPrograms : List ( String, FaustProgram.Model ) -> Model -> ( Model, Cmd Msg )
-fetchedUserPrograms faustPrograms model =
-    { model | myPrograms = List.map Tuple.second faustPrograms } ! []
+fetchedUserPrograms faustProgramPairs model =
+    let
+        faustPrograms = FaustProgram.addIds faustProgramPairs
+    in
+        { model | myPrograms = faustPrograms } ! []
 
 
 fetchedTheDemoProgram : FaustProgram.Model -> Model -> ( Model, Cmd Msg )

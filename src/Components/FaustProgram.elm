@@ -4,6 +4,7 @@ module Components.FaustProgram
         , init
         , default
         , hasAuthor
+        , addIds
         , hasBeenSavedToDatabase
         , encoder
         , decoder
@@ -57,6 +58,10 @@ hasBeenSavedToDatabase model =
     isJust (Debug.log "db id" model.databaseId)
 
 
+addIds : List ( String, Model ) -> List Model
+addIds pairs =
+    pairs
+    |> List.map (\(key, model) -> { model | databaseId = Just key })
 
 -- SERIALIZE
 
