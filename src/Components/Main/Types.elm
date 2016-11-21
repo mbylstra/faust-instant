@@ -65,6 +65,7 @@ type alias Model =
     , staffPicks : List FaustProgram.Model
     , myPrograms : List FaustProgram.Model
     , textMeasurementWidth : Maybe Int
+    , bufferSnapshot : Maybe (List Float)
     }
 
 
@@ -106,12 +107,14 @@ type Msg
     | TitleUpdated String
     | NewTextMeasurement Int
     | WebfontsActive
+    | BufferSnapshot (List Float)
       -- Midi
     | RawMidiInputEvent ( Int, Int, Int )
     | MidiInputEvent Midi.MidiInputEvent
       -- Material Design Lite
     | MDL (Material.Msg Msg)
     | MenuMsg Int Material.Menu.Msg
+
 
 
 type Polyphony

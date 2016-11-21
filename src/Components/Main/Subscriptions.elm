@@ -23,6 +23,7 @@ subscriptions model =
     , incomingTextMeasurements NewTextMeasurement
     , incomingWebfontsActive (\_ -> WebfontsActive)
     , rawMidiInputEvents RawMidiInputEvent
+    , incomingBufferSnapshot BufferSnapshot
     ]
         -- ++ (if model.arpeggiatorOn then
         --         [ Sub.map ArpeggiatorMsg (Arpeggiator.subscription model.arpeggiator) ]

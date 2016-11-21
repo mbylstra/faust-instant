@@ -80,6 +80,7 @@ init flags =
         , staffPicks = []
         , myPrograms = []
         , textMeasurementWidth = Nothing
+        , bufferSnapshot = Nothing
         }
             ! [ Cmd.map HotKeysMsg hotKeysCommand
               , elmAppInitialRender ()

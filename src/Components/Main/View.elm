@@ -138,6 +138,7 @@ import Components.Main.View.FileSettingsMenu as FileSettingsMenu
 import Components.Main.View.UserSettingsDialog as UserSettingsDialog
 import Components.Main.Model exposing (canSaveProgram)
 import Icons exposing (addIcon)
+import Components.Main.View.BufferSnapshot as BufferSnapshot
 
 
 --------------------------------------------------------------------------------
@@ -265,6 +266,7 @@ view model =
                   -- , FFTBarGraph.view model.fftData
                 , div [ class "sliders" ] sliders
                 , pianoView model
+                , maybeView BufferSnapshot.view model.bufferSnapshot
                 ]
             , (let
                 defaults =

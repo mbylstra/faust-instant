@@ -44,6 +44,8 @@ var NUM_POLY_VOICES = 3;
 var currFaustCode = null;
 var currFactory = null;
 var currDsp = null;
+var bufferSnapshotProcessor = null;
+var bufferSnapshot = null;
 var editor = null;
 
 // var mainGainNode = audioContext.createGain();
@@ -92,6 +94,8 @@ function midiToFreq(note) {
 // audioMonitor.connect(audioContext.destination);
 
 
+
+
 // var analyserNode = audioContext.createAnalyser();
 // // analyserNode.fftSize = 2048;
 // // analyserNode.fftSize = 4096;
@@ -105,6 +109,7 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
   // document.getElementById("spinner").style.display = "block";
   setTimeout(function() {
     // This is a massive hack due to issues with concurrency and ordering in Elm!
+    //
 
     polyphonic = payload.polyphonic; //global
     bufferSize = payload.bufferSize;
@@ -125,7 +130,11 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
       var currFactory = newFactory
       if (currDsp != null) {
         // currDsp.disconnect(analyserNode);
-        currDsp.disconnect(audioContext.destination);
+        currDsp.disconnect(bufferSnapshotProcessor);
+        console.log("disconnected from bufferSnapshotProcessor");
+        bufferSnapshotProcessor.disconnect(audioContext.destination);
+        console.log("disconnected bufferSnapshotProcessor");
+        // currDsp.disconnect(audioContext.destination);
         deleteDSPInstance(currDsp);
       }
       if (polyphonic) {
@@ -142,9 +151,56 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
       // elm.ports.incomingDSPCompiled.send(currDsp.controls());
       elm.ports.incomingDSPCompiled.send(simplifiedUi);
 
+      bufferSnapshot = null;
+
+      (function() {
+        // The idea is that we get a snapshot of the beginning of the audio
+        bufferSnapshotProcessor = audioContext.createScriptProcessor(bufferSize);
+        var bufferSnapshot = null;
+        bufferSnapshotProcessor.onaudioprocess = function(audioProcessingEvent) {
+
+
+          if (bufferSnapshot == null) {
+            bufferSnapshot = [];
+            var inputBuffer = audioProcessingEvent.inputBuffer;
+            var outputBuffer = audioProcessingEvent.outputBuffer;
+
+            for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+              var inputData = inputBuffer.getChannelData(channel);
+              var outputData = outputBuffer.getChannelData(channel);
+              for (var sample = 0; sample < inputBuffer.length; sample++) {
+                outputData[sample] = inputData[sample];
+                bufferSnapshot[sample] = inputData[sample];
+              }
+            }
+            if (bufferSnapshot[0] == 0.0) {
+              bufferSnapshot = null;
+            } else {
+              console.log("audio snapshot", bufferSnapshot);
+              elm.ports.incomingBufferSnapshot.send(bufferSnapshot);
+              console.log("sent snapshot to elm")
+            }
+          } else {
+            var inputBuffer = audioProcessingEvent.inputBuffer;
+            var outputBuffer = audioProcessingEvent.outputBuffer;
+
+            for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
+              var inputData = inputBuffer.getChannelData(channel);
+              var outputData = outputBuffer.getChannelData(channel);
+              for (var sample = 0; sample < inputBuffer.length; sample++) {
+                outputData[sample] = inputData[sample];
+              }
+            }
+          }
+        }
+      })();
+
+
       // console.log('json.ui', currDsp.json().outputs);
       // currDsp.connect(analyserNode);
-      currDsp.connect(audioContext.destination);
+      // currDsp.connect(audioContext.destination);
+      currDsp.connect(bufferSnapshotProcessor);
+      bufferSnapshotProcessor.connect(audioContext.destination);
       // analyserNode.connect(mainGainNode);
       // mainGainNode.connect(audioMonitor);
     }

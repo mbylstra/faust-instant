@@ -191,6 +191,9 @@ update action model =
         WebfontsActive ->
             webfontsActive model
 
+        BufferSnapshot bufferSnapshot ->
+            handleBufferSnapshot bufferSnapshot model
+
         RawMidiInputEvent data ->
             rawMidiInputEvent data model
 
@@ -652,6 +655,14 @@ newTextMeasurement width model =
 webfontsActive : Model -> ( Model, Cmd Msg )
 webfontsActive model =
     model ! [ measureText model.faustProgram.title ]
+
+
+handleBufferSnapshot : List Float -> Model -> (Model, Cmd Msg)
+handleBufferSnapshot snapshot model =
+    let
+        _ = Debug.log "snapshot" snapshot
+    in
+        { model | bufferSnapshot = Just snapshot }  ! []
 
 
 rawMidiInputEvent : ( Int, Int, Int ) -> Model -> ( Model, Cmd Msg )
