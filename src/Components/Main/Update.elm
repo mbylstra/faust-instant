@@ -562,8 +562,9 @@ fetchedUserPrograms : List ( String, FaustProgram.Model ) -> Model -> ( Model, C
 fetchedUserPrograms faustProgramPairs model =
     let
         faustPrograms = FaustProgram.addIds faustProgramPairs
+        sortedPrograms =  List.sortBy .title faustPrograms
     in
-        { model | myPrograms = faustPrograms } ! []
+        { model | myPrograms = sortedPrograms } ! []
 
 
 fetchedTheDemoProgram : FaustProgram.Model -> Model -> ( Model, Cmd Msg )

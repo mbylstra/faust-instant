@@ -96,14 +96,18 @@ buttonView faustProgram =
 view : Model -> Html Msg
 view model =
     let
-        buttons =
-            List.map buttonView model.staffPicks
+        staffPicks =
+            div [ class "staff-picks" ] (List.map buttonView model.staffPicks)
     in
         if (isLoggedIn model) then
             let
                 userProgramButtons =
                     List.map buttonView model.myPrograms
             in
-                div [] (buttons ++ userProgramButtons)
+                div []
+                    [ staffPicks
+                    , div [ class "user-programs" ] userProgramButtons
+                    ]
         else
-            div [] buttons
+                div []
+                    [ staffPicks ]

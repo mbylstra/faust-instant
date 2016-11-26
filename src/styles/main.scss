@@ -44,7 +44,7 @@ h1 {
 
 .main-header {
   padding: 0px 10px;
-  border-bottom: 1px solid #3a3a3a;
+  border-bottom: 1px solid $line-color;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -238,6 +238,10 @@ button, .save-button, .button {
   fill: white;
   margin-right: 10px;
   padding: 5px;
+}
+
+.user-programs {
+  border-top: 1px solid $line-color;
 }
 
 
