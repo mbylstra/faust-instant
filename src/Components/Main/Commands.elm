@@ -7,18 +7,12 @@ import FirebaseAuth
 import Components.Main.Types exposing (..)
 import Components.Main.Ports exposing (compileFaustCode, saveToLocalStoragePort)
 import Components.Main.Constants as Constants
-import Components.Main.Http.Firebase
-    exposing
-        ( getUserFaustPrograms
-        , getFaustProgram
-        )
-import Components.User as User
+import Components.Main.Http.OnlineCompiler exposing (getSvg)
 
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
--- attempt : (Result x a -> msg) -> Task x a -> Cmd msg
 
 generalErrorTagger : (data -> Msg) -> (Result x data -> Msg)
 generalErrorTagger msgTagger result =
@@ -70,19 +64,11 @@ createCompileCommand model =
                 }
 
 
--- fetchUserPrograms : User.Model -> Cmd Msg
--- fetchUserPrograms user =
---     Task.perform HttpBuilderError FetchedUserPrograms (getUserFaustPrograms user)
-
-
--- fetchStaffPicks : Cmd Msg
--- fetchStaffPicks =
---     Task.perform HttpBuilderError FetchedStaffPicks Components.Main.Http.Firebase.getStaffPicks
-
-
--- fetchTheDemoProgram : Cmd Msg
--- fetchTheDemoProgram =
---     Task.perform HttpError FetchedTheDemoProgram (getFaustProgram Constants.theDemoProgramKey)
+createCompileCommands : Model -> List (Cmd Msg)
+createCompileCommands model =
+    [ createCompileCommand model
+    , getSvg SvgFetched model.faustProgram.code
+    ]
 
 
 saveToLocalStorage : Model -> Cmd Msg

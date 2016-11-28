@@ -7,6 +7,7 @@ import String
 import Result
 import Json.Decode
 import Color
+import Json.Encode
 
 
 -- html
@@ -56,6 +57,7 @@ import Html
 import Html.Attributes
     exposing
         ( style
+        , property
         , class
         , id
         , title
@@ -267,6 +269,9 @@ view model =
                 , div [ class "sliders" ] sliders
                 , pianoView model
                 , maybeView BufferSnapshot.view model.bufferSnapshot
+                , maybeView
+                    (\svgString -> (div [ property "innerHTML" <| Json.Encode.string svgString ] [] ))
+                    model.faustSvg
                 ]
             , (let
                 defaults =

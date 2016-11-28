@@ -52,6 +52,7 @@ import Components.Main.Types exposing (..)
 import Components.Main.Commands
     exposing
         ( createCompileCommand
+        , createCompileCommands
         , signOutFirebaseUser
         )
 import Components.Main.Ports
@@ -194,6 +195,9 @@ update action model =
         BufferSnapshot bufferSnapshot ->
             handleBufferSnapshot bufferSnapshot model
 
+        SvgFetched svgString ->
+            svgFetched svgString model
+
         RawMidiInputEvent data ->
             rawMidiInputEvent data model
 
@@ -210,7 +214,7 @@ update action model =
 
 compile : Model -> ( Model, Cmd Msg )
 compile model =
-    { model | loading = True } ! [ createCompileCommand model ]
+    { model | loading = True } ! (createCompileCommands model)
 
 
 compilationError : Maybe String -> Model -> ( Model, Cmd Msg )
@@ -257,9 +261,9 @@ hotKeysMsg msg model =
         commands =
             [ Cmd.map HotKeysMsg hotKeysCommand ]
                 ++ if doCompile then
-                    [ createCompileCommand model ]
+                        createCompileCommands model
                    else
-                    []
+                        []
 
         loading =
             if doCompile then
@@ -583,12 +587,13 @@ openProgram faustProgram model =
                 | faustProgram = faustProgram
                 , loading = True
             }
+        commands =
+            [ updateFaustCode newModel.faustProgram.code
+            , measureText newModel.faustProgram.title
+            ]
+             ++ createCompileCommands newModel
     in
-        newModel
-            ! [ updateFaustCode newModel.faustProgram.code
-              , createCompileCommand newModel
-              , measureText newModel.faustProgram.title
-              ]
+        newModel ! commands
 
 
 
@@ -664,6 +669,10 @@ handleBufferSnapshot snapshot model =
         _ = Debug.log "snapshot" snapshot
     in
         { model | bufferSnapshot = Just snapshot }  ! []
+
+svgFetched : String -> Model -> (Model, Cmd Msg)
+svgFetched svgString model =
+    { model | faustSvg = Just svgString } ! []
 
 
 rawMidiInputEvent : ( Int, Int, Int ) -> Model -> ( Model, Cmd Msg )
