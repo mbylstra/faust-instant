@@ -3,7 +3,6 @@ module Components.Main.View.MainFooter exposing (view)
 -- core
 
 import Color
-import Json.Encode
 
 
 -- html
@@ -11,11 +10,9 @@ import Json.Encode
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
--- external libs
-
-import HtmlHelpers exposing (aButton, maybeView, boolView)
-
 -- external components
+
+import HtmlHelpers exposing (maybeView)
 
 -- project components
 
@@ -27,17 +24,15 @@ import Components.FaustControls as FaustControls
 
 import Components.Main.Types exposing (..)
 import Components.FaustControls as FaustControls
-
--- component views
-
-import Components.Main.View.BufferSnapshot as BufferSnapshot
 import Components.Main.View.KnobsAndSliders as KnobsAndSliders
+
 
 view : Model -> Html Msg
 view model =
     div [ class "main-footer" ]
-        [ p []
-            [ text (Maybe.withDefault "" model.compilationError) ]
+        [ maybeView (\error -> p [] [text error]) model.compilationError
+        -- [ p []
+        --     [ text (Maybe.withDefault "" model.compilationError) ]
           -- , Html.map VolumeSliderMsg (Slider.view model.mainVolume)
           -- , p []
           --   [ text "Audio Meter Value: "
@@ -47,10 +42,6 @@ view model =
           -- , FFTBarGraph.view model.fftData
         , KnobsAndSliders.view model
         , pianoView model
-        , maybeView BufferSnapshot.view model.bufferSnapshot
-        , maybeView
-            (\svgString -> (div [ property "innerHTML" <| Json.Encode.string svgString ] [] ))
-            model.faustSvg
         ]
 
 

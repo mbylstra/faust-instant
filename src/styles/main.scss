@@ -50,6 +50,12 @@ h1 {
   justify-content: space-between;
   align-items: center;
 
+
+  /* always stay at natural size */
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+
   a {
     color: $body-font-color;
     margin-right: 30px;
@@ -80,20 +86,26 @@ h1 {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
 }
 
 .code-editor-column {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  background-color: black;
-  max-width: 1100px;
 
-  .code-editor {
+  /* fill remaining space */
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+
+  background-color: black;
+
+  .code-editor-main {
     // background-color: pink;
-    flex-grow: 1;
-    // display: flex;
-    // flex-direction: column;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
   }
   .CodeMirror {
     // flex-grow: 1;
@@ -176,11 +188,23 @@ h1 {
 
     }
   }
+  .code-editor-holder {
+    // background-color: green;
+    width: 700px;
+  }
 
 }
 
 .measure-text {
   @include title-text();
+}
+
+.side-column {
+  flex-basis: 300px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  overflow: auto;
+  @include flat-scrollbar();
 }
 
 button, .save-button, .button {
@@ -208,7 +232,9 @@ button, .save-button, .button {
 }
 
 .side-column-button {
+  overflow: hidden;
   display: flex;
+  text-align: left;
   align-items: center;
   background-color: black;
   color: $body-font-color;
@@ -247,7 +273,7 @@ button, .save-button, .button {
 
 .slider-container {
   display: flex;
-  flex-grow: 1;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   padding: 10px 20px;
@@ -256,7 +282,10 @@ button, .save-button, .button {
 
 
 .CodeMirror-vscrollbar {
-  @include flat-vertical-scrollbar();
+  @include flat-scrollbar();
+}
+.CodeMirror-hscrollbar {
+  @include flat-scrollbar();
 }
 
 .CodeMirror {
@@ -266,6 +295,7 @@ button, .save-button, .button {
 
 .example {
   display: block;
+  text-align: left;
   // border: 2px solid black;
   color: $body-font-color;
   font-family: $body-font;
@@ -278,12 +308,12 @@ button, .save-button, .button {
   }
 }
 
-textarea {
-  width: 600px;
-  height: 300px;
-  font-family: monospace;
-  border: 2px solid black;
-}
+// textarea {
+  // width: 600px;
+  // height: 300px;
+  // font-family: monospace;
+  // border: 2px solid black;
+// }
 
 // button {
 //   color: white;
@@ -294,7 +324,12 @@ textarea {
 // }
 
 .main-footer {
+
+  /* keep to natural size */
   flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+
   display: flex;
   flex-direction: column;
 }
@@ -305,6 +340,7 @@ textarea {
   flex-wrap: wrap;
   justify-content: flex-start;
   align-content: stretch;
+  box-shadow: 0px -10px 0px 0px rgba(0, 0, 0, 0.75);
 }
 
 .demo-badge {
@@ -500,4 +536,52 @@ $google-spinner-width: 40px;
 
 .material-icons {
   @include typo-icon;
+}
+
+.middle-column {
+  // background-color: green;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto;
+  position: relative;
+  overflow: hidden;
+  border-left: 1px solid $line-color;
+
+  &:hover {
+    overflow: auto;
+  }
+  @include flat-scrollbar();
+
+  overflow: auto;
+
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+.middle-column svg {
+  > rect:first-child {
+    display: none !important;
+  }
+  > rect:nth-child(2) {
+    fill: black !important;
+  }
+  > a:first-child {
+    > rect:first-child {
+      display: none !important;
+    }
+    > rect:nth-child(2) {
+      fill: black !important;
+    }
+  }
+  line {
+    stroke: $body-font-color !important;
+  }
+  text {
+    fill: $body-font-color !important;
+    font-family: monospace !important;
+    font-size: 1.8mm !important;
+  }
 }

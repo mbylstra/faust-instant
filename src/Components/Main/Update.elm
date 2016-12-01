@@ -607,8 +607,14 @@ handleHttpError httpError model =
         NetworkError ->
             { model | online = False } ! []
 
+        BadStatus httpError ->
+            let
+                _ = Debug.log "BadStatus" (toString httpError)
+            in
+                model ! []
+
         _ ->
-            Debug.crash (toString httpError)
+            Debug.crash "HttpError"
 
 
 titleUpdated : String -> Model -> ( Model, Cmd Msg )

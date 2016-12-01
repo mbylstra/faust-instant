@@ -29,3 +29,6 @@ firebaseConfig =
 theDemoProgramKey : String
 theDemoProgramKey =
     "-KQDwqxuFDy1R8R2-5De"
+
+saveStaffPicksMode : Bool
+saveStaffPicksMode = True

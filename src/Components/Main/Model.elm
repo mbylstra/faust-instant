@@ -32,7 +32,7 @@ import Components.UserSettingsForm as UserSettingsForm
 
 import Components.Main.Types exposing (..)
 import Components.Main.Ports exposing (..)
-import Components.Main.Constants
+import Components.Main.Constants as Constants
 import Components.Main.Commands
     exposing
         ( fetchCurrentFirebaseUser
@@ -67,7 +67,7 @@ init flags =
         , fftData = []
         , uiInputs = Array.empty
         , polyphony = Monophonic
-        , bufferSize = Components.Main.Constants.defaultBufferSize
+        , bufferSize = Constants.defaultBufferSize
         , loading = False
         -- , arpeggiator = Arpeggiator.init
         -- , arpeggiatorOn = False
@@ -166,12 +166,12 @@ canSaveProgram model =
                     if (Debug.log "userOwnsProgram" userOwnsProgram) user faustProgram then
                         True
                     else
-                        False
+                        ( if Constants.saveStaffPicksMode then True else False )
 
                 Nothing ->
-                    if (Debug.log "hasAuthor" hasAuthor) model.faustProgram then
+                    if hasAuthor model.faustProgram then
                         False
-                    else if (Debug.log "hasBeenSavedToDatabase" hasBeenSavedToDatabase) faustProgram then
+                    else if hasBeenSavedToDatabase faustProgram then
                         False
                     else
                         True

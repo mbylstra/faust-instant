@@ -14,25 +14,7 @@ import Html.Attributes exposing
   ( value, style, class, id, title, hidden, type_, checked, placeholder, selected
   , name, href, target, src, height, width, alt
   )
-import Html.Events
-    exposing
-        ( on
-        , targetValue
-        , targetChecked
-        , keyCode
-        , onBlur
-        , onFocus
-        , onSubmit
-        , onInput
-        , onClick
-        , onDoubleClick
-        , onMouseDown
-        , onMouseUp
-        , onMouseEnter
-        , onMouseLeave
-        , onMouseOver
-        , onMouseOut
-        )
+import Html.Events exposing (..)
 
 import Json.Decode
 
@@ -41,6 +23,7 @@ import Components.Main.Constants exposing (defaultBufferSize)
 import Components.Main.View.FileSettingsMenu as FileSettingsMenu
 import Components.Main.Model exposing (canSaveProgram)
 import Components.GoogleSpinner as GoogleSpinner
+import Components.Main.View.MiddleColumn as MiddleColumn
 
 view : Model -> Html Msg
 view model =
@@ -82,10 +65,13 @@ view model =
                 , FileSettingsMenu.view MDL model.mdl
                 ]
             ]
-        , div [ id "code-editor-holder", class "code-editor" ]
-            [ textarea
-                [ id "codemirror" ]
-                []
+        , div
+            [ class "code-editor-main" ]
+
+            [ div
+                [ id "code-editor-holder", class "code-editor-holder" ]
+                [ textarea [ id "codemirror" ] [] ]
+            , MiddleColumn.view model
             ]
         ]
 

@@ -310,7 +310,9 @@ function updateCodeMirrorSize() {
       // var width = codeMirrorHolder.offsetWidth;
       // var height = codeMirrorHolder.offsetHeight;
       var width = codeMirrorHolder.clientWidth;
+      console.log('width', width);
       var height = codeMirrorHolder.clientHeight;
+      console.log('height', height);
       editor.setSize(width, height);
       // editor.setSize(width, 100);
       // editor.setSize("100%", "100%");
