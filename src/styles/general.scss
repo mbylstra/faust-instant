@@ -34,6 +34,22 @@ $highlight-color: $yellow;
 
 
 }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #464646;
+}
+::-webkit-scrollbar-corner {
+  background: #0c0c0c;
+}
 
 a {
   color: $highlight-color;

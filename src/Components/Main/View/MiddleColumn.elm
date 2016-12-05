@@ -12,6 +12,15 @@ import Components.Main.Types exposing (..)
 
 import Components.Main.View.BufferSnapshot as BufferSnapshot
 
+
+view : Model -> Html Msg
+view model =
+    div [ class "middle-column" ]
+        [ maybeView svgView model.faustSvgUrl
+        , maybeView bufferSnapshotView model.bufferSnapshot
+        ]
+
+
 svgView : String -> Html Msg
 svgView url =
     iframe
@@ -24,12 +33,13 @@ svgView url =
         [ ]
 
 
-view : Model -> Html Msg
-view model =
-    div [ class "middle-column" ]
-        [ maybeView BufferSnapshot.view model.bufferSnapshot
-        , maybeView svgView model.faustSvgUrl
-        ]
+bufferSnapshotView : List Float -> Html Msg
+bufferSnapshotView bufferSnapshot =
+    div
+        [ class "buffer-snapshot-holder" ]
+        [ BufferSnapshot.view bufferSnapshot ]
+
+
 
 
 
