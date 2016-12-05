@@ -1,0 +1,20 @@
+line {
+  stroke: #cecece !important;
+}
+text {
+    fill: #cecece !important;
+    font-family: monospace !important;
+    font-size: 1.8mm !important;
+}
+svg  > rect:first-child {
+    display: none !important;
+}
+svg  > rect:nth-child(2) {
+    fill: black !important;
+}
+svg > a:first-child > rect:first-child {
+    display: none !important;
+}
+svg > a:first-child > rect:nth-child(2) {
+    fill: black !important;
+}

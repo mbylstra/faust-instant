@@ -81,7 +81,7 @@ init flags =
         , myPrograms = []
         , textMeasurementWidth = Nothing
         , bufferSnapshot = Nothing
-        , faustSvg = Nothing
+        , faustSvgUrl = Nothing
         }
             ! [ Cmd.map HotKeysMsg hotKeysCommand
               , elmAppInitialRender ()

@@ -7,7 +7,7 @@ import FirebaseAuth
 import Components.Main.Types exposing (..)
 import Components.Main.Ports exposing (compileFaustCode, saveToLocalStoragePort)
 import Components.Main.Constants as Constants
-import Components.Main.Http.OnlineCompiler exposing (getSvg)
+import Components.Main.Http.OnlineCompiler exposing (getSvgUrl)
 
 
 --------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ createCompileCommand model =
 createCompileCommands : Model -> List (Cmd Msg)
 createCompileCommands model =
     [ createCompileCommand model
-    , getSvg SvgFetched model.faustProgram.code
+    , getSvgUrl SvgUrlFetched model.faustProgram.code
     ]
 
 

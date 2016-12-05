@@ -195,8 +195,8 @@ update action model =
         BufferSnapshot bufferSnapshot ->
             handleBufferSnapshot bufferSnapshot model
 
-        SvgFetched svgString ->
-            svgFetched svgString model
+        SvgUrlFetched url ->
+            svgUrlFetched url model
 
         RawMidiInputEvent data ->
             rawMidiInputEvent data model
@@ -676,9 +676,9 @@ handleBufferSnapshot snapshot model =
     in
         { model | bufferSnapshot = Just snapshot }  ! []
 
-svgFetched : String -> Model -> (Model, Cmd Msg)
-svgFetched svgString model =
-    { model | faustSvg = Just svgString } ! []
+svgUrlFetched : String -> Model -> (Model, Cmd Msg)
+svgUrlFetched url model =
+    { model | faustSvgUrl = Just url } ! []
 
 
 rawMidiInputEvent : ( Int, Int, Int ) -> Model -> ( Model, Cmd Msg )

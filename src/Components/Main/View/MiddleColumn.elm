@@ -1,7 +1,6 @@
 module Components.Main.View.MiddleColumn exposing (view)
 
 
-import Json.Encode
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
@@ -13,18 +12,30 @@ import Components.Main.Types exposing (..)
 
 import Components.Main.View.BufferSnapshot as BufferSnapshot
 
+svgView : String -> Html Msg
+svgView url =
+    iframe
+        [ src url
+        , style
+            [ ("background-color", "black")
+            , ("border", "0")
+            ]
+        ]
+        [ ]
+
+
 view : Model -> Html Msg
 view model =
     div [ class "middle-column" ]
-        -- [ maybeView BufferSnapshot.view model.bufferSnapshot
-        -- , maybeView
-        [ maybeView (embedSvg "faust-svg-wrapper") model.faustSvg
+        [ maybeView BufferSnapshot.view model.bufferSnapshot
+        , maybeView svgView model.faustSvgUrl
         ]
 
 
 
-embedSvg : String -> String -> Html Msg
-embedSvg id svgString =
-    div
-        [ property "innerHTML" <| Json.Encode.string svgString ]
-        []
+-- embedSvg : String -> String -> Html Msg
+-- embedSvg id svgString =
+--     div
+--         [ property "innerHTML" <| Json.Encode.string svgString
+--         ]
+--         []

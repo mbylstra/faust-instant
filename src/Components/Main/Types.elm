@@ -66,7 +66,7 @@ type alias Model =
     , myPrograms : List FaustProgram.Model
     , textMeasurementWidth : Maybe Int
     , bufferSnapshot : Maybe (List Float)
-    , faustSvg : Maybe String
+    , faustSvgUrl : Maybe String
     }
 
 
@@ -109,7 +109,7 @@ type Msg
     | NewTextMeasurement Int
     | WebfontsActive
     | BufferSnapshot (List Float)
-    | SvgFetched String
+    | SvgUrlFetched String
       -- Midi
     | RawMidiInputEvent ( Int, Int, Int )
     | MidiInputEvent Midi.MidiInputEvent

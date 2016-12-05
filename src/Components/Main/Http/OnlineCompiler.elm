@@ -1,11 +1,12 @@
-module Components.Main.Http.OnlineCompiler exposing (getSvg)
+module Components.Main.Http.OnlineCompiler exposing (getSvgUrl)
 
 import Components.Main.Types exposing (..)
 import Http
 import HttpBuilder
+import Json.Decode as Json
 
-getSvgUrl : String
-getSvgUrl = "http://michaelbylstra.com:8019/faust2svg"
+getSvgServiceUrl : String
+getSvgServiceUrl = "http://michaelbylstra.com:8019/faust2svg"
 
 
 -- TODO: put in library function
@@ -19,16 +20,21 @@ genericResultTagger okTagger =
         okTagger data
   )
 
-getSvg :
+getSvgUrl :
     (String -> Msg)
     -> String
     -> Cmd Msg
-getSvg tagger faustCode =
+getSvgUrl tagger faustCode =
     let
         resultTagger = genericResultTagger tagger
+        decoder = Json.field "url" Json.string
 
     in
-        HttpBuilder.post getSvgUrl
+        HttpBuilder.post getSvgServiceUrl
+            |> HttpBuilder.withQueryParams
+                [ ("stylesheet-href"
+                , "http://michaelbylstra.com:8020/svg-diagram.css")
+                ]
             |> HttpBuilder.withStringBody "text/plain" faustCode
-            |> HttpBuilder.withExpect Http.expectString
+            |> HttpBuilder.withExpect (Http.expectJson decoder)
             |> HttpBuilder.send resultTagger
