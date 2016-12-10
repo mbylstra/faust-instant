@@ -28,3 +28,9 @@ view bufferSnapshot =
                 ]
                 data
             ]
+
+text : List Float -> String
+text data =
+    data
+    |> List.map toString
+    |> String.join ", "

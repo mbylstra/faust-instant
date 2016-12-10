@@ -44,8 +44,6 @@ var NUM_POLY_VOICES = 3;
 var currFaustCode = null;
 var currFactory = null;
 var currDsp = null;
-var bufferSnapshotProcessor = null;
-var bufferSnapshot = null;
 var editor = null;
 
 // var mainGainNode = audioContext.createGain();
@@ -121,6 +119,10 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
     var args = ["-I", window.location.href + "/faust-stdlib/"];
     faust.error_msg = null; //clear old error message
     var newFactory = faust.createDSPFactory(faustCode, args);
+    // var factoryCompute = newFactory.getFactoryCompute();
+
+    // maybe we can run the factory compute at this point?
+    //
 
     if (faust.error_msg) {
       console.log("faust.error_msg: ", faust.error_msg);
@@ -130,17 +132,14 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
       var currFactory = newFactory
       if (currDsp != null) {
         // currDsp.disconnect(analyserNode);
-        currDsp.disconnect(bufferSnapshotProcessor);
-        console.log("disconnected from bufferSnapshotProcessor");
-        bufferSnapshotProcessor.disconnect(audioContext.destination);
-        console.log("disconnected bufferSnapshotProcessor");
-        // currDsp.disconnect(audioContext.destination);
+        currDsp.disconnect(audioContext.destination);
         deleteDSPInstance(currDsp);
       }
       if (polyphonic) {
         currDsp = faust.createPolyDSPInstance(currFactory, audioContext, bufferSize, numVoices);
       } else {
         currDsp = faust.createDSPInstance(currFactory, audioContext, bufferSize);
+        elm.ports.incomingBufferSnapshot.send(currDsp.debugComputeMono());
       }
       console.log('currDsp', currDsp);
       console.log('controls', currDsp.controls());
@@ -151,56 +150,9 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
       // elm.ports.incomingDSPCompiled.send(currDsp.controls());
       elm.ports.incomingDSPCompiled.send(simplifiedUi);
 
-      bufferSnapshot = null;
-
-      (function() {
-        // The idea is that we get a snapshot of the beginning of the audio
-        bufferSnapshotProcessor = audioContext.createScriptProcessor(bufferSize);
-        var bufferSnapshot = null;
-        bufferSnapshotProcessor.onaudioprocess = function(audioProcessingEvent) {
-
-
-          if (bufferSnapshot == null) {
-            bufferSnapshot = [];
-            var inputBuffer = audioProcessingEvent.inputBuffer;
-            var outputBuffer = audioProcessingEvent.outputBuffer;
-
-            for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
-              var inputData = inputBuffer.getChannelData(channel);
-              var outputData = outputBuffer.getChannelData(channel);
-              for (var sample = 0; sample < inputBuffer.length; sample++) {
-                outputData[sample] = inputData[sample];
-                bufferSnapshot[sample] = inputData[sample];
-              }
-            }
-            if (bufferSnapshot[0] == 0.0) {
-              bufferSnapshot = null;
-            } else {
-              console.log("audio snapshot", bufferSnapshot);
-              elm.ports.incomingBufferSnapshot.send(bufferSnapshot);
-              console.log("sent snapshot to elm")
-            }
-          } else {
-            var inputBuffer = audioProcessingEvent.inputBuffer;
-            var outputBuffer = audioProcessingEvent.outputBuffer;
-
-            for (var channel = 0; channel < outputBuffer.numberOfChannels; channel++) {
-              var inputData = inputBuffer.getChannelData(channel);
-              var outputData = outputBuffer.getChannelData(channel);
-              for (var sample = 0; sample < inputBuffer.length; sample++) {
-                outputData[sample] = inputData[sample];
-              }
-            }
-          }
-        }
-      })();
-
-
       // console.log('json.ui', currDsp.json().outputs);
       // currDsp.connect(analyserNode);
-      // currDsp.connect(audioContext.destination);
-      currDsp.connect(bufferSnapshotProcessor);
-      bufferSnapshotProcessor.connect(audioContext.destination);
+      currDsp.connect(audioContext.destination);
       // analyserNode.connect(mainGainNode);
       // mainGainNode.connect(audioMonitor);
     }

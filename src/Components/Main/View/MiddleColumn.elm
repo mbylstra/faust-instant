@@ -37,7 +37,11 @@ bufferSnapshotView : List Float -> Html Msg
 bufferSnapshotView bufferSnapshot =
     div
         [ class "buffer-snapshot-holder" ]
-        [ BufferSnapshot.view bufferSnapshot ]
+        [ div [ class "buffer-snapshot-inner"]
+            [ BufferSnapshot.view bufferSnapshot
+            , text <| BufferSnapshot.text bufferSnapshot
+            ]
+        ]
 
 
 
