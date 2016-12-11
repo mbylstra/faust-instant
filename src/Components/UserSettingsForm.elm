@@ -185,5 +185,7 @@ view model =
                 ]
                 []
             )
+        -- , text <| toString (Debug.log "model.userModel" model.userModel)
+        , text model.userModel.githubUsername
         , aButton Submit [ class "button save-button" ] [ text "submit" ]
         ]

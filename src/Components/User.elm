@@ -22,6 +22,7 @@ type alias Model =
     { uid : String
     , displayName : String
     , imageUrl : Maybe String
+    , githubUsername : String
     }
 
 
@@ -30,6 +31,7 @@ dummyModel =
     { uid = "abcdefg"
     , displayName = "Michael"
     , imageUrl = Nothing
+    , githubUsername = "mbylstra"
     }
 
 
@@ -67,7 +69,8 @@ encoder model =
 
 decoder : Decoder Model
 decoder =
-    JsonDecode.map3 Model
+    JsonDecode.map4 Model
         (field "uid" JsonDecode.string)
         (field "displayName" JsonDecode.string)
         (field "imageUrl" (JsonDecode.map Just JsonDecode.string))
+        (field "githubUsername" JsonDecode.string)

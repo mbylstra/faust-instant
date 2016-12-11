@@ -128,6 +128,7 @@ firebaseUserLoggedIn firebaseUser model =
             { uid = firebaseUser.uid
             , displayName = firebaseUser.displayName
             , imageUrl = firebaseUser.photoURL
+            , githubUsername = firebaseUser.githubUsername
             }
 
         model2 =
