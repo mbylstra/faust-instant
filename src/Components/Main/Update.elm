@@ -4,8 +4,28 @@ module Components.Main.Update exposing (..)
 -- core
 
 import Array
-import Task
+import Components.FaustControls as FaustControls
+import Components.FaustProgram as FaustProgram
+import Components.HotKeys as HotKeys
+import Components.Main.Commands exposing (createCompileCommand, createCompileCommands, signOutFirebaseUser)
+import Components.Main.Constants exposing (firebaseConfig)
+import Components.Main.Http.FaustFileStorage exposing (storeDspFile)
+import Components.Main.Http.Firebase as FirebaseHttp exposing (deleteFaustProgram, getTheDemoProgram)
+import Components.Main.Model as Model exposing (firebaseUserLoggedIn)
+import Components.Main.Ports exposing (layoutUpdated, measureText, setControlValue, setPitch, updateFaustCode, updateMainVolume)
+import Components.Main.Types exposing (..)
+import Components.Midi as Midi
+import Components.SimpleDialog as SimpleDialog
+import Components.Slider as Slider
+import Components.UserSettingsForm as UserSettingsForm
+import FirebaseAuth
+import Http exposing (Error(..))
 import Json.Decode
+import Material
+import SignupView exposing (OutMsg(SignUpButtonClicked, SignInButtonClicked))
+import Task
+import Update.Extra exposing (andThen, updateModel)
+import Util exposing (unsafeMaybe, unsafeResult)
 
 
 -- external libs
@@ -448,15 +468,31 @@ save model =
     case model.authToken of
         Just authToken ->
             let
-                cmd =
+                postProgramCmd =
                     case model.faustProgram.databaseId of
                         Just id ->
                             FirebaseHttp.putFaustProgram authToken id model.faustProgram
 
                         Nothing ->
                             FirebaseHttp.postFaustProgram authToken model.faustProgram
+                -- let's also save to cloud at the same time. Ideally they'be done in series,
+                -- but two fire n forget cmds is easier!
+
+
+                commands =
+                    case model.faustProgram.author of
+                        Just author ->
+                            [ postProgramCmd
+                            , storeDspFile
+                                { username = author.githubUsername
+                                , filename = model.faustProgram.title
+                                , code = model.faustProgram.code
+                                }
+                            ]
+                        Nothing ->
+                            [ postProgramCmd ]
             in
-                model ! [ cmd ]
+                model ! commands
 
         Nothing ->
             Debug.crash "We need to do something about save if user is not logged in"

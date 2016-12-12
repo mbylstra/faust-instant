@@ -6,7 +6,7 @@ import HttpBuilder
 import Json.Decode as Json
 
 getSvgServiceUrl : String
-getSvgServiceUrl = "http://michaelbylstra.com:8019/faust2svg"
+getSvgServiceUrl = "http://compiler.faustinstant.net/faust2svg"
 
 
 -- TODO: put in library function
