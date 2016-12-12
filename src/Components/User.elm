@@ -64,6 +64,7 @@ encoder model =
         [ ( "uid", JsonEncode.string model.uid )
         , ( "displayName", JsonEncode.string model.displayName )
         , ( "imageUrl", maybeString model.imageUrl )
+        , ( "githubUsername", JsonEncode.string model.githubUsername )
         ]
 
 
