@@ -4,6 +4,7 @@ module Components.Main.Model exposing (..)
 -- core
 
 import Array exposing (Array)
+import Dict
 
 
 -- external components
@@ -26,6 +27,7 @@ import Components.Slider as Slider
 import Components.SimpleDialog as SimpleDialog
 import Components.User as User
 import Components.UserSettingsForm as UserSettingsForm
+import Components.FaustUiModel exposing (FaustUi)
 
 
 -- component modules
@@ -65,7 +67,8 @@ init flags =
             -- , fileReader = FileReader.init
         , mainVolume = Slider.init 1.0
         , fftData = []
-        , uiInputs = Array.empty
+        , faustUi = Nothing
+        , faustUiInputs = Dict.empty
         , polyphony = Monophonic
         , bufferSize = Constants.defaultBufferSize
         , loading = False

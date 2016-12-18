@@ -41,7 +41,7 @@ port incomingAudioMeterValue : (Float -> msg) -> Sub msg
 port incomingFFTData : (List Float -> msg) -> Sub msg
 
 
-port incomingDSPCompiled : (List Json.Decode.Value -> msg) -> Sub msg
+port incomingDSPCompiled : (Json.Decode.Value -> msg) -> Sub msg
 
 
 port elmAppInitialRender : () -> Cmd msg

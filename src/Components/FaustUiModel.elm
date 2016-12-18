@@ -4,12 +4,14 @@ import Json.Decode as Decode exposing (..)
 import Dict exposing (Dict)
 import Regex exposing (Regex)
 
+import Util exposing (unsafeResult)
+
+
 -- Model
 
 type alias FaustUi =
     { name : String
-    , address : String
-    , port_ : String
+    , outputs : String
     , ui : Ui
     }
 
@@ -23,10 +25,10 @@ type alias InputRecord =
     { label : String
     , inputType : InputType
     , address : String
-    , init : String
-    , min : String
-    , max : String
-    , step : String
+    , init : Float
+    , min : Float
+    , max : Float
+    , step : Float
     }
 
 type InputType = VSlider | HSlider | Nentry | Checkbox
@@ -40,14 +42,15 @@ type alias GroupRecord =
 type GroupType = HGroup | VGroup
 
 
+type alias UiInputs = Dict String Float
+
 -- Decoder
 
 faustUiDecoder : Decoder FaustUi
 faustUiDecoder =
-    map4 FaustUi
+    map3 FaustUi
         ( field "name" string )
-        ( field "address" string )
-        ( field "port" string )
+        ( field "outputs" string )
         ( field "ui" uiDecoder )
 
 
@@ -60,16 +63,21 @@ uiNodeDecoder =
     oneOf [inputDecoder, groupDecoder]
 
 
+unsafeStringToFloat : String -> Float
+unsafeStringToFloat s =
+    s |> String.toFloat |> unsafeResult
+
+
 inputDecoder : Decoder UiNode
 inputDecoder =
     map7 InputRecord
         ( field "label" string )
         ( field "type" inputTypeDecoder )
         ( field "address" string )
-        ( field "init" string )
-        ( field "min" string )
-        ( field "max" string )
-        ( field "step" string )
+        ( field "init" (map unsafeStringToFloat string))
+        ( field "min" (map unsafeStringToFloat string))
+        ( field "max" (map unsafeStringToFloat string))
+        ( field "step" (map unsafeStringToFloat string))
     |> map Input
 
 
@@ -154,6 +162,34 @@ parseLabel s =
         [] -> { label = "", params = Dict.empty }
 
 
+--
+
+extractUiInputs : FaustUi -> Dict String Float
+extractUiInputs faustUi =
+    -- here we need to walk the tree, finding inputs and adding them to the dict
+    let
+        processInput : InputRecord -> List (String, Float)
+        processInput input =
+            [(input.address, input.init)]
+
+        processGroup group =
+            processInputs group.items
+
+        processInputs : List UiNode -> List (String, Float)
+        processInputs uiNodes =
+            List.concatMap processUiNode uiNodes
+
+        processUiNode : UiNode -> List (String, Float)
+        processUiNode uiNode =
+            case uiNode of
+                Input input ->
+                    processInput input
+                Group group ->
+                    processGroup group
+
+    in
+        processInputs faustUi.ui
+        |> Dict.fromList
 
 -- Example:
 -- {

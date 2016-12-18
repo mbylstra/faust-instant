@@ -17,7 +17,7 @@ import HtmlHelpers exposing (maybeView)
 -- project components
 
 import Components.Piano as Piano
-import Components.FaustControls as FaustControls
+-- import Components.FaustControls as FaustControls
 
 
 -- import FaustProgram
@@ -47,7 +47,7 @@ view model =
 
 pianoView : Model -> Html Msg
 pianoView model =
-    if FaustControls.showPiano model.uiInputs then
-        Piano.view { blackKey = Color.black, whiteKey = Color.white } 6 12 PianoKeyMouseDown
-    else
-        div [] []
+    -- if FaustControls.showPiano model.uiInputs then
+    --     Piano.view { blackKey = Color.black, whiteKey = Color.white } 6 12 PianoKeyMouseDown
+    -- else
+    div [] []

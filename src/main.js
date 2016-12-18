@@ -143,14 +143,10 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
       }
       console.log('currDsp', currDsp);
       console.log('controls', currDsp.controls());
-      console.log('json', JSON.parse(currDsp.json()));
-      var ui = JSON.parse(currDsp.json()).ui;
-      var simplifiedUi = simplifyUiData(ui);
-      console.log('simplifiedUi', simplifiedUi);
-      // elm.ports.incomingDSPCompiled.send(currDsp.controls());
-      elm.ports.incomingDSPCompiled.send(simplifiedUi);
+      var json = JSON.parse(currDsp.json());
+      console.log("json", json);
+      elm.ports.incomingDSPCompiled.send(json);
 
-      // console.log('json.ui', currDsp.json().outputs);
       // currDsp.connect(analyserNode);
       currDsp.connect(audioContext.destination);
       // analyserNode.connect(mainGainNode);
@@ -235,23 +231,6 @@ function deleteDSPInstance(dsp) {
     }
 
     Module._free(dsp.dsp);
-}
-
-function simplifyUiData(uiData) {
-  var controls = [];
-
-  for (var i=0; i < uiData.length; i++) {
-    var item = uiData[i];
-    if (item.type == 'vslider' || item.type == 'hslider' || item.type == "nentry") {
-      controls.push(item);
-    } else if (item.type == 'vgroup' || item.type == 'hgroup') {
-      childControls = simplifyUiData(item.items);
-      controls = controls.concat(childControls);
-    } else {
-      console.log('ui item.type ' + item.type + ' not currently supported');
-    }
-  }
-  return controls;
 }
 
 function updateCodeMirrorSize() {

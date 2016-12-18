@@ -18,7 +18,7 @@ view attrs tagger model =
         , Html.Attributes.min (toString attrs.min)
         , Html.Attributes.max (toString attrs.max)
         , Html.Attributes.step (toString attrs.step)
-        , value (toString model)
+        , Html.Attributes.defaultValue (toString model)
         , onSliderInput tagger
         ]
         []

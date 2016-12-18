@@ -3,9 +3,10 @@ module Components.Main.Update exposing (..)
 --------------------------------------------------------------------------------
 -- core
 
-import Array
-import Components.FaustControls as FaustControls
+import Dict
+-- import Components.FaustControls as FaustControls
 import Components.FaustProgram as FaustProgram
+import Components.FaustUiModel as FaustUiModel exposing (faustUiDecoder, uiDecoder, extractUiInputs)
 import Components.HotKeys as HotKeys
 import Components.Main.Commands exposing (createCompileCommand, createCompileCommands, signOutFirebaseUser)
 import Components.Main.Constants exposing (firebaseConfig)
@@ -57,7 +58,7 @@ import Material
 import Components.HotKeys as HotKeys
 import Components.Slider as Slider
 -- import Components.Arpeggiator as Arpeggiator
-import Components.FaustControls as FaustControls
+-- import Components.FaustControls as FaustControls
 
 
 -- import User
@@ -118,8 +119,8 @@ update action model =
         VolumeSliderMsg msg ->
             volumeSliderMsg msg model
 
-        DSPCompiled jsonList ->
-            dspCompiled jsonList model
+        DSPCompiled json ->
+            dspCompiled json model
 
         SliderChanged i value ->
             sliderChanged i value model
@@ -302,19 +303,20 @@ volumeSliderMsg msg model =
         newModel ! [ updateMainVolume newModel.mainVolume ]
 
 
-dspCompiled : List Json.Decode.Value -> Model -> ( Model, Cmd Msg )
-dspCompiled jsonList model =
+dspCompiled : Json.Decode.Value -> Model -> ( Model, Cmd Msg )
+dspCompiled json model =
     let
-        decodeJson json =
+        faustUi =
             json
-                |> Json.Decode.decodeValue FaustControls.sliderDecoder
-                |> unsafeResult
-
-        sliders =
-            List.map decodeJson jsonList |> Array.fromList
+            |> Json.Decode.decodeValue faustUiDecoder
+            |> unsafeResult
     in
-        { model | uiInputs = sliders, loading = False }
-            ! [ layoutUpdated () ]
+        { model
+        | faustUi = Just faustUi
+        , faustUiInputs = FaustUiModel.extractUiInputs faustUi
+        , loading = False
+        }
+        ! [ layoutUpdated () ]
 
 
 
@@ -322,17 +324,11 @@ dspCompiled jsonList model =
 -- model ! []
 
 
-sliderChanged : Int -> Float -> Model -> ( Model, Cmd Msg )
-sliderChanged i value model =
-    let
-        uiInput =
-            unsafeMaybe (Array.get i model.uiInputs)
-
-        uiInput_ =
-            { uiInput | init = value }
-    in
-        { model | uiInputs = Array.set i uiInput_ model.uiInputs }
-            ! [ setControlValue ( uiInput.address, value ) ]
+sliderChanged : String -> Float -> Model -> ( Model, Cmd Msg )
+sliderChanged address value model =
+    { model
+    | faustUiInputs = Dict.insert address value model.faustUiInputs
+    } ! [ setControlValue ( address, value ) ]
 
 
 pianoKeyMouseDown : Float -> Model -> ( Model, Cmd Msg )

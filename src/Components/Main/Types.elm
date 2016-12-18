@@ -4,7 +4,7 @@ module Components.Main.Types exposing (..)
 -- core
 
 import Json.Decode
-import Array exposing (Array)
+import Dict exposing (Dict)
 import Http
 
 -- external components
@@ -20,12 +20,13 @@ import SignupView
 import Components.HotKeys as HotKeys
 import Components.Slider as Slider
 -- import Components.Arpeggiator as Arpeggiator
-import Components.FaustControls as FaustControls
+-- import Components.FaustControls as FaustControls
 import Components.FaustProgram as FaustProgram
 import Components.User as User
 import Components.SimpleDialog as SimpleDialog
 import Components.UserSettingsForm as UserSettingsForm
 import Components.Midi as Midi
+import Components.FaustUiModel exposing (FaustUi)
 
 
 --------------------------------------------------------------------------------
@@ -48,7 +49,8 @@ type alias Model =
     , hotKeys : HotKeys.Model
     , mainVolume : Slider.Model
     , fftData : List Float
-    , uiInputs : UiInputs
+    , faustUi : Maybe FaustUi
+    , faustUiInputs : Dict String Float
     , polyphony : Polyphony
     , bufferSize : Int
     , loading : Bool
@@ -79,8 +81,8 @@ type Msg
     | HotKeysMsg HotKeys.Msg
     | VolumeSliderMsg Slider.Msg
       -- | NewFFTData (List Float)
-    | DSPCompiled (List Json.Decode.Value)
-    | SliderChanged Int Float
+    | DSPCompiled Json.Decode.Value
+    | SliderChanged String Float
     | PianoKeyMouseDown Float
     | BufferSizeChanged Int
     -- | ArpeggiatorMsg Arpeggiator.Msg
@@ -124,5 +126,5 @@ type Polyphony
     | Polyphonic Int
 
 
-type alias UiInputs =
-    Array FaustControls.SliderData
+-- type alias UiInputs =
+--     Array FaustControls.SliderData
