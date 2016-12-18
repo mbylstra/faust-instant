@@ -64,7 +64,6 @@ import Components.FaustControls as FaustControls
 
 import Components.SimpleDialog as SimpleDialog
 
-
 -- component modules
 
 import Components.Main.Model as Model exposing (firebaseUserLoggedIn)
