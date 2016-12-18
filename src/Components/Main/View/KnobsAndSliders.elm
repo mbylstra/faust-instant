@@ -43,12 +43,16 @@ groupView model =
 
 inputView : FaustUiModel.InputRecord -> List (Html Msg)
 inputView model =
-    case model.inputType of
-        HSlider ->
-            [ horizontalSliderView model ]
-        _ ->
-            -- nothing else is implemented, so just use the horizonal slider
-            [ horizontalSliderView model ]
+    if model.label == "freq"
+    then
+        [] -- this will be rendered as a piano
+    else
+        case model.inputType of
+            HSlider ->
+                [ horizontalSliderView model ]
+            _ ->
+                -- nothing else is implemented, so just use the horizonal slider
+                [ horizontalSliderView model ]
 
 
 horizontalSliderView : FaustUiModel.InputRecord -> Html Msg

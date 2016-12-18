@@ -20,13 +20,12 @@ import SignupView
 import Components.HotKeys as HotKeys
 import Components.Slider as Slider
 -- import Components.Arpeggiator as Arpeggiator
--- import Components.FaustControls as FaustControls
 import Components.FaustProgram as FaustProgram
 import Components.User as User
 import Components.SimpleDialog as SimpleDialog
 import Components.UserSettingsForm as UserSettingsForm
 import Components.Midi as Midi
-import Components.FaustUiModel exposing (FaustUi)
+import Components.FaustUiModel exposing (FaustUi, InputRecord)
 
 
 --------------------------------------------------------------------------------
@@ -50,7 +49,7 @@ type alias Model =
     , mainVolume : Slider.Model
     , fftData : List Float
     , faustUi : Maybe FaustUi
-    , faustUiInputs : Dict String Float
+    , faustUiInputs : Dict String (Float, InputRecord)
     , polyphony : Polyphony
     , bufferSize : Int
     , loading : Bool
@@ -124,7 +123,3 @@ type Msg
 type Polyphony
     = Monophonic
     | Polyphonic Int
-
-
--- type alias UiInputs =
---     Array FaustControls.SliderData

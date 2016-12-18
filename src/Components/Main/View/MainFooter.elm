@@ -17,13 +17,12 @@ import HtmlHelpers exposing (maybeView)
 -- project components
 
 import Components.Piano as Piano
--- import Components.FaustControls as FaustControls
+import Components.FaustUiModel as FaustUiModel
 
 
 -- import FaustProgram
 
 import Components.Main.Types exposing (..)
-import Components.FaustControls as FaustControls
 import Components.Main.View.KnobsAndSliders as KnobsAndSliders
 
 
@@ -47,7 +46,7 @@ view model =
 
 pianoView : Model -> Html Msg
 pianoView model =
-    -- if FaustControls.showPiano model.uiInputs then
-    --     Piano.view { blackKey = Color.black, whiteKey = Color.white } 6 12 PianoKeyMouseDown
-    -- else
-    div [] []
+    if FaustUiModel.showPiano model.faustUiInputs then
+        Piano.view { blackKey = Color.black, whiteKey = Color.white } 6 12 PianoKeyMouseDown
+    else
+        div [] []

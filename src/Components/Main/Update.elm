@@ -4,7 +4,6 @@ module Components.Main.Update exposing (..)
 -- core
 
 import Dict
--- import Components.FaustControls as FaustControls
 import Components.FaustProgram as FaustProgram
 import Components.FaustUiModel as FaustUiModel exposing (faustUiDecoder, uiDecoder, extractUiInputs)
 import Components.HotKeys as HotKeys
@@ -58,7 +57,6 @@ import Material
 import Components.HotKeys as HotKeys
 import Components.Slider as Slider
 -- import Components.Arpeggiator as Arpeggiator
--- import Components.FaustControls as FaustControls
 
 
 -- import User
@@ -326,9 +324,14 @@ dspCompiled json model =
 
 sliderChanged : String -> Float -> Model -> ( Model, Cmd Msg )
 sliderChanged address value model =
-    { model
-    | faustUiInputs = Dict.insert address value model.faustUiInputs
-    } ! [ setControlValue ( address, value ) ]
+    -- { model
+    -- TODO: actually update the faustUiInputs
+    -- | faustUiInputs = Dict.insert address (value model.faustUiInputs
+    -- }
+    model
+    !
+
+    [ setControlValue ( address, value ) ]
 
 
 pianoKeyMouseDown : Float -> Model -> ( Model, Cmd Msg )

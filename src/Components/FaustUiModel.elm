@@ -164,22 +164,23 @@ parseLabel s =
 
 --
 
-extractUiInputs : FaustUi -> Dict String Float
+
+extractUiInputs : FaustUi -> Dict String (Float, InputRecord)
 extractUiInputs faustUi =
     -- here we need to walk the tree, finding inputs and adding them to the dict
     let
-        processInput : InputRecord -> List (String, Float)
+        processInput : InputRecord -> List (String, (Float, InputRecord))
         processInput input =
-            [(input.address, input.init)]
+            [(input.address, (input.init, input) )]
 
         processGroup group =
             processInputs group.items
 
-        processInputs : List UiNode -> List (String, Float)
+        processInputs : List UiNode -> List (String, (Float, InputRecord))
         processInputs uiNodes =
             List.concatMap processUiNode uiNodes
 
-        processUiNode : UiNode -> List (String, Float)
+        processUiNode : UiNode -> List (String, (Float, InputRecord))
         processUiNode uiNode =
             case uiNode of
                 Input input ->
@@ -190,6 +191,14 @@ extractUiInputs faustUi =
     in
         processInputs faustUi.ui
         |> Dict.fromList
+
+
+showPiano : Dict String (Float, InputRecord) -> Bool
+showPiano uiInputs =
+    Dict.values uiInputs
+        |> List.filter (\(_, input) -> input.label == "freq")
+        |> List.length
+        |> (==) 1
 
 -- Example:
 -- {
