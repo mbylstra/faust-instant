@@ -35,7 +35,7 @@ type InputType = VSlider | HSlider | Nentry | Checkbox
 
 type alias GroupRecord =
     { label : String
-    , type_ : GroupType
+    , groupType : GroupType
     , items : List UiNode
     }
 
@@ -88,10 +88,10 @@ inputTypeDecoder =
         (\inputTypeString ->
             case inputTypeString of
                 "vslider" -> succeed VSlider
-                "hsider" -> succeed HSlider
+                "hslider" -> succeed HSlider
                 "nentry" -> succeed Nentry
                 "checkbox" -> succeed Checkbox
-                _ -> fail ("input type" ++ inputTypeString ++ " is not valid")
+                _ -> fail ("input type " ++ inputTypeString ++ " is not valid")
         )
 
 
