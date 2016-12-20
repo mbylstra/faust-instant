@@ -3,7 +3,6 @@ module Components.Main.Update exposing (..)
 --------------------------------------------------------------------------------
 -- core
 
-import Dict
 import Components.FaustProgram as FaustProgram
 import Components.FaustUiModel as FaustUiModel exposing (faustUiDecoder, uiDecoder, extractUiInputs)
 import Components.HotKeys as HotKeys
@@ -49,6 +48,7 @@ import Util exposing (unsafeMaybe, unsafeResult)
 import SignupView exposing (OutMsg(SignUpButtonClicked, SignInButtonClicked))
 import FirebaseAuth
 import Material
+import GridControl
 
 
 -- project components
@@ -221,6 +221,9 @@ update action model =
 
         MidiInputEvent midiEvent ->
             midiInputEvent midiEvent model
+
+        GridControlMsg gridControlMsg ->
+            handleGridControlMsg gridControlMsg model
 
 
 
@@ -744,3 +747,10 @@ midiInputEvent midiEvent model =
         -- TODO something (like the piano keyboard)
         _ ->
             model ! []
+
+handleGridControlMsg : GridControl.Msg -> Model -> ( Model, Cmd Msg )
+handleGridControlMsg gridControlMsg model =
+    let
+        gridControl = GridControl.update gridControlMsg model.gridControl
+    in
+        { model | gridControl = gridControl } ! []

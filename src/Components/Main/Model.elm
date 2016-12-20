@@ -10,6 +10,7 @@ import Dict
 -- external components
 
 import SignupView
+import GridControl
 
 
 -- import LocalStorage
@@ -85,6 +86,7 @@ init flags =
         , textMeasurementWidth = Nothing
         , bufferSnapshot = Nothing
         , faustSvgUrl = Nothing
+        , gridControl = GridControl.init 16 13
         }
             ! [ Cmd.map HotKeysMsg hotKeysCommand
               , elmAppInitialRender ()

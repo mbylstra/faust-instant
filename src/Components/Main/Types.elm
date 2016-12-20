@@ -13,6 +13,7 @@ import FirebaseAuth exposing (AuthProvider(..), SignInWithPopupError(..))
 import Material
 import Material.Menu
 import SignupView
+import GridControl
 
 
 -- project components
@@ -68,6 +69,7 @@ type alias Model =
     , textMeasurementWidth : Maybe Int
     , bufferSnapshot : Maybe (List Float)
     , faustSvgUrl : Maybe String
+    , gridControl : GridControl.Model
     }
 
 
@@ -117,6 +119,7 @@ type Msg
       -- Material Design Lite
     | MDL (Material.Msg Msg)
     | MenuMsg Int Material.Menu.Msg
+    | GridControlMsg GridControl.Msg
 
 
 
