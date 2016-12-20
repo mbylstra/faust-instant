@@ -610,4 +610,32 @@ $google-spinner-width: 40px;
 
 .step-sequencer {
   height: 140px;
+
+  $step-sequencer-border-color: rgb(30, 30, 30);
+
+  .ElmGridControlGrid {
+      border: none;
+  }
+
+  .ElmGridControlColumnGroup {
+      border-left: 5px solid $step-sequencer-border-color;
+  }
+
+  .ElmGridControlColumn {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      border-top: 5px solid $step-sequencer-border-color;
+      border-bottom: 5px solid $step-sequencer-border-color;
+  }
+
+  .ElmGridControlCell {
+      flex: 1;
+      margin: 1px;
+      background-color: rgb(40, 40, 40);
+  }
+
+  .ElmGridControlActive {
+      background-color: pink;
+  }
 }
