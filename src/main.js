@@ -102,6 +102,10 @@ function midiToFreq(note) {
 // console.log('analyserBufferLength', analyserBufferLength);
 // var analyserDataArray = new Float32Array(analyserBufferLength);
 
+var bufferEventCallback = function(currentTime) {
+  elm.ports.incomingAudioBufferClockTick.send(currentTime);
+}
+
 elm.ports.compileFaustCode.subscribe(function(payload) {
 
   // document.getElementById("spinner").style.display = "block";
@@ -136,9 +140,10 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
         deleteDSPInstance(currDsp);
       }
       if (polyphonic) {
+        // TODO properly
         currDsp = faust.createPolyDSPInstance(currFactory, audioContext, bufferSize, numVoices);
       } else {
-        currDsp = faust.createDSPInstance(currFactory, audioContext, bufferSize);
+        currDsp = faust.createDSPInstance(currFactory, audioContext, bufferSize, bufferEventCallback);
         elm.ports.incomingBufferSnapshot.send(currDsp.debugComputeMono());
       }
       console.log('currDsp', currDsp);

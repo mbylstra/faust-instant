@@ -50,8 +50,8 @@ view model =
 pianoView : Model -> List (Html Msg)
 pianoView model =
     if FaustUiModel.showPiano model.faustUiInputs then
-        [ Piano.view { blackKey = Color.black, whiteKey = Color.white } 6 12 PianoKeyMouseDown
-        , StepSequencer.view model
+        [ StepSequencer.view model
+        , Piano.view { blackKey = Color.black, whiteKey = Color.white } 6 12 PianoKeyMouseDown
         ]
     else
         []

@@ -24,6 +24,7 @@ subscriptions model =
     , incomingWebfontsActive (\_ -> WebfontsActive)
     , rawMidiInputEvents RawMidiInputEvent
     , incomingBufferSnapshot BufferSnapshot
+    , incomingAudioBufferClockTick AudioBufferClockTick
     ]
         -- ++ (if model.arpeggiatorOn then
         --         [ Sub.map ArpeggiatorMsg (Arpeggiator.subscription model.arpeggiator) ]

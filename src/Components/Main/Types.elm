@@ -70,6 +70,7 @@ type alias Model =
     , bufferSnapshot : Maybe (List Float)
     , faustSvgUrl : Maybe String
     , gridControl : GridControl.Model
+    , audioClockTime : Float
     }
 
 
@@ -120,6 +121,7 @@ type Msg
     | MDL (Material.Msg Msg)
     | MenuMsg Int Material.Menu.Msg
     | GridControlMsg GridControl.Msg
+    | AudioBufferClockTick Float
 
 
 

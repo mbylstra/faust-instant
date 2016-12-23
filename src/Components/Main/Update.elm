@@ -225,6 +225,9 @@ update action model =
         GridControlMsg gridControlMsg ->
             handleGridControlMsg gridControlMsg model
 
+        AudioBufferClockTick time ->
+            handleAudioBufferClockTick time model
+
 
 
 -- _ ->
@@ -754,3 +757,7 @@ handleGridControlMsg gridControlMsg model =
         gridControl = GridControl.update gridControlMsg model.gridControl
     in
         { model | gridControl = gridControl } ! []
+
+handleAudioBufferClockTick : Float -> Model -> (Model, Cmd Msg)
+handleAudioBufferClockTick time model =
+    { model | audioClockTime = time } ! []

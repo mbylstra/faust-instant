@@ -336,7 +336,7 @@ faust.createDSPFactory = function (code, argv) {
 faust.deleteDSPFactory = function (factory) { faust.factory_table[factory.sha_key] = null; };
 
 // 'mono' DSP
-faust.createDSPInstance = function (factory, context, buffer_size) {
+faust.createDSPInstance = function (factory, context, buffer_size, bufferEventCallback) {
 
     var dsp = Module._malloc(factory.getSize());
     var handler = null;
@@ -388,6 +388,10 @@ faust.createDSPInstance = function (factory, context, buffer_size) {
             factory.setValue(dsp, factory.pathTable[path], values[0]);
             values[0] = values[1];
         }
+
+      if (typeof(bufferEventCallback) != 'undefined') {
+          bufferEventCallback(context.currentTime);
+      }
 
         // Compute
         factory.compute(dsp, buffer_size, ins, outs);
