@@ -10,6 +10,10 @@ console.log( 'WEBPACK GO!');
 
 // detemine build env
 var TARGET_ENV = process.env.npm_lifecycle_event === 'build' ? 'production' : 'development';
+var ELM_DEBUG = process.env.ELM_DEBUG === 'true' ? true : false;
+
+console.log('process.env', process.env);
+console.log('ELM_DEBUG', ELM_DEBUG);
 
 // common webpack config
 var commonConfig = {
@@ -71,7 +75,7 @@ if ( TARGET_ENV === 'development' ) {
         {
           test:    /\.elm$/,
           exclude: [/elm-stuff/, /node_modules/],
-          loader:  'elm-hot!elm-webpack?verbose=true&warn=true'
+          loader:  ('elm-hot!elm-webpack?verbose=true&warn=true' + (ELM_DEBUG ? 'debug=true' : ''))
         },
         {
           test: /\.(css|scss)$/,

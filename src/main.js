@@ -119,7 +119,7 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
     var numVoices = payload.numVoices;
 
 
-    console.log("faustCode:", faustCode);
+    // console.log("faustCode:", faustCode);
     var args = ["-I", window.location.href + "/faust-stdlib/"];
     faust.error_msg = null; //clear old error message
     var newFactory = faust.createDSPFactory(faustCode, args);
@@ -146,10 +146,10 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
         currDsp = faust.createDSPInstance(currFactory, audioContext, bufferSize, bufferEventCallback);
         elm.ports.incomingBufferSnapshot.send(currDsp.debugComputeMono());
       }
-      console.log('currDsp', currDsp);
-      console.log('controls', currDsp.controls());
+      // console.log('currDsp', currDsp);
+      // console.log('controls', currDsp.controls());
       var json = JSON.parse(currDsp.json());
-      console.log("json", json);
+      // console.log("json", json);
       elm.ports.incomingDSPCompiled.send(json);
 
       // currDsp.connect(analyserNode);
@@ -200,7 +200,7 @@ elm.ports.setControlValue.subscribe(function(e) {
   if (currDsp) {
     var path = e[0];
     var value = e[1];
-    console.log('setctrlvalue', path, value);
+    // console.log('setctrlvalue', path, value);
     currDsp.setValue(path, value);
   }
 })
@@ -246,9 +246,9 @@ function updateCodeMirrorSize() {
       // var width = codeMirrorHolder.offsetWidth;
       // var height = codeMirrorHolder.offsetHeight;
       var width = codeMirrorHolder.clientWidth;
-      console.log('width', width);
+      // console.log('width', width);
       var height = codeMirrorHolder.clientHeight;
-      console.log('height', height);
+      // console.log('height', height);
       editor.setSize(width, height);
       // editor.setSize(width, 100);
       // editor.setSize("100%", "100%");
@@ -266,7 +266,7 @@ elm.ports.measureText.subscribe(function(s) {
   var textMeasurer = document.getElementById('measure-text');
   textMeasurer.innerText = s;
   var width = textMeasurer.offsetWidth;
-  console.log('width', width);
+  // console.log('width', width);
   elm.ports.incomingTextMeasurements.send(width);
 })
 
@@ -294,17 +294,17 @@ if (typeof(navigator.requestMIDIAccess) != 'undefined') {
         // outputs = midi.outputs()
         // lexiconOutput = outputs[0]
         // lexiconOutput.send(bytes)
-        console.log('midi', midi);
-        console.log('midiInputs', midiInputs);
-        console.log('>>midi.inputs.size', midi.inputs.size);
+        // console.log('midi', midi);
+        // console.log('midiInputs', midiInputs);
+        // console.log('>>midi.inputs.size', midi.inputs.size);
         var midiInputs = Array.from(midi.inputs.values());
-        console.log('midi.inputs.keys()', midi.inputs.keys());
+        // console.log('midi.inputs.keys()', midi.inputs.keys());
         if (midi.inputs.size > 0) {
           var midiInput = midiInputs[0];
           midiInput.onmidimessage = function(midiMessage) {
-              console.log(midiMessage);
+              // console.log(midiMessage);
               var midiEventTypeValue = midiMessage.data[0];
-              console.log('note', midiMessage.data[1]);
+              // console.log('note', midiMessage.data[1]);
               // this is a total guess! (no internet)
               // var elmData = {
               //   _ctor: 'Tuple3',

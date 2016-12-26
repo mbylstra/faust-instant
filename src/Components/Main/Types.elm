@@ -27,6 +27,7 @@ import Components.SimpleDialog as SimpleDialog
 import Components.UserSettingsForm as UserSettingsForm
 import Components.Midi as Midi
 import Components.FaustUiModel exposing (FaustUi, InputRecord)
+import Components.StepSequencer.Types as StepSequencerTypes
 
 
 --------------------------------------------------------------------------------
@@ -38,9 +39,15 @@ type alias Flags =
     , code : String
     }
 
+type alias SongPosition =
+    { bar : Int
+    , beat : Int
+    , tick : Int
+    }
 
 type alias Model =
-    { faustProgram : FaustProgram.Model
+    { on : Bool
+    , faustProgram : FaustProgram.Model
     , isDemoProgram : Bool
     , online :
         Bool
@@ -69,8 +76,12 @@ type alias Model =
     , textMeasurementWidth : Maybe Int
     , bufferSnapshot : Maybe (List Float)
     , faustSvgUrl : Maybe String
-    , gridControl : GridControl.Model
     , audioClockTime : Float
+    , tempo : Float
+    , lastMetronomeTickTime : Float
+    , globalSongPosition : SongPosition
+    , numberOfBeatsPerBar : Int
+    , stepSequencer : StepSequencerTypes.Model
     }
 
 
@@ -122,7 +133,9 @@ type Msg
     | MenuMsg Int Material.Menu.Msg
     | GridControlMsg GridControl.Msg
     | AudioBufferClockTick Float
-
+    | MetronomeTick -- the metronome ticks 24 times per beat
+    | SetPitch Float
+    | ToggleOnOff
 
 
 type Polyphony

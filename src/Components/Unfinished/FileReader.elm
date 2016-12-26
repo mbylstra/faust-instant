@@ -116,7 +116,7 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
-    case Debug.log "FileReader action" action of
+    case action
         FileChanged s ->
             model ! []
 

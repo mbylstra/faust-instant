@@ -4,6 +4,7 @@ module Components.Main.View.MainHeader exposing (view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 
 -- external libs
 
@@ -33,6 +34,7 @@ view model =
     div [ class "main-header" ]
         [ div [ class "main-header-left" ]
             [ h1 [] [ text "Faust Instant" ] ]
+        , button [ onClick ToggleOnOff ] [ text "on/off"]
         , div [ class "main-header-right" ]
             (case model.user of
                 Just user ->

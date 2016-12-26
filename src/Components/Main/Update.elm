@@ -2,69 +2,27 @@ module Components.Main.Update exposing (..)
 
 --------------------------------------------------------------------------------
 -- core
-
-import Components.FaustProgram as FaustProgram
-import Components.FaustUiModel as FaustUiModel exposing (faustUiDecoder, uiDecoder, extractUiInputs)
-import Components.HotKeys as HotKeys
-import Components.Main.Commands exposing (createCompileCommand, createCompileCommands, signOutFirebaseUser)
-import Components.Main.Constants exposing (firebaseConfig)
-import Components.Main.Http.FaustFileStorage exposing (storeDspFile)
-import Components.Main.Http.Firebase as FirebaseHttp exposing (deleteFaustProgram, getTheDemoProgram)
-import Components.Main.Model as Model exposing (firebaseUserLoggedIn)
-import Components.Main.Ports exposing (layoutUpdated, measureText, setControlValue, setPitch, updateFaustCode, updateMainVolume)
-import Components.Main.Types exposing (..)
-import Components.Midi as Midi
-import Components.SimpleDialog as SimpleDialog
-import Components.Slider as Slider
-import Components.UserSettingsForm as UserSettingsForm
-import FirebaseAuth
-import Http exposing (Error(..))
 import Json.Decode
-import Material
-import SignupView exposing (OutMsg(SignUpButtonClicked, SignInButtonClicked))
 import Task
-import Update.Extra exposing (andThen, updateModel)
-import Util exposing (unsafeMaybe, unsafeResult)
 
-
--- external libs
-
+-- external packages
 import Http exposing (Error(..))
-
-
--- import Update.Extra.Infix exposing ((:>))
-
 import Update.Extra exposing (updateModel, andThen)
--- import Maybe.Extra exposing (isJust)
+import Material
 
+-- linked WIP external packages
+import GridControl
+import FirebaseAuth
+import SignupView exposing (OutMsg(SignUpButtonClicked, SignInButtonClicked))
 
 -- project libs
-
 import Util exposing (unsafeMaybe, unsafeResult)
-
-
--- external components
-
-import SignupView exposing (OutMsg(SignUpButtonClicked, SignInButtonClicked))
-import FirebaseAuth
-import Material
-import GridControl
 
 
 -- project components
--- import FaustProgram
-
 import Components.HotKeys as HotKeys
 import Components.Slider as Slider
--- import Components.Arpeggiator as Arpeggiator
-
-
--- import User
-
 import Components.SimpleDialog as SimpleDialog
-
--- component modules
-
 import Components.Main.Model as Model exposing (firebaseUserLoggedIn)
 import Components.Main.Types exposing (..)
 import Components.Main.Commands
@@ -73,13 +31,12 @@ import Components.Main.Commands
         , createCompileCommands
         , signOutFirebaseUser
         )
-import Components.Main.Ports
+import Components.Main.Ports as Ports
     exposing
         ( updateFaustCode
         , updateMainVolume
         , layoutUpdated
         , setControlValue
-        , setPitch
         , measureText
         )
 import Components.FaustProgram as FaustProgram
@@ -87,8 +44,11 @@ import Components.Main.Constants exposing (firebaseConfig)
 import Components.Main.Http.Firebase as FirebaseHttp
     exposing
         ( getTheDemoProgram, deleteFaustProgram )
+import Components.Main.Http.FaustFileStorage exposing (storeDspFile)
 import Components.Midi as Midi
 import Components.UserSettingsForm as UserSettingsForm
+import Components.FaustUiModel as FaustUiModel exposing (faustUiDecoder)
+import Components.StepSequencer as StepSequencer
 
 
 --------------------------------------------------------------------------------
@@ -97,7 +57,6 @@ import Components.UserSettingsForm as UserSettingsForm
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
-    -- case Debug.log "action:" action of
     case action of
         NoOp ->
             model ! []
@@ -228,7 +187,14 @@ update action model =
         AudioBufferClockTick time ->
             handleAudioBufferClockTick time model
 
+        MetronomeTick ->
+            handleMetronomeTick model
 
+        SetPitch pitch ->
+            setPitch pitch model
+
+        ToggleOnOff ->
+            { model | on = not model.on } ! []
 
 -- _ ->
 --   Debug.crash ""
@@ -278,7 +244,6 @@ hotKeysMsg msg model =
         ( hotKeys, hotKeysCommand ) =
             HotKeys.update msg model.hotKeys
 
-        -- _ = Debug.log "hotKeys" hotKeys
         doCompile =
             hotKeys.controlShiftPressed
 
@@ -323,11 +288,6 @@ dspCompiled json model =
         ! [ layoutUpdated () ]
 
 
-
--- Debug.log "newmodel" { model | uiInputs = uiInputs } ! []
--- model ! []
-
-
 sliderChanged : String -> Float -> Model -> ( Model, Cmd Msg )
 sliderChanged address value model =
     -- { model
@@ -339,14 +299,14 @@ sliderChanged address value model =
 
     [ setControlValue ( address, value ) ]
 
+setPitch : Float -> Model -> (Model, Cmd Msg)
+setPitch pitch model =
+    model ! [ Ports.setPitch pitch ]
+
 
 pianoKeyMouseDown : Float -> Model -> ( Model, Cmd Msg )
 pianoKeyMouseDown pitch model =
-    let
-        _ =
-            Debug.log "pitch" pitch
-    in
-        model ! [ setPitch pitch ]
+    model ! [ Ports.setPitch pitch ]
 
 
 bufferSizeChanged : Int -> Model -> ( Model, Cmd Msg )
@@ -367,9 +327,8 @@ bufferSizeChanged bufferSize model =
 --         newModel =
 --             { model | arpeggiator = arp2 }
 --
---         -- _ = Debug.log "arp note" note
 --     in
---         newModel ! [ setPitch (toFloat pitch) ]
+--         newModel ! [ Ports.setPitch (toFloat pitch) ]
 
 
 signupViewMsg : SignupView.Msg -> Model -> ( Model, Cmd Msg )
@@ -437,11 +396,7 @@ currentFirebaseUserFetched maybeFirebaseUser model =
 
 successfulPut : Model -> ( Model, Cmd Msg )
 successfulPut model =
-    let
-        _ =
-            Debug.log "SuccessfulPut" 1
-    in
-        model ! []
+    model ! []
 
 
 generalError : Model -> ( Model, Cmd Msg )
@@ -711,10 +666,7 @@ webfontsActive model =
 
 handleBufferSnapshot : List Float -> Model -> (Model, Cmd Msg)
 handleBufferSnapshot snapshot model =
-    let
-        _ = Debug.log "snapshot" snapshot
-    in
-        { model | bufferSnapshot = Just snapshot }  ! []
+    { model | bufferSnapshot = Just snapshot }  ! []
 
 svgUrlFetched : String -> Model -> (Model, Cmd Msg)
 svgUrlFetched url model =
@@ -729,7 +681,7 @@ rawMidiInputEvent data model =
     in
         case midiMessage of
             Midi.NoteOn ( midiNote, velocity ) ->
-                model ! [ setPitch (toFloat midiNote) ]
+                model ! [ Ports.setPitch (toFloat midiNote) ]
 
             _ ->
                 model ! []
@@ -745,7 +697,7 @@ midiInputEvent : Midi.MidiInputEvent -> Model -> ( Model, Cmd Msg )
 midiInputEvent midiEvent model =
     case midiEvent of
         Midi.NoteOn ( midiNote, velocity ) ->
-            model ! [ setPitch (toFloat midiNote) ]
+            model ! [ Ports.setPitch (toFloat midiNote) ]
 
         -- TODO something (like the piano keyboard)
         _ ->
@@ -754,10 +706,69 @@ midiInputEvent midiEvent model =
 handleGridControlMsg : GridControl.Msg -> Model -> ( Model, Cmd Msg )
 handleGridControlMsg gridControlMsg model =
     let
-        gridControl = GridControl.update gridControlMsg model.gridControl
+        stepSequencer = StepSequencer.handleGridControlMsg gridControlMsg model.stepSequencer
     in
-        { model | gridControl = gridControl } ! []
+        { model | stepSequencer = stepSequencer } ! []
+
+
+numberOfTicksPerBeat : Int
+numberOfTicksPerBeat = 24
+
 
 handleAudioBufferClockTick : Float -> Model -> (Model, Cmd Msg)
 handleAudioBufferClockTick time model =
-    { model | audioClockTime = time } ! []
+    let
+        beatDuration = 1.0 / (model.tempo / 60.0)
+        -- 6O BPM is 1 beat = 1 second
+        -- 120 BPM is 1 beat = 0.5 seconds.
+
+        metronomeTickDuration = beatDuration / (toFloat numberOfTicksPerBeat)
+        nextMetronomeTickTime = model.lastMetronomeTickTime + metronomeTickDuration
+    in
+        if model.audioClockTime >= nextMetronomeTickTime
+        then
+            { model | audioClockTime = time, lastMetronomeTickTime = nextMetronomeTickTime } ! []
+            |> andThen update MetronomeTick
+        else
+            { model | audioClockTime = time } ! []
+
+handleMetronomeTick : Model -> (Model, Cmd Msg)
+handleMetronomeTick model =
+    let
+        updateGlobalSongPosition : SongPosition -> SongPosition
+        updateGlobalSongPosition songPosition =
+            let
+                { bar, beat, tick } = songPosition
+                newTick = (tick + 1) % numberOfTicksPerBeat
+            in
+                if newTick == 0
+                then
+                    let
+                        newBeat = songPosition.beat + 1 % (model.numberOfBeatsPerBar)
+                    in
+                        if newBeat == 0
+                        then
+                            { songPosition | bar = bar + 1, beat = 0, tick = 0 }
+                        else
+                            { songPosition | beat = newBeat, tick = 0 }
+                else
+                    { songPosition | tick = newTick }
+
+        newSongPosition = updateGlobalSongPosition model.globalSongPosition
+        model2 = { model | globalSongPosition = newSongPosition }
+    in
+
+        -- if tick falls on an eighth note, then we want to advance the step sequencer
+        if newSongPosition.tick % 8 == 0
+        then
+            let
+                (newStepSequencer, maybeMsg) = StepSequencer.advanceIt model.stepSequencer
+                model3 = { model2 | stepSequencer = newStepSequencer }
+            in
+                case maybeMsg of
+                    Just msg ->
+                        update msg model3
+                    Nothing ->
+                        model3 ! []
+        else
+            model2 ! []

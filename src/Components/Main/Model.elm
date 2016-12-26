@@ -9,7 +9,6 @@ import Dict
 -- external components
 
 import SignupView
-import GridControl
 
 
 -- import LocalStorage
@@ -39,6 +38,7 @@ import Components.Main.Commands
         ( fetchCurrentFirebaseUser
         )
 import Components.Main.Http.Firebase exposing (getStaffPicks, getUserFaustPrograms)
+import Components.StepSequencer as StepSequencer
 
 
 --------------------------------------------------------------------------------
@@ -49,13 +49,11 @@ import Components.Main.Http.Firebase exposing (getStaffPicks, getUserFaustProgra
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
-        _ =
-            Debug.log "flags" flags
-
         ( hotKeys, hotKeysCommand ) =
             HotKeys.init
     in
-        { faustProgram = FaustProgram.init Nothing
+        { on = False
+        , faustProgram = FaustProgram.init Nothing
         , isDemoProgram = False
         , online =
             True
@@ -84,8 +82,12 @@ init flags =
         , textMeasurementWidth = Nothing
         , bufferSnapshot = Nothing
         , faustSvgUrl = Nothing
-        , gridControl = GridControl.init 16 13
         , audioClockTime = 0.0
+        , tempo = 120.0
+        , lastMetronomeTickTime = 0.0
+        , globalSongPosition = { bar = 0, beat = 0, tick = 0 }
+        , numberOfBeatsPerBar = 4
+        , stepSequencer = StepSequencer.init
         }
             ! [ Cmd.map HotKeysMsg hotKeysCommand
               , elmAppInitialRender ()
@@ -165,10 +167,10 @@ canSaveProgram model =
         faustProgram =
             model.faustProgram
     in
-        not (Debug.log "isDemoProgram" model.isDemoProgram)
+        not model.isDemoProgram
             && case model.user of
                 Just user ->
-                    if (Debug.log "userOwnsProgram" userOwnsProgram) user faustProgram then
+                    if userOwnsProgram user faustProgram then
                         True
                     else
                         ( if Constants.saveStaffPicksMode then True else False )

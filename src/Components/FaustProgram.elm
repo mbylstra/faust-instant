@@ -55,7 +55,7 @@ hasAuthor model =
 
 hasBeenSavedToDatabase : Model -> Bool
 hasBeenSavedToDatabase model =
-    isJust (Debug.log "db id" model.databaseId)
+    isJust model.databaseId
 
 
 addIds : List ( String, Model ) -> List Model

@@ -79,7 +79,7 @@ type Msg
 
 update : Msg -> Model -> Model
 update msg model =
-    case Debug.log "msg" msg of
+    case msg of
         Open ->
             { model | isOpen = True }
 
@@ -121,7 +121,7 @@ type alias Config parentMsg =
 view : (Msg -> parentMsg) -> Html parentMsg -> Model -> Html parentMsg
 view tagger html model =
     -- div [] [ text "wtf" ]
-    if Debug.log "model.isOpen" model.isOpen then
+    if model.isOpen then
         let
             body =
                 html
