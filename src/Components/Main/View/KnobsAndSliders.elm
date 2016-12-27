@@ -5,13 +5,14 @@ module Components.Main.View.KnobsAndSliders exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 
 import Components.SliderNoModel as SliderNoModel
 
 import Components.Main.Types exposing (..)
 import Components.FaustUiModel as FaustUiModel exposing
     ( InputType(..)
-    , UiNode(Input, Group)
+    , UiNode(Input, Group, Button)
     )
 
 view : Model -> Html Msg
@@ -32,6 +33,8 @@ uiNodeView uiNode =
     case uiNode of
         Input input ->
             inputView input
+        Button button ->
+            [ buttonView button ]
         Group group ->
             groupView group
 
@@ -50,6 +53,8 @@ inputView model =
         case model.inputType of
             HSlider ->
                 [ horizontalSliderView model ]
+            -- Button ->
+            --     [ buttonView model ]
             _ ->
                 -- nothing else is implemented, so just use the horizonal slider
                 [ horizontalSliderView model ]
@@ -63,4 +68,14 @@ horizontalSliderView model =
             (SliderChanged model.address)
             model.init
         , span [] [ text model.label ]
+        ]
+
+buttonView : FaustUiModel.ButtonRecord -> Html Msg
+buttonView model =
+    label [ class "button-container" ]
+        [ button
+            [ onMouseDown <| FaustUiButtonDown model.address
+            , onMouseUp <| FaustUiButtonUp model.address 
+            ]
+            [ text model.label]
         ]

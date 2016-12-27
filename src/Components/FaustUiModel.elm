@@ -19,6 +19,8 @@ type alias Ui = List UiNode
 
 type UiNode =
     Input InputRecord
+    -- Checkbox CheckboxRecord
+    | Button ButtonRecord
     | Group GroupRecord
 
 type alias InputRecord =
@@ -31,7 +33,17 @@ type alias InputRecord =
     , step : Float
     }
 
-type InputType = VSlider | HSlider | Nentry | Checkbox
+type alias ButtonRecord =
+    { label : String
+    , address : String
+    }
+
+-- type alias CheckboxRecord =
+--     { label : String
+--     , address : String
+--     }
+
+type InputType = VSlider | HSlider | Nentry
 
 type alias GroupRecord =
     { label : String
@@ -60,7 +72,7 @@ uiDecoder = list uiNodeDecoder
 
 uiNodeDecoder : Decoder UiNode
 uiNodeDecoder =
-    oneOf [inputDecoder, groupDecoder]
+    oneOf [inputDecoder, groupDecoder, buttonDecoder]
 
 
 unsafeStringToFloat : String -> Float
@@ -80,6 +92,12 @@ inputDecoder =
         ( field "step" (map unsafeStringToFloat string))
     |> map Input
 
+buttonDecoder : Decoder UiNode
+buttonDecoder =
+    map2 ButtonRecord
+        ( field "label" string )
+        ( field "address" string )
+    |> map Button
 
 inputTypeDecoder : Decoder InputType
 inputTypeDecoder =
@@ -90,7 +108,6 @@ inputTypeDecoder =
                 "vslider" -> succeed VSlider
                 "hslider" -> succeed HSlider
                 "nentry" -> succeed Nentry
-                "checkbox" -> succeed Checkbox
                 _ -> fail ("input type " ++ inputTypeString ++ " is not valid")
         )
 
@@ -173,6 +190,10 @@ extractUiInputs faustUi =
         processInput input =
             [(input.address, (input.init, input) )]
 
+        -- processButton : InputRecord -> List (String, (Float, InputRecord))
+        -- processButton button =
+        --     [(button.address, (input.init, input) )]
+
         processGroup group =
             processInputs group.items
 
@@ -187,6 +208,9 @@ extractUiInputs faustUi =
                     processInput input
                 Group group ->
                     processGroup group
+                Button button ->
+                    []
+                    -- processButton input
 
     in
         processInputs faustUi.ui

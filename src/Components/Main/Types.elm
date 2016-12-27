@@ -96,6 +96,8 @@ type Msg
       -- | NewFFTData (List Float)
     | DSPCompiled Json.Decode.Value
     | SliderChanged String Float
+    | FaustUiButtonDown String
+    | FaustUiButtonUp String
     | PianoKeyMouseDown Float
     | BufferSizeChanged Int
     -- | ArpeggiatorMsg Arpeggiator.Msg

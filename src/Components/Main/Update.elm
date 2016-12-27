@@ -82,6 +82,12 @@ update action model =
         SliderChanged i value ->
             sliderChanged i value model
 
+        FaustUiButtonDown address ->
+            model ! [ setControlValue (address, 1.0) ]
+
+        FaustUiButtonUp address ->
+            model ! [ setControlValue (address, 0.0) ]
+
         PianoKeyMouseDown pitch ->
             pianoKeyMouseDown pitch model
 
