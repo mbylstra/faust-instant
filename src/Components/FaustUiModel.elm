@@ -20,8 +20,10 @@ type alias Ui = List UiNode
 type UiNode =
     Input InputRecord
     -- Checkbox CheckboxRecord
+    | BarGraph BarGraphRecord
     | Button ButtonRecord
     | Group GroupRecord
+    -- | BarGraph
 
 type alias InputRecord =
     { label : String
@@ -36,6 +38,13 @@ type alias InputRecord =
 type alias ButtonRecord =
     { label : String
     , address : String
+    }
+
+type alias BarGraphRecord =
+    { label: String
+    , address : String
+    , min : Float
+    , max :  Float
     }
 
 -- type alias CheckboxRecord =
@@ -72,7 +81,7 @@ uiDecoder = list uiNodeDecoder
 
 uiNodeDecoder : Decoder UiNode
 uiNodeDecoder =
-    oneOf [inputDecoder, groupDecoder, buttonDecoder]
+    oneOf [inputDecoder, groupDecoder, barGraphDecoder, buttonDecoder]
 
 
 unsafeStringToFloat : String -> Float
@@ -98,6 +107,16 @@ buttonDecoder =
         ( field "label" string )
         ( field "address" string )
     |> map Button
+
+
+barGraphDecoder : Decoder UiNode
+barGraphDecoder =
+    map4 BarGraphRecord
+        ( field "label" string )
+        ( field "address" string )
+        ( field "min" (map unsafeStringToFloat string))
+        ( field "max" (map unsafeStringToFloat string))
+    |> map BarGraph
 
 inputTypeDecoder : Decoder InputType
 inputTypeDecoder =
@@ -209,11 +228,42 @@ extractUiInputs faustUi =
                 Group group ->
                     processGroup group
                 Button button ->
+                    [] -- for now we don't know about the state of the button, as we don't really need it
+                BarGraph _ ->
                     []
                     -- processButton input
 
     in
         processInputs faustUi.ui
+        |> Dict.fromList
+
+
+getInitialMetersModel : FaustUi -> Dict String Float
+getInitialMetersModel faustUi =
+    -- here we need to walk the tree, finding inputs and adding them to the dict
+    let
+        processBarGraph : BarGraphRecord -> List String
+        processBarGraph barGraph =
+            [ barGraph.address ]
+
+        processGroup group =
+            processInputs group.items
+
+        processInputs : List UiNode -> List String
+        processInputs uiNodes =
+            List.concatMap processUiNode uiNodes
+
+        processUiNode : UiNode -> List String
+        processUiNode uiNode =
+            case uiNode of
+                BarGraph barGraph ->
+                    processBarGraph barGraph
+                _ ->
+                    []
+
+    in
+        processInputs faustUi.ui
+        |> List.map (\address -> (address, 0.0))
         |> Dict.fromList
 
 

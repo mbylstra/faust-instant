@@ -58,6 +58,7 @@ type alias Model =
     , fftData : List Float
     , faustUi : Maybe FaustUi
     , faustUiInputs : Dict String (Float, InputRecord)
+    , faustMeters : Dict String Float
     , polyphony : Polyphony
     , bufferSize : Int
     , loading : Bool
@@ -82,6 +83,7 @@ type alias Model =
     , globalSongPosition : SongPosition
     , numberOfBeatsPerBar : Int
     , stepSequencer : StepSequencerTypes.Model
+    , drumStepSequencer : StepSequencerTypes.Model
     }
 
 
@@ -134,10 +136,12 @@ type Msg
     | MDL (Material.Msg Msg)
     | MenuMsg Int Material.Menu.Msg
     | GridControlMsg GridControl.Msg
+    | DrumStepSequencerGridControlMsg GridControl.Msg
     | AudioBufferClockTick Float
     | MetronomeTick -- the metronome ticks 24 times per beat
     | SetPitch Float
     | ToggleOnOff
+    | BarGraphUpdate { address : String, value : Float }
 
 
 type Polyphony

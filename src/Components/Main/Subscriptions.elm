@@ -24,6 +24,7 @@ subscriptions model =
     , incomingWebfontsActive (\_ -> WebfontsActive)
     , rawMidiInputEvents RawMidiInputEvent
     , incomingBufferSnapshot BufferSnapshot
+    , incomingBarGraphUpdate BarGraphUpdate
     ]
     ++ ( if model.on then
             [ incomingAudioBufferClockTick AudioBufferClockTick ]

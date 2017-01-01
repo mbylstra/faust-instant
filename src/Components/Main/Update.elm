@@ -4,6 +4,7 @@ module Components.Main.Update exposing (..)
 -- core
 import Json.Decode
 import Task
+import Dict
 
 -- external packages
 import Http exposing (Error(..))
@@ -25,6 +26,7 @@ import Components.Slider as Slider
 import Components.SimpleDialog as SimpleDialog
 import Components.Main.Model as Model exposing (firebaseUserLoggedIn)
 import Components.Main.Types exposing (..)
+import Components.Main.Ports as Ports
 import Components.Main.Commands
     exposing
         ( createCompileCommand
@@ -49,6 +51,7 @@ import Components.Midi as Midi
 import Components.UserSettingsForm as UserSettingsForm
 import Components.FaustUiModel as FaustUiModel exposing (faustUiDecoder)
 import Components.StepSequencer as StepSequencer
+import Components.DrumStepSequencer as DrumStepSequencer
 
 
 --------------------------------------------------------------------------------
@@ -58,6 +61,7 @@ import Components.StepSequencer as StepSequencer
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
+    -- case Debug.log "action" action of
         NoOp ->
             model ! []
 
@@ -83,10 +87,16 @@ update action model =
             sliderChanged i value model
 
         FaustUiButtonDown address ->
-            model ! [ setControlValue (address, 1.0) ]
+            let
+                _ = Debug.log "FaustUiButtonDown" 1
+            in
+                model ! [ setControlValue (address, 1.0) ]
 
         FaustUiButtonUp address ->
-            model ! [ setControlValue (address, 0.0) ]
+            let
+                _ = Debug.log "FaustUiButtonUp" 1
+            in
+                model ! [ setControlValue (address, 0.0) ]
 
         PianoKeyMouseDown pitch ->
             pianoKeyMouseDown pitch model
@@ -190,6 +200,9 @@ update action model =
         GridControlMsg gridControlMsg ->
             handleGridControlMsg gridControlMsg model
 
+        DrumStepSequencerGridControlMsg gridControlMsg ->
+            handleDrumStepSequencerGridControlMsg gridControlMsg model
+
         AudioBufferClockTick time ->
             handleAudioBufferClockTick time model
 
@@ -201,6 +214,9 @@ update action model =
 
         ToggleOnOff ->
             { model | on = not model.on } ! []
+
+        BarGraphUpdate { address, value } ->
+            handleBarGraphUpdate address value model
 
 -- _ ->
 --   Debug.crash ""
@@ -289,6 +305,7 @@ dspCompiled json model =
         { model
         | faustUi = Just faustUi
         , faustUiInputs = FaustUiModel.extractUiInputs faustUi
+        , faustMeters = FaustUiModel.getInitialMetersModel faustUi
         , loading = False
         }
         ! [ layoutUpdated () ]
@@ -712,9 +729,41 @@ midiInputEvent midiEvent model =
 handleGridControlMsg : GridControl.Msg -> Model -> ( Model, Cmd Msg )
 handleGridControlMsg gridControlMsg model =
     let
-        stepSequencer = StepSequencer.handleGridControlMsg gridControlMsg model.stepSequencer
+        (stepSequencer, outMsgs) = StepSequencer.handleGridControlMsg gridControlMsg model.stepSequencer
     in
         { model | stepSequencer = stepSequencer } ! []
+
+handleDrumStepSequencerGridControlMsg : GridControl.Msg -> Model -> ( Model, Cmd Msg )
+handleDrumStepSequencerGridControlMsg gridControlMsg model =
+    let
+        (stepSequencer, outMsgs) = DrumStepSequencer.handleGridControlMsg gridControlMsg model.drumStepSequencer
+        _ = Debug.log "outMsgs" outMsgs
+        outMsgToCmds outMsg =
+            case outMsg of
+                GridControl.CellUpdated {x, y, value} ->
+                    let
+                        drumName =
+                            case y of
+                                0 -> "closed-hi-hat"
+                                1 -> "snare"
+                                2 -> "kick"
+                                _ -> Debug.crash "unknown drumName"
+                        valueAddress = "/0x00/" ++ "_FI_" ++ drumName ++ "--value"
+                        indexAddress = "/0x00/" ++ "_FI_" ++ drumName ++ "--index"
+                        valueInt =
+                            case value of
+                                True -> 1
+                                False -> 0
+
+                    in
+                        [ setControlValue (indexAddress, toFloat(x))
+                        , setControlValue (valueAddress, toFloat(valueInt))
+                        ]
+
+        cmds = List.concatMap outMsgToCmds outMsgs
+        _ = Debug.log "cmds" cmds
+    in
+        { model | drumStepSequencer = stepSequencer } ! cmds
 
 
 numberOfTicksPerBeat : Int
@@ -778,3 +827,11 @@ handleMetronomeTick model =
                         model3 ! []
         else
             model2 ! []
+
+
+handleBarGraphUpdate : String -> Float -> Model -> (Model, Cmd Msg)
+handleBarGraphUpdate address value model =
+    let
+        faustMeters = model.faustMeters
+    in
+        { model | faustMeters = Dict.insert address value faustMeters } ! []

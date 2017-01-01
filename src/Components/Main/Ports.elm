@@ -69,4 +69,7 @@ port saveToLocalStoragePort : { title : String, code : String } -> Cmd msg
 port incomingBufferSnapshot : (List Float -> msg) -> Sub msg
 
 
+port incomingBarGraphUpdate : ({ address : String, value : Float } -> msg) -> Sub msg
+
+
 port incomingAudioBufferClockTick : (Float -> msg) -> Sub msg

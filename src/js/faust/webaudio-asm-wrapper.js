@@ -389,9 +389,9 @@ faust.createDSPInstance = function (factory, context, buffer_size, bufferEventCa
             values[0] = values[1];
         }
 
-      if (typeof(bufferEventCallback) != 'undefined') {
-          bufferEventCallback(context.currentTime);
-      }
+        if (typeof(bufferEventCallback) != 'undefined') {
+            bufferEventCallback(context.currentTime);
+        }
 
         // Compute
         factory.compute(dsp, buffer_size, ins, outs);

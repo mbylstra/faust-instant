@@ -1,4 +1,4 @@
-module Components.StepSequencer exposing (..)
+module Components.DrumStepSequencer exposing (..)
 
 import Html exposing (div, button, text, node, h2, p)
 import Html.Attributes exposing (style, class)
@@ -12,7 +12,7 @@ numBars : Int
 numBars = 2
 
 numKeys : Int
-numKeys = 13
+numKeys = 3
 
 notesPerBar : Int
 notesPerBar = 8
@@ -20,7 +20,7 @@ notesPerBar = 8
 init : Model
 init =
     { position = 0
-    , gridControl = GridControl.init (notesPerBar * numBars) numKeys False
+    , gridControl = GridControl.init (notesPerBar * numBars) numKeys True
     }
 
 advanceIt : Model -> (Model, Maybe MainTypes.Msg)
@@ -52,7 +52,7 @@ handleGridControlMsg gridControlMsg model =
 view : Model -> Html.Html MainTypes.Msg
 view model =
     div [ class "step-sequencer" ]
-        [ Html.map MainTypes.GridControlMsg <|
+        [ Html.map MainTypes.DrumStepSequencerGridControlMsg <|
             GridControl.view {columnGroupLength=notesPerBar} model.gridControl
         ]
 

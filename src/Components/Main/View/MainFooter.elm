@@ -19,6 +19,7 @@ import HtmlHelpers exposing (maybeView)
 import Components.Piano as Piano
 import Components.FaustUiModel as FaustUiModel
 import Components.StepSequencer as StepSequencer
+import Components.DrumStepSequencer as DrumStepSequencer
 
 
 -- import FaustProgram
@@ -44,6 +45,7 @@ view model =
             , KnobsAndSliders.view model
             ]
             ++ (pianoView model)
+            ++ (drumStepSequencerView model)
         )
 
 
@@ -55,3 +57,8 @@ pianoView model =
         ]
     else
         []
+
+drumStepSequencerView : Model -> List (Html Msg)
+drumStepSequencerView model =
+    [ DrumStepSequencer.view model.drumStepSequencer
+    ]

@@ -39,6 +39,7 @@ import Components.Main.Commands
         )
 import Components.Main.Http.Firebase exposing (getStaffPicks, getUserFaustPrograms)
 import Components.StepSequencer as StepSequencer
+import Components.DrumStepSequencer as DrumStepSequencer
 
 
 --------------------------------------------------------------------------------
@@ -66,6 +67,7 @@ init flags =
         , fftData = []
         , faustUi = Nothing
         , faustUiInputs = Dict.empty
+        , faustMeters = Dict.empty
         , polyphony = Monophonic
         , bufferSize = Constants.defaultBufferSize
         , loading = False
@@ -88,6 +90,7 @@ init flags =
         , globalSongPosition = { bar = 0, beat = 0, tick = 0 }
         , numberOfBeatsPerBar = 4
         , stepSequencer = StepSequencer.init
+        , drumStepSequencer = DrumStepSequencer.init
         }
             ! [ Cmd.map HotKeysMsg hotKeysCommand
               , elmAppInitialRender ()

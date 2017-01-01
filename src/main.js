@@ -145,11 +145,14 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
       } else {
         currDsp = faust.createDSPInstance(currFactory, audioContext, bufferSize, bufferEventCallback);
         elm.ports.incomingBufferSnapshot.send(currDsp.debugComputeMono());
+        currDsp.setHandler(function(address, value) {
+          elm.ports.incomingBarGraphUpdate.send({address: address, value: value});
+        });
       }
       // console.log('currDsp', currDsp);
       // console.log('controls', currDsp.controls());
       var json = JSON.parse(currDsp.json());
-      // console.log("json", json);
+      console.log("json", json);
       elm.ports.incomingDSPCompiled.send(json);
 
       // currDsp.connect(analyserNode);
@@ -200,7 +203,7 @@ elm.ports.setControlValue.subscribe(function(e) {
   if (currDsp) {
     var path = e[0];
     var value = e[1];
-    // console.log('setctrlvalue', path, value);
+    console.log('setctrlvalue', path, value);
     currDsp.setValue(path, value);
   }
 })
