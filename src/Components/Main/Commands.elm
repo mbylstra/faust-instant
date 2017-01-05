@@ -1,13 +1,13 @@
 module Components.Main.Commands exposing (..)
 
 --------------------------------------------------------------------------------
-
 import Task
 import FirebaseAuth
 import Components.Main.Types exposing (..)
 import Components.Main.Ports exposing (compileFaustCode, saveToLocalStoragePort)
 import Components.Main.Constants as Constants
 import Components.Main.Http.OnlineCompiler exposing (getSvgUrl)
+import Components.FaustCodeWrangler exposing (wrangleFaustCodeForFaustInstantGimmicks)
 
 
 --------------------------------------------------------------------------------
@@ -44,24 +44,30 @@ signOutFirebaseUser =
         Task.attempt tagger task
 
 
+
+
 createCompileCommand : Model -> Cmd Msg
 createCompileCommand model =
-    case model.polyphony of
-        Polyphonic numVoices ->
-            compileFaustCode
-                { faustCode = model.faustProgram.code
-                , polyphonic = True
-                , numVoices = numVoices
-                , bufferSize = model.bufferSize
-                }
 
-        Monophonic ->
-            compileFaustCode
-                { faustCode = model.faustProgram.code
-                , polyphonic = False
-                , numVoices = 1
-                , bufferSize = model.bufferSize
-                }
+    let
+        wrangledFaustCode = wrangleFaustCodeForFaustInstantGimmicks model.faustProgram.code
+    in
+        case model.polyphony of
+            Polyphonic numVoices ->
+                compileFaustCode
+                    { faustCode = wrangledFaustCode
+                    , polyphonic = True
+                    , numVoices = numVoices
+                    , bufferSize = model.bufferSize
+                    }
+
+            Monophonic ->
+                compileFaustCode
+                    { faustCode = wrangledFaustCode
+                    , polyphonic = False
+                    , numVoices = 1
+                    , bufferSize = model.bufferSize
+                    }
 
 
 createCompileCommands : Model -> List (Cmd Msg)

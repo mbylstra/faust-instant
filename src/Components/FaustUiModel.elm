@@ -270,7 +270,7 @@ getInitialMetersModel faustUi =
 showPiano : Dict String (Float, InputRecord) -> Bool
 showPiano uiInputs =
     Dict.values uiInputs
-        |> List.filter (\(_, input) -> input.label == "freq")
+        |> List.filter (\(_, input) -> input.label == "_FI_pitchstepsequencer-value")
         |> List.length
         |> (==) 1
 

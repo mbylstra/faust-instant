@@ -119,7 +119,7 @@ elm.ports.compileFaustCode.subscribe(function(payload) {
     var numVoices = payload.numVoices;
 
 
-    // console.log("faustCode:", faustCode);
+    console.log("faustCode:", faustCode);
     var args = ["-I", window.location.href + "/faust-stdlib/"];
     faust.error_msg = null; //clear old error message
     var newFactory = faust.createDSPFactory(faustCode, args);

@@ -322,10 +322,18 @@ sliderChanged address value model =
 
     [ setControlValue ( address, value ) ]
 
+
 setPitch : Float -> Model -> (Model, Cmd Msg)
 setPitch pitch model =
     model ! [ Ports.setPitch pitch ]
 
+
+fireStepSequencerCmds : Int -> Float -> Model -> (Model, Cmd Msg)
+fireStepSequencerCmds index pitch model =
+    model !
+        [ setControlValue ("_FI_pitchstepsequencer-index", toFloat(index))
+        , setControlValue ("_FI_pitchstepsequencer-value", pitch)
+        ]
 
 pianoKeyMouseDown : Float -> Model -> ( Model, Cmd Msg )
 pianoKeyMouseDown pitch model =
@@ -730,8 +738,22 @@ handleGridControlMsg : GridControl.Msg -> Model -> ( Model, Cmd Msg )
 handleGridControlMsg gridControlMsg model =
     let
         (stepSequencer, outMsgs) = StepSequencer.handleGridControlMsg gridControlMsg model.stepSequencer
+        outMsgToCmds outMsg =
+            case outMsg of
+                GridControl.CellUpdated {x, y, value} ->
+                    let
+                        indexAddress = "/0x00/_FI_pitchstepsequencer-index"
+                        valueAddress = "/0x00/_FI_pitchstepsequencer-value"
+                        yToPitch = 60 + y
+                    in
+                        [ setControlValue (indexAddress, toFloat(x))
+                        , setControlValue (valueAddress, toFloat(yToPitch))
+                        ]
+
+        cmds = List.concatMap outMsgToCmds outMsgs
+        _ = Debug.log "cmds" cmds
     in
-        { model | stepSequencer = stepSequencer } ! []
+        { model | stepSequencer = stepSequencer } ! cmds
 
 handleDrumStepSequencerGridControlMsg : GridControl.Msg -> Model -> ( Model, Cmd Msg )
 handleDrumStepSequencerGridControlMsg gridControlMsg model =
@@ -742,14 +764,8 @@ handleDrumStepSequencerGridControlMsg gridControlMsg model =
             case outMsg of
                 GridControl.CellUpdated {x, y, value} ->
                     let
-                        drumName =
-                            case y of
-                                0 -> "closed-hi-hat"
-                                1 -> "snare"
-                                2 -> "kick"
-                                _ -> Debug.crash "unknown drumName"
-                        valueAddress = "/0x00/" ++ "_FI_" ++ drumName ++ "--value"
-                        indexAddress = "/0x00/" ++ "_FI_" ++ drumName ++ "--index"
+                        indexAddress = "/0x00/_FI_drumsequencer-index-" ++ toString(y)
+                        valueAddress = "/0x00/_FI_drumsequencer-value-" ++ toString(y)
                         valueInt =
                             case value of
                                 True -> 1

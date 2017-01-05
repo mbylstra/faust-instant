@@ -54,7 +54,7 @@ groupView model faustMeters =
 
 inputView : FaustUiModel.InputRecord -> List (Html Msg)
 inputView model =
-    if model.label == "freq"
+    if String.startsWith "_FI_" model.label
     then
         [] -- this will be rendered as a piano
     else
