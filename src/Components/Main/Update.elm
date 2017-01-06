@@ -50,7 +50,7 @@ import Components.Main.Http.FaustFileStorage exposing (storeDspFile)
 import Components.Midi as Midi
 import Components.UserSettingsForm as UserSettingsForm
 import Components.FaustUiModel as FaustUiModel exposing (faustUiDecoder)
-import Components.StepSequencer as StepSequencer
+import Components.PitchStepSequencer as PitchStepSequencer
 import Components.DrumStepSequencer as DrumStepSequencer
 
 
@@ -203,11 +203,11 @@ update action model =
         DrumStepSequencerGridControlMsg gridControlMsg ->
             handleDrumStepSequencerGridControlMsg gridControlMsg model
 
-        AudioBufferClockTick time ->
-            handleAudioBufferClockTick time model
+        -- AudioBufferClockTick time ->
+        --     handleAudioBufferClockTick time model
 
-        MetronomeTick ->
-            handleMetronomeTick model
+        -- MetronomeTick ->
+        --     handleMetronomeTick model
 
         SetPitch pitch ->
             setPitch pitch model
@@ -737,14 +737,14 @@ midiInputEvent midiEvent model =
 handleGridControlMsg : GridControl.Msg -> Model -> ( Model, Cmd Msg )
 handleGridControlMsg gridControlMsg model =
     let
-        (stepSequencer, outMsgs) = StepSequencer.handleGridControlMsg gridControlMsg model.stepSequencer
+        (stepSequencer, outMsgs) = PitchStepSequencer.handleGridControlMsg gridControlMsg model.pitchStepSequencer
         outMsgToCmds outMsg =
             case outMsg of
                 GridControl.CellUpdated {x, y, value} ->
                     let
                         indexAddress = "/0x00/_FI_pitchstepsequencer-index"
                         valueAddress = "/0x00/_FI_pitchstepsequencer-value"
-                        yToPitch = 60 + y
+                        yToPitch = 60 + (12 - y)
                     in
                         [ setControlValue (indexAddress, toFloat(x))
                         , setControlValue (valueAddress, toFloat(yToPitch))
@@ -753,7 +753,7 @@ handleGridControlMsg gridControlMsg model =
         cmds = List.concatMap outMsgToCmds outMsgs
         _ = Debug.log "cmds" cmds
     in
-        { model | stepSequencer = stepSequencer } ! cmds
+        { model | pitchStepSequencer = stepSequencer } ! cmds
 
 handleDrumStepSequencerGridControlMsg : GridControl.Msg -> Model -> ( Model, Cmd Msg )
 handleDrumStepSequencerGridControlMsg gridControlMsg model =
@@ -786,63 +786,63 @@ numberOfTicksPerBeat : Int
 numberOfTicksPerBeat = 24
 
 
-handleAudioBufferClockTick : Float -> Model -> (Model, Cmd Msg)
-handleAudioBufferClockTick time model =
-    let
-        beatDuration = 1.0 / (model.tempo / 60.0)
-        -- 6O BPM is 1 beat = 1 second
-        -- 120 BPM is 1 beat = 0.5 seconds.
+-- handleAudioBufferClockTick : Float -> Model -> (Model, Cmd Msg)
+-- handleAudioBufferClockTick time model =
+--     let
+--         beatDuration = 1.0 / (model.tempo / 60.0)
+--         -- 6O BPM is 1 beat = 1 second
+--         -- 120 BPM is 1 beat = 0.5 seconds.
+--
+--         metronomeTickDuration = beatDuration / (toFloat numberOfTicksPerBeat)
+--         nextMetronomeTickTime = model.lastMetronomeTickTime + metronomeTickDuration
+--     in
+--         if model.audioClockTime >= nextMetronomeTickTime
+--         then
+--             { model | audioClockTime = time, lastMetronomeTickTime = nextMetronomeTickTime } ! []
+--             |> andThen update MetronomeTick
+--         else
+--             { model | audioClockTime = time } ! []
 
-        metronomeTickDuration = beatDuration / (toFloat numberOfTicksPerBeat)
-        nextMetronomeTickTime = model.lastMetronomeTickTime + metronomeTickDuration
-    in
-        if model.audioClockTime >= nextMetronomeTickTime
-        then
-            { model | audioClockTime = time, lastMetronomeTickTime = nextMetronomeTickTime } ! []
-            |> andThen update MetronomeTick
-        else
-            { model | audioClockTime = time } ! []
-
-handleMetronomeTick : Model -> (Model, Cmd Msg)
-handleMetronomeTick model =
-    let
-        updateGlobalSongPosition : SongPosition -> SongPosition
-        updateGlobalSongPosition songPosition =
-            let
-                { bar, beat, tick } = songPosition
-                newTick = (tick + 1) % numberOfTicksPerBeat
-            in
-                if newTick == 0
-                then
-                    let
-                        newBeat = songPosition.beat + 1 % (model.numberOfBeatsPerBar)
-                    in
-                        if newBeat == 0
-                        then
-                            { songPosition | bar = bar + 1, beat = 0, tick = 0 }
-                        else
-                            { songPosition | beat = newBeat, tick = 0 }
-                else
-                    { songPosition | tick = newTick }
-
-        newSongPosition = updateGlobalSongPosition model.globalSongPosition
-        model2 = { model | globalSongPosition = newSongPosition }
-    in
-
-        -- if tick falls on an eighth note, then we want to advance the step sequencer
-        if newSongPosition.tick % 8 == 0
-        then
-            let
-                (newStepSequencer, maybeMsg) = StepSequencer.advanceIt model.stepSequencer
-                model3 = { model2 | stepSequencer = newStepSequencer }
-            in
-                case maybeMsg of
-                    Just msg ->
-                        update msg model3
-                    Nothing ->
-                        model3 ! []
-        else
-            model2 ! []
+-- handleMetronomeTick : Model -> (Model, Cmd Msg)
+-- handleMetronomeTick model =
+--     let
+--         updateGlobalSongPosition : SongPosition -> SongPosition
+--         updateGlobalSongPosition songPosition =
+--             let
+--                 { bar, beat, tick } = songPosition
+--                 newTick = (tick + 1) % numberOfTicksPerBeat
+--             in
+--                 if newTick == 0
+--                 then
+--                     let
+--                         newBeat = songPosition.beat + 1 % (model.numberOfBeatsPerBar)
+--                     in
+--                         if newBeat == 0
+--                         then
+--                             { songPosition | bar = bar + 1, beat = 0, tick = 0 }
+--                         else
+--                             { songPosition | beat = newBeat, tick = 0 }
+--                 else
+--                     { songPosition | tick = newTick }
+--
+--         newSongPosition = updateGlobalSongPosition model.globalSongPosition
+--         model2 = { model | globalSongPosition = newSongPosition }
+--     in
+--
+--         -- if tick falls on an eighth note, then we want to advance the step sequencer
+--         if newSongPosition.tick % 8 == 0
+--         then
+--             let
+--                 (newStepSequencer, maybeMsg) = StepSequencer.advanceIt model.stepSequencer
+--                 model3 = { model2 | pitchStepSequencer = newStepSequencer }
+--             in
+--                 case maybeMsg of
+--                     Just msg ->
+--                         update msg model3
+--                     Nothing ->
+--                         model3 ! []
+--         else
+--             model2 ! []
 
 
 handleBarGraphUpdate : String -> Float -> Model -> (Model, Cmd Msg)

@@ -608,8 +608,14 @@ $google-spinner-width: 40px;
   }
 }
 
+.step-sequencers {
+  display: flex;
+  flex-direction: row;
+}
+
 .step-sequencer {
   height: 140px;
+  flex-grow: 1;
 
   $step-sequencer-border-color: rgb(30, 30, 30);
 
@@ -632,10 +638,44 @@ $google-spinner-width: 40px;
   .ElmGridControlCell {
       flex: 1;
       margin: 1px;
-      background-color: rgb(40, 40, 40);
+      background-color: #353535;
+      border-radius: 100px;
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
   }
 
+
   .ElmGridControlActive {
-      background-color: pink;
+      background-color: #85CC81 !important;
+  }
+}
+
+.pitch-step-sequencer {
+  .ElmGridControlCell:nth-child(13n-10),
+  .ElmGridControlCell:nth-child(13n-8),
+  .ElmGridControlCell:nth-child(13n-6),
+  .ElmGridControlCell:nth-child(13n-3),
+  .ElmGridControlCell:nth-child(13n-1)
+  {
+      background-color: rgb(0,0,0);
+      flex: 0.75;
+      width: 80%;
+  }
+}
+
+.drum-step-sequencer-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.drum-step-sequencer-icons {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 40px;
+  // padding-right: 5px;
+  svg {
+    padding: 3px;
+    fill: #cecece;
   }
 }

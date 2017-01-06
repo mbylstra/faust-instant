@@ -14988,171 +14988,6 @@ var _eeue56$elm_flat_matrix$Matrix$Matrix = F2(
 	function (a, b) {
 		return {size: a, data: b};
 	});
-var _elm_lang$core$Color$fmod = F2(
-	function (f, n) {
-		var integer = _elm_lang$core$Basics$floor(f);
-		return (_elm_lang$core$Basics$toFloat(
-			A2(_elm_lang$core$Basics_ops['%'], integer, n)) + f) - _elm_lang$core$Basics$toFloat(integer);
-	});
-var _elm_lang$core$Color$rgbToHsl = F3(
-	function (red, green, blue) {
-		var b = _elm_lang$core$Basics$toFloat(blue) / 255;
-		var g = _elm_lang$core$Basics$toFloat(green) / 255;
-		var r = _elm_lang$core$Basics$toFloat(red) / 255;
-		var cMax = A2(
-			_elm_lang$core$Basics$max,
-			A2(_elm_lang$core$Basics$max, r, g),
-			b);
-		var cMin = A2(
-			_elm_lang$core$Basics$min,
-			A2(_elm_lang$core$Basics$min, r, g),
-			b);
-		var c = cMax - cMin;
-		var lightness = (cMax + cMin) / 2;
-		var saturation = _elm_lang$core$Native_Utils.eq(lightness, 0) ? 0 : (c / (1 - _elm_lang$core$Basics$abs((2 * lightness) - 1)));
-		var hue = _elm_lang$core$Basics$degrees(60) * (_elm_lang$core$Native_Utils.eq(cMax, r) ? A2(_elm_lang$core$Color$fmod, (g - b) / c, 6) : (_elm_lang$core$Native_Utils.eq(cMax, g) ? (((b - r) / c) + 2) : (((r - g) / c) + 4)));
-		return {ctor: '_Tuple3', _0: hue, _1: saturation, _2: lightness};
-	});
-var _elm_lang$core$Color$hslToRgb = F3(
-	function (hue, saturation, lightness) {
-		var normHue = hue / _elm_lang$core$Basics$degrees(60);
-		var chroma = (1 - _elm_lang$core$Basics$abs((2 * lightness) - 1)) * saturation;
-		var x = chroma * (1 - _elm_lang$core$Basics$abs(
-			A2(_elm_lang$core$Color$fmod, normHue, 2) - 1));
-		var _p0 = (_elm_lang$core$Native_Utils.cmp(normHue, 0) < 0) ? {ctor: '_Tuple3', _0: 0, _1: 0, _2: 0} : ((_elm_lang$core$Native_Utils.cmp(normHue, 1) < 0) ? {ctor: '_Tuple3', _0: chroma, _1: x, _2: 0} : ((_elm_lang$core$Native_Utils.cmp(normHue, 2) < 0) ? {ctor: '_Tuple3', _0: x, _1: chroma, _2: 0} : ((_elm_lang$core$Native_Utils.cmp(normHue, 3) < 0) ? {ctor: '_Tuple3', _0: 0, _1: chroma, _2: x} : ((_elm_lang$core$Native_Utils.cmp(normHue, 4) < 0) ? {ctor: '_Tuple3', _0: 0, _1: x, _2: chroma} : ((_elm_lang$core$Native_Utils.cmp(normHue, 5) < 0) ? {ctor: '_Tuple3', _0: x, _1: 0, _2: chroma} : ((_elm_lang$core$Native_Utils.cmp(normHue, 6) < 0) ? {ctor: '_Tuple3', _0: chroma, _1: 0, _2: x} : {ctor: '_Tuple3', _0: 0, _1: 0, _2: 0}))))));
-		var r = _p0._0;
-		var g = _p0._1;
-		var b = _p0._2;
-		var m = lightness - (chroma / 2);
-		return {ctor: '_Tuple3', _0: r + m, _1: g + m, _2: b + m};
-	});
-var _elm_lang$core$Color$toRgb = function (color) {
-	var _p1 = color;
-	if (_p1.ctor === 'RGBA') {
-		return {red: _p1._0, green: _p1._1, blue: _p1._2, alpha: _p1._3};
-	} else {
-		var _p2 = A3(_elm_lang$core$Color$hslToRgb, _p1._0, _p1._1, _p1._2);
-		var r = _p2._0;
-		var g = _p2._1;
-		var b = _p2._2;
-		return {
-			red: _elm_lang$core$Basics$round(255 * r),
-			green: _elm_lang$core$Basics$round(255 * g),
-			blue: _elm_lang$core$Basics$round(255 * b),
-			alpha: _p1._3
-		};
-	}
-};
-var _elm_lang$core$Color$toHsl = function (color) {
-	var _p3 = color;
-	if (_p3.ctor === 'HSLA') {
-		return {hue: _p3._0, saturation: _p3._1, lightness: _p3._2, alpha: _p3._3};
-	} else {
-		var _p4 = A3(_elm_lang$core$Color$rgbToHsl, _p3._0, _p3._1, _p3._2);
-		var h = _p4._0;
-		var s = _p4._1;
-		var l = _p4._2;
-		return {hue: h, saturation: s, lightness: l, alpha: _p3._3};
-	}
-};
-var _elm_lang$core$Color$HSLA = F4(
-	function (a, b, c, d) {
-		return {ctor: 'HSLA', _0: a, _1: b, _2: c, _3: d};
-	});
-var _elm_lang$core$Color$hsla = F4(
-	function (hue, saturation, lightness, alpha) {
-		return A4(
-			_elm_lang$core$Color$HSLA,
-			hue - _elm_lang$core$Basics$turns(
-				_elm_lang$core$Basics$toFloat(
-					_elm_lang$core$Basics$floor(hue / (2 * _elm_lang$core$Basics$pi)))),
-			saturation,
-			lightness,
-			alpha);
-	});
-var _elm_lang$core$Color$hsl = F3(
-	function (hue, saturation, lightness) {
-		return A4(_elm_lang$core$Color$hsla, hue, saturation, lightness, 1);
-	});
-var _elm_lang$core$Color$complement = function (color) {
-	var _p5 = color;
-	if (_p5.ctor === 'HSLA') {
-		return A4(
-			_elm_lang$core$Color$hsla,
-			_p5._0 + _elm_lang$core$Basics$degrees(180),
-			_p5._1,
-			_p5._2,
-			_p5._3);
-	} else {
-		var _p6 = A3(_elm_lang$core$Color$rgbToHsl, _p5._0, _p5._1, _p5._2);
-		var h = _p6._0;
-		var s = _p6._1;
-		var l = _p6._2;
-		return A4(
-			_elm_lang$core$Color$hsla,
-			h + _elm_lang$core$Basics$degrees(180),
-			s,
-			l,
-			_p5._3);
-	}
-};
-var _elm_lang$core$Color$grayscale = function (p) {
-	return A4(_elm_lang$core$Color$HSLA, 0, 0, 1 - p, 1);
-};
-var _elm_lang$core$Color$greyscale = function (p) {
-	return A4(_elm_lang$core$Color$HSLA, 0, 0, 1 - p, 1);
-};
-var _elm_lang$core$Color$RGBA = F4(
-	function (a, b, c, d) {
-		return {ctor: 'RGBA', _0: a, _1: b, _2: c, _3: d};
-	});
-var _elm_lang$core$Color$rgba = _elm_lang$core$Color$RGBA;
-var _elm_lang$core$Color$rgb = F3(
-	function (r, g, b) {
-		return A4(_elm_lang$core$Color$RGBA, r, g, b, 1);
-	});
-var _elm_lang$core$Color$lightRed = A4(_elm_lang$core$Color$RGBA, 239, 41, 41, 1);
-var _elm_lang$core$Color$red = A4(_elm_lang$core$Color$RGBA, 204, 0, 0, 1);
-var _elm_lang$core$Color$darkRed = A4(_elm_lang$core$Color$RGBA, 164, 0, 0, 1);
-var _elm_lang$core$Color$lightOrange = A4(_elm_lang$core$Color$RGBA, 252, 175, 62, 1);
-var _elm_lang$core$Color$orange = A4(_elm_lang$core$Color$RGBA, 245, 121, 0, 1);
-var _elm_lang$core$Color$darkOrange = A4(_elm_lang$core$Color$RGBA, 206, 92, 0, 1);
-var _elm_lang$core$Color$lightYellow = A4(_elm_lang$core$Color$RGBA, 255, 233, 79, 1);
-var _elm_lang$core$Color$yellow = A4(_elm_lang$core$Color$RGBA, 237, 212, 0, 1);
-var _elm_lang$core$Color$darkYellow = A4(_elm_lang$core$Color$RGBA, 196, 160, 0, 1);
-var _elm_lang$core$Color$lightGreen = A4(_elm_lang$core$Color$RGBA, 138, 226, 52, 1);
-var _elm_lang$core$Color$green = A4(_elm_lang$core$Color$RGBA, 115, 210, 22, 1);
-var _elm_lang$core$Color$darkGreen = A4(_elm_lang$core$Color$RGBA, 78, 154, 6, 1);
-var _elm_lang$core$Color$lightBlue = A4(_elm_lang$core$Color$RGBA, 114, 159, 207, 1);
-var _elm_lang$core$Color$blue = A4(_elm_lang$core$Color$RGBA, 52, 101, 164, 1);
-var _elm_lang$core$Color$darkBlue = A4(_elm_lang$core$Color$RGBA, 32, 74, 135, 1);
-var _elm_lang$core$Color$lightPurple = A4(_elm_lang$core$Color$RGBA, 173, 127, 168, 1);
-var _elm_lang$core$Color$purple = A4(_elm_lang$core$Color$RGBA, 117, 80, 123, 1);
-var _elm_lang$core$Color$darkPurple = A4(_elm_lang$core$Color$RGBA, 92, 53, 102, 1);
-var _elm_lang$core$Color$lightBrown = A4(_elm_lang$core$Color$RGBA, 233, 185, 110, 1);
-var _elm_lang$core$Color$brown = A4(_elm_lang$core$Color$RGBA, 193, 125, 17, 1);
-var _elm_lang$core$Color$darkBrown = A4(_elm_lang$core$Color$RGBA, 143, 89, 2, 1);
-var _elm_lang$core$Color$black = A4(_elm_lang$core$Color$RGBA, 0, 0, 0, 1);
-var _elm_lang$core$Color$white = A4(_elm_lang$core$Color$RGBA, 255, 255, 255, 1);
-var _elm_lang$core$Color$lightGrey = A4(_elm_lang$core$Color$RGBA, 238, 238, 236, 1);
-var _elm_lang$core$Color$grey = A4(_elm_lang$core$Color$RGBA, 211, 215, 207, 1);
-var _elm_lang$core$Color$darkGrey = A4(_elm_lang$core$Color$RGBA, 186, 189, 182, 1);
-var _elm_lang$core$Color$lightGray = A4(_elm_lang$core$Color$RGBA, 238, 238, 236, 1);
-var _elm_lang$core$Color$gray = A4(_elm_lang$core$Color$RGBA, 211, 215, 207, 1);
-var _elm_lang$core$Color$darkGray = A4(_elm_lang$core$Color$RGBA, 186, 189, 182, 1);
-var _elm_lang$core$Color$lightCharcoal = A4(_elm_lang$core$Color$RGBA, 136, 138, 133, 1);
-var _elm_lang$core$Color$charcoal = A4(_elm_lang$core$Color$RGBA, 85, 87, 83, 1);
-var _elm_lang$core$Color$darkCharcoal = A4(_elm_lang$core$Color$RGBA, 46, 52, 54, 1);
-var _elm_lang$core$Color$Radial = F5(
-	function (a, b, c, d, e) {
-		return {ctor: 'Radial', _0: a, _1: b, _2: c, _3: d, _4: e};
-	});
-var _elm_lang$core$Color$radial = _elm_lang$core$Color$Radial;
-var _elm_lang$core$Color$Linear = F3(
-	function (a, b, c) {
-		return {ctor: 'Linear', _0: a, _1: b, _2: c};
-	});
-var _elm_lang$core$Color$linear = _elm_lang$core$Color$Linear;
 var _elm_lang$core$Set$foldr = F3(
 	function (f, b, _p0) {
 		var _p1 = _p0;
@@ -17523,54 +17358,6 @@ var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom
 var _elm_lang$svg$Svg_Lazy$lazy3 = _elm_lang$virtual_dom$VirtualDom$lazy3;
 var _elm_lang$svg$Svg_Lazy$lazy2 = _elm_lang$virtual_dom$VirtualDom$lazy2;
 var _elm_lang$svg$Svg_Lazy$lazy = _elm_lang$virtual_dom$VirtualDom$lazy;
-var _mbylstra$elmfirebaseauth$ColorExtra$toCssRgb = function (color) {
-	var color_ = _elm_lang$core$Color$toRgb(color);
-	var colors = {
-		ctor: '::',
-		_0: color_.red,
-		_1: {
-			ctor: '::',
-			_0: color_.green,
-			_1: {
-				ctor: '::',
-				_0: color_.blue,
-				_1: {ctor: '[]'}
-			}
-		}
-	};
-	var inner = A2(
-		_elm_lang$core$String$join,
-		',',
-		A2(_elm_lang$core$List$map, _elm_lang$core$Basics$toString, colors));
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		'rgb(',
-		A2(_elm_lang$core$Basics_ops['++'], inner, ')'));
-};
-var _mbylstra$elmfirebaseauth$ColorExtra$compareLightness = F2(
-	function (colorA, colorB) {
-		var lightnessB = function (_) {
-			return _.lightness;
-		}(
-			_elm_lang$core$Color$toHsl(colorB));
-		var lightnessA = function (_) {
-			return _.lightness;
-		}(
-			_elm_lang$core$Color$toHsl(colorA));
-		return (_elm_lang$core$Native_Utils.cmp(lightnessA, lightnessB) > 0) ? _elm_lang$core$Basics$GT : (_elm_lang$core$Native_Utils.eq(lightnessA, lightnessB) ? _elm_lang$core$Basics$EQ : _elm_lang$core$Basics$LT);
-	});
-var _mbylstra$elmfirebaseauth$ColorExtra$isLighter = F2(
-	function (colorA, colorB) {
-		var _p0 = A2(_mbylstra$elmfirebaseauth$ColorExtra$compareLightness, colorA, colorB);
-		if (_p0.ctor === 'GT') {
-			return true;
-		} else {
-			return false;
-		}
-	});
-var _mbylstra$elmfirebaseauth$ColorExtra$sortByLightness = function (colors) {
-	return A2(_elm_lang$core$List$sortWith, _mbylstra$elmfirebaseauth$ColorExtra$compareLightness, colors);
-};
 var _mbylstra$elmfirebaseauth$Matrix_Extra2$toRowsLists = function (matrix) {
 	var _p0 = matrix.size;
 	var height = _p0._1;
@@ -25928,17 +25715,7 @@ var _mbylstra$elmfirebaseauth$Components_Main_Types$Model = function (a) {
 																								return function (y) {
 																									return function (z) {
 																										return function (_1) {
-																											return function (_2) {
-																												return function (_3) {
-																													return function (_4) {
-																														return function (_5) {
-																															return function (_6) {
-																																return {on: a, faustProgram: b, isDemoProgram: c, online: d, compilationError: e, hotKeys: f, mainVolume: g, fftData: h, faustUi: i, faustUiInputs: j, faustMeters: k, polyphony: l, bufferSize: m, loading: n, signupView: o, user: p, authToken: q, mdl: r, userSettingsDialog: s, userSettingsForm: t, staffPicks: u, myPrograms: v, textMeasurementWidth: w, bufferSnapshot: x, faustSvgUrl: y, audioClockTime: z, tempo: _1, lastMetronomeTickTime: _2, globalSongPosition: _3, numberOfBeatsPerBar: _4, stepSequencer: _5, drumStepSequencer: _6};
-																															};
-																														};
-																													};
-																												};
-																											};
+																											return {on: a, faustProgram: b, isDemoProgram: c, online: d, compilationError: e, hotKeys: f, mainVolume: g, fftData: h, faustUi: i, faustUiInputs: j, faustMeters: k, polyphony: l, bufferSize: m, loading: n, signupView: o, user: p, authToken: q, mdl: r, userSettingsDialog: s, userSettingsForm: t, staffPicks: u, myPrograms: v, textMeasurementWidth: w, bufferSnapshot: x, faustSvgUrl: y, pitchStepSequencer: z, drumStepSequencer: _1};
 																										};
 																									};
 																								};
@@ -25972,10 +25749,6 @@ var _mbylstra$elmfirebaseauth$Components_Main_Types$BarGraphUpdate = function (a
 var _mbylstra$elmfirebaseauth$Components_Main_Types$ToggleOnOff = {ctor: 'ToggleOnOff'};
 var _mbylstra$elmfirebaseauth$Components_Main_Types$SetPitch = function (a) {
 	return {ctor: 'SetPitch', _0: a};
-};
-var _mbylstra$elmfirebaseauth$Components_Main_Types$MetronomeTick = {ctor: 'MetronomeTick'};
-var _mbylstra$elmfirebaseauth$Components_Main_Types$AudioBufferClockTick = function (a) {
-	return {ctor: 'AudioBufferClockTick', _0: a};
 };
 var _mbylstra$elmfirebaseauth$Components_Main_Types$DrumStepSequencerGridControlMsg = function (a) {
 	return {ctor: 'DrumStepSequencerGridControlMsg', _0: a};
@@ -26091,6 +25864,27 @@ var _mbylstra$elmfirebaseauth$Components_Main_Types$Polyphonic = function (a) {
 	return {ctor: 'Polyphonic', _0: a};
 };
 var _mbylstra$elmfirebaseauth$Components_Main_Types$Monophonic = {ctor: 'Monophonic'};
+var _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$view = F2(
+	function (className, model) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class(className),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$map,
+					_mbylstra$elmfirebaseauth$Components_Main_Types$DrumStepSequencerGridControlMsg,
+					A2(
+						_mbylstra$elmfirebaseauth$GridControl$view,
+						{columnGroupLength: 2},
+						model.gridControl)),
+				_1: {ctor: '[]'}
+			});
+	});
 var _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$handleGridControlMsg = F2(
 	function (gridControlMsg, model) {
 		var _p0 = A2(_mbylstra$elmfirebaseauth$GridControl$update, gridControlMsg, model.gridControl);
@@ -26105,28 +25899,8 @@ var _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$handleGridControlMsg 
 		};
 	});
 var _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$notesPerBar = 8;
-var _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('step-sequencer'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$map,
-				_mbylstra$elmfirebaseauth$Components_Main_Types$DrumStepSequencerGridControlMsg,
-				A2(
-					_mbylstra$elmfirebaseauth$GridControl$view,
-					{columnGroupLength: _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$notesPerBar},
-					model.gridControl)),
-			_1: {ctor: '[]'}
-		});
-};
 var _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$numKeys = 3;
-var _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$numBars = 2;
+var _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$numBars = 1;
 var _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$init = {
 	position: 0,
 	gridControl: A3(_mbylstra$elmfirebaseauth$GridControl$init, _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$notesPerBar * _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$numBars, _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$numKeys, true)
@@ -26967,7 +26741,28 @@ var _mbylstra$elmfirebaseauth$Components_Main_Http_Firebase$deleteFaustProgram =
 			_elm_lang$core$Maybe$Just(authToken),
 			key);
 	});
-var _mbylstra$elmfirebaseauth$Components_StepSequencer$handleGridControlMsg = F2(
+var _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$view = F2(
+	function (className, model) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class(className),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$map,
+					_mbylstra$elmfirebaseauth$Components_Main_Types$GridControlMsg,
+					A2(
+						_mbylstra$elmfirebaseauth$GridControl$view,
+						{columnGroupLength: 2},
+						model.gridControl)),
+				_1: {ctor: '[]'}
+			});
+	});
+var _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$handleGridControlMsg = F2(
 	function (gridControlMsg, model) {
 		var _p0 = A2(_mbylstra$elmfirebaseauth$GridControl$update, gridControlMsg, model.gridControl);
 		var gridControl = _p0._0;
@@ -26980,40 +26775,20 @@ var _mbylstra$elmfirebaseauth$Components_StepSequencer$handleGridControlMsg = F2
 			_1: outMsgs
 		};
 	});
-var _mbylstra$elmfirebaseauth$Components_StepSequencer$notesPerBar = 8;
-var _mbylstra$elmfirebaseauth$Components_StepSequencer$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('step-sequencer'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$map,
-				_mbylstra$elmfirebaseauth$Components_Main_Types$GridControlMsg,
-				A2(
-					_mbylstra$elmfirebaseauth$GridControl$view,
-					{columnGroupLength: _mbylstra$elmfirebaseauth$Components_StepSequencer$notesPerBar},
-					model.gridControl)),
-			_1: {ctor: '[]'}
-		});
-};
-var _mbylstra$elmfirebaseauth$Components_StepSequencer$numKeys = 13;
-var _mbylstra$elmfirebaseauth$Components_StepSequencer$numBars = 2;
-var _mbylstra$elmfirebaseauth$Components_StepSequencer$init = {
+var _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$notesPerBar = 8;
+var _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$numKeys = 13;
+var _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$numBars = 1;
+var _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$init = {
 	position: 0,
-	gridControl: A3(_mbylstra$elmfirebaseauth$GridControl$init, _mbylstra$elmfirebaseauth$Components_StepSequencer$notesPerBar * _mbylstra$elmfirebaseauth$Components_StepSequencer$numBars, _mbylstra$elmfirebaseauth$Components_StepSequencer$numKeys, false)
+	gridControl: A3(_mbylstra$elmfirebaseauth$GridControl$init, _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$notesPerBar * _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$numBars, _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$numKeys, false)
 };
-var _mbylstra$elmfirebaseauth$Components_StepSequencer$advanceIt = function (model) {
-	var newPosition = A2(_elm_lang$core$Basics_ops['%'], model.position + 1, _mbylstra$elmfirebaseauth$Components_StepSequencer$numBars * _mbylstra$elmfirebaseauth$Components_StepSequencer$notesPerBar);
+var _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$advanceIt = function (model) {
+	var newPosition = A2(_elm_lang$core$Basics_ops['%'], model.position + 1, _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$numBars * _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$notesPerBar);
 	var maybeValue = A2(_mbylstra$elmfirebaseauth$GridControl$valueAtColumn, newPosition, model.gridControl);
 	var maybeMsg = function () {
 		var _p1 = maybeValue;
 		if (_p1.ctor === 'Just') {
-			var midiNote = 36 + (_mbylstra$elmfirebaseauth$Components_StepSequencer$numKeys - _p1._0);
+			var midiNote = 36 + (_mbylstra$elmfirebaseauth$Components_PitchStepSequencer$numKeys - _p1._0);
 			return _elm_lang$core$Maybe$Just(
 				_mbylstra$elmfirebaseauth$Components_Main_Types$SetPitch(
 					_elm_lang$core$Basics$toFloat(midiNote)));
@@ -27135,12 +26910,7 @@ var _mbylstra$elmfirebaseauth$Components_Main_Model$init = function (flags) {
 			textMeasurementWidth: _elm_lang$core$Maybe$Nothing,
 			bufferSnapshot: _elm_lang$core$Maybe$Nothing,
 			faustSvgUrl: _elm_lang$core$Maybe$Nothing,
-			audioClockTime: 0.0,
-			tempo: 120.0,
-			lastMetronomeTickTime: 0.0,
-			globalSongPosition: {bar: 0, beat: 0, tick: 0},
-			numberOfBeatsPerBar: 4,
-			stepSequencer: _mbylstra$elmfirebaseauth$Components_StepSequencer$init,
+			pitchStepSequencer: _mbylstra$elmfirebaseauth$Components_PitchStepSequencer$init,
 			drumStepSequencer: _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$init
 		},
 		{
@@ -27167,40 +26937,37 @@ var _mbylstra$elmfirebaseauth$Components_Main_Model$init = function (flags) {
 		});
 };
 var _mbylstra$elmfirebaseauth$Components_Main_Subscriptions$subscriptions = function (model) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		{
+	return {
+		ctor: '::',
+		_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingFaustCode(_mbylstra$elmfirebaseauth$Components_Main_Types$FaustCodeChanged),
+		_1: {
 			ctor: '::',
-			_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingFaustCode(_mbylstra$elmfirebaseauth$Components_Main_Types$FaustCodeChanged),
+			_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingCompilationErrors(_mbylstra$elmfirebaseauth$Components_Main_Types$CompilationError),
 			_1: {
 				ctor: '::',
-				_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingCompilationErrors(_mbylstra$elmfirebaseauth$Components_Main_Types$CompilationError),
+				_0: A2(_elm_lang$core$Platform_Sub$map, _mbylstra$elmfirebaseauth$Components_Main_Types$HotKeysMsg, _mbylstra$elmfirebaseauth$Components_HotKeys$subscription),
 				_1: {
 					ctor: '::',
-					_0: A2(_elm_lang$core$Platform_Sub$map, _mbylstra$elmfirebaseauth$Components_Main_Types$HotKeysMsg, _mbylstra$elmfirebaseauth$Components_HotKeys$subscription),
+					_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingDSPCompiled(_mbylstra$elmfirebaseauth$Components_Main_Types$DSPCompiled),
 					_1: {
 						ctor: '::',
-						_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingDSPCompiled(_mbylstra$elmfirebaseauth$Components_Main_Types$DSPCompiled),
+						_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingTextMeasurements(_mbylstra$elmfirebaseauth$Components_Main_Types$NewTextMeasurement),
 						_1: {
 							ctor: '::',
-							_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingTextMeasurements(_mbylstra$elmfirebaseauth$Components_Main_Types$NewTextMeasurement),
+							_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingWebfontsActive(
+								function (_p0) {
+									return _mbylstra$elmfirebaseauth$Components_Main_Types$WebfontsActive;
+								}),
 							_1: {
 								ctor: '::',
-								_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingWebfontsActive(
-									function (_p0) {
-										return _mbylstra$elmfirebaseauth$Components_Main_Types$WebfontsActive;
-									}),
+								_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$rawMidiInputEvents(_mbylstra$elmfirebaseauth$Components_Main_Types$RawMidiInputEvent),
 								_1: {
 									ctor: '::',
-									_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$rawMidiInputEvents(_mbylstra$elmfirebaseauth$Components_Main_Types$RawMidiInputEvent),
+									_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingBufferSnapshot(_mbylstra$elmfirebaseauth$Components_Main_Types$BufferSnapshot),
 									_1: {
 										ctor: '::',
-										_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingBufferSnapshot(_mbylstra$elmfirebaseauth$Components_Main_Types$BufferSnapshot),
-										_1: {
-											ctor: '::',
-											_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingBarGraphUpdate(_mbylstra$elmfirebaseauth$Components_Main_Types$BarGraphUpdate),
-											_1: {ctor: '[]'}
-										}
+										_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingBarGraphUpdate(_mbylstra$elmfirebaseauth$Components_Main_Types$BarGraphUpdate),
+										_1: {ctor: '[]'}
 									}
 								}
 							}
@@ -27208,12 +26975,8 @@ var _mbylstra$elmfirebaseauth$Components_Main_Subscriptions$subscriptions = func
 					}
 				}
 			}
-		},
-		model.on ? {
-			ctor: '::',
-			_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$incomingAudioBufferClockTick(_mbylstra$elmfirebaseauth$Components_Main_Types$AudioBufferClockTick),
-			_1: {ctor: '[]'}
-		} : {ctor: '[]'});
+		}
+	};
 };
 var _mbylstra$elmfirebaseauth$Components_Main_Update$handleBarGraphUpdate = F3(
 	function (address, value, model) {
@@ -27284,27 +27047,54 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$handleDrumStepSequencerGrid
 	});
 var _mbylstra$elmfirebaseauth$Components_Main_Update$handleGridControlMsg = F2(
 	function (gridControlMsg, model) {
-		var _p6 = A2(_mbylstra$elmfirebaseauth$Components_StepSequencer$handleGridControlMsg, gridControlMsg, model.stepSequencer);
-		var stepSequencer = _p6._0;
-		var outMsgs = _p6._1;
+		var outMsgToCmds = function (outMsg) {
+			var _p6 = outMsg;
+			var yToPitch = 60 + (12 - _p6._0.y);
+			var valueAddress = '/0x00/_FI_pitchstepsequencer-value';
+			var indexAddress = '/0x00/_FI_pitchstepsequencer-index';
+			return {
+				ctor: '::',
+				_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$setControlValue(
+					{
+						ctor: '_Tuple2',
+						_0: indexAddress,
+						_1: _elm_lang$core$Basics$toFloat(_p6._0.x)
+					}),
+				_1: {
+					ctor: '::',
+					_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$setControlValue(
+						{
+							ctor: '_Tuple2',
+							_0: valueAddress,
+							_1: _elm_lang$core$Basics$toFloat(yToPitch)
+						}),
+					_1: {ctor: '[]'}
+				}
+			};
+		};
+		var _p7 = A2(_mbylstra$elmfirebaseauth$Components_PitchStepSequencer$handleGridControlMsg, gridControlMsg, model.pitchStepSequencer);
+		var stepSequencer = _p7._0;
+		var outMsgs = _p7._1;
+		var cmds = A2(_elm_lang$core$List$concatMap, outMsgToCmds, outMsgs);
+		var _p8 = A2(_elm_lang$core$Debug$log, 'cmds', cmds);
 		return A2(
 			_elm_lang$core$Platform_Cmd_ops['!'],
 			_elm_lang$core$Native_Utils.update(
 				model,
-				{stepSequencer: stepSequencer}),
-			{ctor: '[]'});
+				{pitchStepSequencer: stepSequencer}),
+			cmds);
 	});
 var _mbylstra$elmfirebaseauth$Components_Main_Update$midiInputEvent = F2(
 	function (midiEvent, model) {
-		var _p7 = midiEvent;
-		if ((_p7.ctor === 'NoteOn') && (_p7._0.ctor === '_Tuple2')) {
+		var _p9 = midiEvent;
+		if ((_p9.ctor === 'NoteOn') && (_p9._0.ctor === '_Tuple2')) {
 			return A2(
 				_elm_lang$core$Platform_Cmd_ops['!'],
 				model,
 				{
 					ctor: '::',
 					_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$setPitch(
-						_elm_lang$core$Basics$toFloat(_p7._0._0)),
+						_elm_lang$core$Basics$toFloat(_p9._0._0)),
 					_1: {ctor: '[]'}
 				});
 		} else {
@@ -27317,15 +27107,15 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$midiInputEvent = F2(
 var _mbylstra$elmfirebaseauth$Components_Main_Update$rawMidiInputEvent = F2(
 	function (data, model) {
 		var midiMessage = _mbylstra$elmfirebaseauth$Components_Midi$parseRawMidiEvent(data);
-		var _p8 = midiMessage;
-		if ((_p8.ctor === 'NoteOn') && (_p8._0.ctor === '_Tuple2')) {
+		var _p10 = midiMessage;
+		if ((_p10.ctor === 'NoteOn') && (_p10._0.ctor === '_Tuple2')) {
 			return A2(
 				_elm_lang$core$Platform_Cmd_ops['!'],
 				model,
 				{
 					ctor: '::',
 					_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$setPitch(
-						_elm_lang$core$Basics$toFloat(_p8._0._0)),
+						_elm_lang$core$Basics$toFloat(_p10._0._0)),
 					_1: {ctor: '[]'}
 				});
 		} else {
@@ -27398,8 +27188,8 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$titleUpdated = F2(
 	});
 var _mbylstra$elmfirebaseauth$Components_Main_Update$handleHttpError = F2(
 	function (httpError, model) {
-		var _p9 = httpError;
-		switch (_p9.ctor) {
+		var _p11 = httpError;
+		switch (_p11.ctor) {
 			case 'NetworkError':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -27408,10 +27198,10 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$handleHttpError = F2(
 						{online: false}),
 					{ctor: '[]'});
 			case 'BadStatus':
-				var _p10 = A2(
+				var _p12 = A2(
 					_elm_lang$core$Debug$log,
 					'BadStatus',
-					_elm_lang$core$Basics$toString(_p9._0));
+					_elm_lang$core$Basics$toString(_p11._0));
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					model,
@@ -27420,10 +27210,10 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$handleHttpError = F2(
 				return _elm_lang$core$Native_Utils.crashCase(
 					'Components.Main.Update',
 					{
-						start: {line: 631, column: 5},
-						end: {line: 642, column: 36}
+						start: {line: 632, column: 5},
+						end: {line: 643, column: 36}
 					},
-					_p9)('HttpError');
+					_p11)('HttpError');
 		}
 	});
 var _mbylstra$elmfirebaseauth$Components_Main_Update$openProgram = F2(
@@ -27484,23 +27274,23 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$fetchedStaffPicks = F2(
 	});
 var _mbylstra$elmfirebaseauth$Components_Main_Update$userSettingsFormMsg = F2(
 	function (msg_, model) {
-		var _p12 = model.userSettingsForm;
-		if (_p12.ctor === 'Just') {
-			var _p13 = A2(_mbylstra$elmfirebaseauth$Components_UserSettingsForm$update, msg_, _p12._0);
-			var newUserSettingsForm = _p13._0;
-			var maybeUser = _p13._1;
-			var _p14 = maybeUser;
-			if (_p14.ctor === 'Just') {
-				var _p16 = _p14._0;
+		var _p14 = model.userSettingsForm;
+		if (_p14.ctor === 'Just') {
+			var _p15 = A2(_mbylstra$elmfirebaseauth$Components_UserSettingsForm$update, msg_, _p14._0);
+			var newUserSettingsForm = _p15._0;
+			var maybeUser = _p15._1;
+			var _p16 = maybeUser;
+			if (_p16.ctor === 'Just') {
+				var _p18 = _p16._0;
 				var userSettingsDialog = A2(_mbylstra$elmfirebaseauth$Components_SimpleDialog$update, _mbylstra$elmfirebaseauth$Components_SimpleDialog$Close, model.userSettingsDialog);
 				var updateUserProfileTask = A2(
 					_mbylstra$elmfirebaseauth$FirebaseAuth$updateUserProfile,
 					_mbylstra$elmfirebaseauth$Components_Main_Constants$firebaseConfig,
-					{displayName: _p16.displayName, photoURL: _p16.imageUrl});
+					{displayName: _p18.displayName, photoURL: _p18.imageUrl});
 				var updateUserProfileCommand = function () {
 					var tagger = function (result) {
-						var _p15 = result;
-						if (_p15.ctor === 'Err') {
+						var _p17 = result;
+						if (_p17.ctor === 'Err') {
 							return _mbylstra$elmfirebaseauth$Components_Main_Types$GeneralError;
 						} else {
 							return _mbylstra$elmfirebaseauth$Components_Main_Types$NoOp;
@@ -27513,7 +27303,7 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$userSettingsFormMsg = F2(
 					_elm_lang$core$Native_Utils.update(
 						model,
 						{
-							user: _elm_lang$core$Maybe$Just(_p16),
+							user: _elm_lang$core$Maybe$Just(_p18),
 							userSettingsDialog: userSettingsDialog,
 							userSettingsForm: _elm_lang$core$Maybe$Just(newUserSettingsForm)
 						}),
@@ -27579,27 +27369,27 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$newFile = function (model) 
 			model));
 };
 var _mbylstra$elmfirebaseauth$Components_Main_Update$save = function (model) {
-	var _p17 = model.authToken;
-	if (_p17.ctor === 'Just') {
-		var _p20 = _p17._0;
+	var _p19 = model.authToken;
+	if (_p19.ctor === 'Just') {
+		var _p22 = _p19._0;
 		var postProgramCmd = function () {
-			var _p18 = model.faustProgram.databaseId;
-			if (_p18.ctor === 'Just') {
-				return A3(_mbylstra$elmfirebaseauth$Components_Main_Http_Firebase$putFaustProgram, _p20, _p18._0, model.faustProgram);
+			var _p20 = model.faustProgram.databaseId;
+			if (_p20.ctor === 'Just') {
+				return A3(_mbylstra$elmfirebaseauth$Components_Main_Http_Firebase$putFaustProgram, _p22, _p20._0, model.faustProgram);
 			} else {
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Http_Firebase$postFaustProgram, _p20, model.faustProgram);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Http_Firebase$postFaustProgram, _p22, model.faustProgram);
 			}
 		}();
 		var commands = function () {
-			var _p19 = model.faustProgram.author;
-			if (_p19.ctor === 'Just') {
+			var _p21 = model.faustProgram.author;
+			if (_p21.ctor === 'Just') {
 				return {
 					ctor: '::',
 					_0: postProgramCmd,
 					_1: {
 						ctor: '::',
 						_0: _mbylstra$elmfirebaseauth$Components_Main_Http_FaustFileStorage$storeDspFile(
-							{username: _p19._0.githubUsername, filename: model.faustProgram.title, code: model.faustProgram.code}),
+							{username: _p21._0.githubUsername, filename: model.faustProgram.title, code: model.faustProgram.code}),
 						_1: {ctor: '[]'}
 					}
 				};
@@ -27616,10 +27406,10 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$save = function (model) {
 		return _elm_lang$core$Native_Utils.crashCase(
 			'Components.Main.Update',
 			{
-				start: {line: 457, column: 5},
-				end: {line: 487, column: 86}
+				start: {line: 458, column: 5},
+				end: {line: 488, column: 86}
 			},
-			_p17)('We need to do something about save if user is not logged in');
+			_p19)('We need to do something about save if user is not logged in');
 	}
 };
 var _mbylstra$elmfirebaseauth$Components_Main_Update$openUserSettingsDialog = function (model) {
@@ -27638,7 +27428,7 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$handleError = function (mod
 		{ctor: '[]'});
 };
 var _mbylstra$elmfirebaseauth$Components_Main_Update$generalError = function (model) {
-	var _p22 = A2(_elm_lang$core$Debug$log, 'GeneralError', 1);
+	var _p24 = A2(_elm_lang$core$Debug$log, 'GeneralError', 1);
 	return A2(
 		_elm_lang$core$Platform_Cmd_ops['!'],
 		model,
@@ -27652,11 +27442,11 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$successfulPut = function (m
 };
 var _mbylstra$elmfirebaseauth$Components_Main_Update$currentFirebaseUserFetched = F2(
 	function (maybeFirebaseUser, model) {
-		var _p23 = maybeFirebaseUser;
-		if (_p23.ctor === 'Just') {
-			var _p24 = A2(_mbylstra$elmfirebaseauth$Components_Main_Model$firebaseUserLoggedIn, _p23._0, model);
-			var model2 = _p24._0;
-			var cmd = _p24._1;
+		var _p25 = maybeFirebaseUser;
+		if (_p25.ctor === 'Just') {
+			var _p26 = A2(_mbylstra$elmfirebaseauth$Components_Main_Model$firebaseUserLoggedIn, _p25._0, model);
+			var model2 = _p26._0;
+			var cmd = _p26._1;
 			return A2(
 				_elm_lang$core$Platform_Cmd_ops['!'],
 				model2,
@@ -27678,9 +27468,9 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$currentFirebaseUserFetched 
 	});
 var _mbylstra$elmfirebaseauth$Components_Main_Update$firebaseLoginSuccess = F2(
 	function (firebaseUser, model) {
-		var _p25 = A2(_mbylstra$elmfirebaseauth$Components_Main_Model$firebaseUserLoggedIn, firebaseUser, model);
-		var model2 = _p25._0;
-		var cmd = _p25._1;
+		var _p27 = A2(_mbylstra$elmfirebaseauth$Components_Main_Model$firebaseUserLoggedIn, firebaseUser, model);
+		var model2 = _p27._0;
+		var cmd = _p27._1;
 		return A2(
 			_elm_lang$core$Platform_Cmd_ops['!'],
 			model2,
@@ -27695,24 +27485,24 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$signupViewMsg = F2(
 		var githubLoginTask = _mbylstra$elmfirebaseauth$FirebaseAuth$githubSignInWithPopup(_mbylstra$elmfirebaseauth$Components_Main_Constants$firebaseConfig);
 		var performSignUpCommand = function () {
 			var tagger = function (result) {
-				var _p26 = result;
-				if (_p26.ctor === 'Err') {
-					return _mbylstra$elmfirebaseauth$Components_Main_Types$Error(_p26._0);
+				var _p28 = result;
+				if (_p28.ctor === 'Err') {
+					return _mbylstra$elmfirebaseauth$Components_Main_Types$Error(_p28._0);
 				} else {
-					return _mbylstra$elmfirebaseauth$Components_Main_Types$FirebaseLoginSuccess(_p26._0);
+					return _mbylstra$elmfirebaseauth$Components_Main_Types$FirebaseLoginSuccess(_p28._0);
 				}
 			};
 			return A2(_elm_lang$core$Task$attempt, tagger, githubLoginTask);
 		}();
 		var facebookLoginTask = _mbylstra$elmfirebaseauth$FirebaseAuth$facebookSignInWithPopup(_mbylstra$elmfirebaseauth$Components_Main_Constants$firebaseConfig);
-		var _p27 = A2(_mbylstra$elmfirebaseauth$SignupView$update, msg, model.signupView);
-		var signupView = _p27._0;
-		var maybeOutMsg = _p27._1;
+		var _p29 = A2(_mbylstra$elmfirebaseauth$SignupView$update, msg, model.signupView);
+		var signupView = _p29._0;
+		var maybeOutMsg = _p29._1;
 		var cmds = function () {
-			var _p28 = maybeOutMsg;
-			if (_p28.ctor === 'Just') {
-				var _p29 = _p28._0;
-				if (_p29.ctor === 'SignUpButtonClicked') {
+			var _p30 = maybeOutMsg;
+			if (_p30.ctor === 'Just') {
+				var _p31 = _p30._0;
+				if (_p31.ctor === 'SignUpButtonClicked') {
 					return {
 						ctor: '::',
 						_0: performSignUpCommand,
@@ -27844,9 +27634,9 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$volumeSliderMsg = F2(
 	});
 var _mbylstra$elmfirebaseauth$Components_Main_Update$hotKeysMsg = F2(
 	function (msg, model) {
-		var _p30 = A2(_mbylstra$elmfirebaseauth$Components_HotKeys$update, msg, model.hotKeys);
-		var hotKeys = _p30._0;
-		var hotKeysCommand = _p30._1;
+		var _p32 = A2(_mbylstra$elmfirebaseauth$Components_HotKeys$update, msg, model.hotKeys);
+		var hotKeys = _p32._0;
+		var hotKeysCommand = _p32._1;
 		var doCompile = hotKeys.controlShiftPressed;
 		var loading = doCompile ? true : model.loading;
 		var commands = A2(
@@ -27884,9 +27674,9 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$faustCodeChanged = F2(
 var _mbylstra$elmfirebaseauth$Components_Main_Update$compilationError = F2(
 	function (maybeRawMessage, model) {
 		var message = function () {
-			var _p31 = maybeRawMessage;
-			if (_p31.ctor === 'Just') {
-				return _elm_lang$core$Maybe$Just(_p31._0);
+			var _p33 = maybeRawMessage;
+			if (_p33.ctor === 'Just') {
+				return _elm_lang$core$Maybe$Just(_p33._0);
 			} else {
 				return _elm_lang$core$Maybe$Nothing;
 			}
@@ -27908,8 +27698,8 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$compile = function (model) 
 };
 var _mbylstra$elmfirebaseauth$Components_Main_Update$update = F2(
 	function (action, model) {
-		var _p32 = action;
-		switch (_p32.ctor) {
+		var _p34 = action;
+		switch (_p34.ctor) {
 			case 'NoOp':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -27918,49 +27708,49 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$update = F2(
 			case 'Compile':
 				return _mbylstra$elmfirebaseauth$Components_Main_Update$compile(model);
 			case 'CompilationError':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$compilationError, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$compilationError, _p34._0, model);
 			case 'FaustCodeChanged':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$faustCodeChanged, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$faustCodeChanged, _p34._0, model);
 			case 'HotKeysMsg':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$hotKeysMsg, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$hotKeysMsg, _p34._0, model);
 			case 'VolumeSliderMsg':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$volumeSliderMsg, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$volumeSliderMsg, _p34._0, model);
 			case 'DSPCompiled':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$dspCompiled, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$dspCompiled, _p34._0, model);
 			case 'SliderChanged':
-				return A3(_mbylstra$elmfirebaseauth$Components_Main_Update$sliderChanged, _p32._0, _p32._1, model);
+				return A3(_mbylstra$elmfirebaseauth$Components_Main_Update$sliderChanged, _p34._0, _p34._1, model);
 			case 'FaustUiButtonDown':
-				var _p33 = A2(_elm_lang$core$Debug$log, 'FaustUiButtonDown', 1);
+				var _p35 = A2(_elm_lang$core$Debug$log, 'FaustUiButtonDown', 1);
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					model,
 					{
 						ctor: '::',
 						_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$setControlValue(
-							{ctor: '_Tuple2', _0: _p32._0, _1: 1.0}),
+							{ctor: '_Tuple2', _0: _p34._0, _1: 1.0}),
 						_1: {ctor: '[]'}
 					});
 			case 'FaustUiButtonUp':
-				var _p34 = A2(_elm_lang$core$Debug$log, 'FaustUiButtonUp', 1);
+				var _p36 = A2(_elm_lang$core$Debug$log, 'FaustUiButtonUp', 1);
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					model,
 					{
 						ctor: '::',
 						_0: _mbylstra$elmfirebaseauth$Components_Main_Ports$setControlValue(
-							{ctor: '_Tuple2', _0: _p32._0, _1: 0.0}),
+							{ctor: '_Tuple2', _0: _p34._0, _1: 0.0}),
 						_1: {ctor: '[]'}
 					});
 			case 'PianoKeyMouseDown':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$pianoKeyMouseDown, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$pianoKeyMouseDown, _p34._0, model);
 			case 'BufferSizeChanged':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$bufferSizeChanged, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$bufferSizeChanged, _p34._0, model);
 			case 'SignupViewMsg':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$signupViewMsg, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$signupViewMsg, _p34._0, model);
 			case 'FirebaseLoginSuccess':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$firebaseLoginSuccess, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$firebaseLoginSuccess, _p34._0, model);
 			case 'CurrentFirebaseUserFetched':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$currentFirebaseUserFetched, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$currentFirebaseUserFetched, _p34._0, model);
 			case 'SuccessfulPut':
 				return _mbylstra$elmfirebaseauth$Components_Main_Update$successfulPut(model);
 			case 'GeneralError':
@@ -27976,17 +27766,17 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$update = F2(
 						start: {line: 63, column: 5},
 						end: {line: 219, column: 53}
 					},
-					_p32)('TODO');
+					_p34)('TODO');
 			case 'NewFile':
 				return _mbylstra$elmfirebaseauth$Components_Main_Update$newFile(model);
 			case 'DeleteCurrentFile':
 				return _mbylstra$elmfirebaseauth$Components_Main_Update$deleteCurrentFile(model);
 			case 'FaustProgramPosted':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$faustProgramPosted, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$faustProgramPosted, _p34._0, model);
 			case 'MenuMsg':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'MDL':
-				return A2(_MichaelCombs28$elm_mdl$Material$update, _p32._0, model);
+				return A2(_MichaelCombs28$elm_mdl$Material$update, _p34._0, model);
 			case 'LogOutClicked':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -28004,45 +27794,41 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$update = F2(
 						{authToken: _elm_lang$core$Maybe$Nothing, user: _elm_lang$core$Maybe$Nothing}),
 					{ctor: '[]'});
 			case 'UserSettingsDialogMsg':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$userSettingsDialogMsg, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$userSettingsDialogMsg, _p34._0, model);
 			case 'OpenUserSettingsDialog':
 				return _mbylstra$elmfirebaseauth$Components_Main_Update$openUserSettingsDialog(model);
 			case 'UserSettingsFormMsg':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$userSettingsFormMsg, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$userSettingsFormMsg, _p34._0, model);
 			case 'FetchedStaffPicks':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$fetchedStaffPicks, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$fetchedStaffPicks, _p34._0, model);
 			case 'FetchedUserPrograms':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$fetchedUserPrograms, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$fetchedUserPrograms, _p34._0, model);
 			case 'FetchedTheDemoProgram':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$fetchedTheDemoProgram, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$fetchedTheDemoProgram, _p34._0, model);
 			case 'OpenProgram':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$openProgram, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$openProgram, _p34._0, model);
 			case 'HttpError':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$handleHttpError, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$handleHttpError, _p34._0, model);
 			case 'TitleUpdated':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$titleUpdated, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$titleUpdated, _p34._0, model);
 			case 'NewTextMeasurement':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$newTextMeasurement, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$newTextMeasurement, _p34._0, model);
 			case 'WebfontsActive':
 				return _mbylstra$elmfirebaseauth$Components_Main_Update$webfontsActive(model);
 			case 'BufferSnapshot':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$handleBufferSnapshot, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$handleBufferSnapshot, _p34._0, model);
 			case 'SvgUrlFetched':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$svgUrlFetched, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$svgUrlFetched, _p34._0, model);
 			case 'RawMidiInputEvent':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$rawMidiInputEvent, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$rawMidiInputEvent, _p34._0, model);
 			case 'MidiInputEvent':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$midiInputEvent, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$midiInputEvent, _p34._0, model);
 			case 'GridControlMsg':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$handleGridControlMsg, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$handleGridControlMsg, _p34._0, model);
 			case 'DrumStepSequencerGridControlMsg':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$handleDrumStepSequencerGridControlMsg, _p32._0, model);
-			case 'AudioBufferClockTick':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$handleAudioBufferClockTick, _p32._0, model);
-			case 'MetronomeTick':
-				return _mbylstra$elmfirebaseauth$Components_Main_Update$handleMetronomeTick(model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$handleDrumStepSequencerGridControlMsg, _p34._0, model);
 			case 'SetPitch':
-				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$setPitch, _p32._0, model);
+				return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$setPitch, _p34._0, model);
 			case 'ToggleOnOff':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -28051,30 +27837,30 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$update = F2(
 						{on: !model.on}),
 					{ctor: '[]'});
 			default:
-				return A3(_mbylstra$elmfirebaseauth$Components_Main_Update$handleBarGraphUpdate, _p32._0.address, _p32._0.value, model);
+				return A3(_mbylstra$elmfirebaseauth$Components_Main_Update$handleBarGraphUpdate, _p34._0.address, _p34._0.value, model);
 		}
 	});
 var _mbylstra$elmfirebaseauth$Components_Main_Update$deleteCurrentFile = function (model) {
-	var _p36 = model.faustProgram.databaseId;
-	if (_p36.ctor === 'Just') {
-		var _p37 = model.authToken;
-		if (_p37.ctor === 'Just') {
+	var _p38 = model.faustProgram.databaseId;
+	if (_p38.ctor === 'Just') {
+		var _p39 = model.authToken;
+		if (_p39.ctor === 'Just') {
 			return A2(
 				_elm_lang$core$Platform_Cmd_ops['!'],
 				model,
 				{
 					ctor: '::',
-					_0: A2(_mbylstra$elmfirebaseauth$Components_Main_Http_Firebase$deleteFaustProgram, _p37._0, _p36._0),
+					_0: A2(_mbylstra$elmfirebaseauth$Components_Main_Http_Firebase$deleteFaustProgram, _p39._0, _p38._0),
 					_1: {ctor: '[]'}
 				});
 		} else {
 			return _elm_lang$core$Native_Utils.crashCase(
 				'Components.Main.Update',
 				{
-					start: {line: 503, column: 13},
-					end: {line: 507, column: 98}
+					start: {line: 504, column: 13},
+					end: {line: 508, column: 98}
 				},
-				_p37)('Unauthenticated user should not be abled to delete a db program');
+				_p39)('Unauthenticated user should not be abled to delete a db program');
 		}
 	} else {
 		return A3(
@@ -28085,76 +27871,6 @@ var _mbylstra$elmfirebaseauth$Components_Main_Update$deleteCurrentFile = functio
 				_elm_lang$core$Platform_Cmd_ops['!'],
 				model,
 				{ctor: '[]'}));
-	}
-};
-var _mbylstra$elmfirebaseauth$Components_Main_Update$handleAudioBufferClockTick = F2(
-	function (time, model) {
-		var beatDuration = 1.0 / (model.tempo / 60.0);
-		var metronomeTickDuration = beatDuration / _elm_lang$core$Basics$toFloat(_mbylstra$elmfirebaseauth$Components_Main_Update$numberOfTicksPerBeat);
-		var nextMetronomeTickTime = model.lastMetronomeTickTime + metronomeTickDuration;
-		return (_elm_lang$core$Native_Utils.cmp(model.audioClockTime, nextMetronomeTickTime) > -1) ? A3(
-			_ccapndave$elm_update_extra$Update_Extra$andThen,
-			_mbylstra$elmfirebaseauth$Components_Main_Update$update,
-			_mbylstra$elmfirebaseauth$Components_Main_Types$MetronomeTick,
-			A2(
-				_elm_lang$core$Platform_Cmd_ops['!'],
-				_elm_lang$core$Native_Utils.update(
-					model,
-					{audioClockTime: time, lastMetronomeTickTime: nextMetronomeTickTime}),
-				{ctor: '[]'})) : A2(
-			_elm_lang$core$Platform_Cmd_ops['!'],
-			_elm_lang$core$Native_Utils.update(
-				model,
-				{audioClockTime: time}),
-			{ctor: '[]'});
-	});
-var _mbylstra$elmfirebaseauth$Components_Main_Update$handleMetronomeTick = function (model) {
-	var updateGlobalSongPosition = function (songPosition) {
-		var _p39 = songPosition;
-		var bar = _p39.bar;
-		var beat = _p39.beat;
-		var tick = _p39.tick;
-		var newTick = A2(_elm_lang$core$Basics_ops['%'], tick + 1, _mbylstra$elmfirebaseauth$Components_Main_Update$numberOfTicksPerBeat);
-		if (_elm_lang$core$Native_Utils.eq(newTick, 0)) {
-			var newBeat = songPosition.beat + A2(_elm_lang$core$Basics_ops['%'], 1, model.numberOfBeatsPerBar);
-			return _elm_lang$core$Native_Utils.eq(newBeat, 0) ? _elm_lang$core$Native_Utils.update(
-				songPosition,
-				{bar: bar + 1, beat: 0, tick: 0}) : _elm_lang$core$Native_Utils.update(
-				songPosition,
-				{beat: newBeat, tick: 0});
-		} else {
-			return _elm_lang$core$Native_Utils.update(
-				songPosition,
-				{tick: newTick});
-		}
-	};
-	var newSongPosition = updateGlobalSongPosition(model.globalSongPosition);
-	var model2 = _elm_lang$core$Native_Utils.update(
-		model,
-		{globalSongPosition: newSongPosition});
-	if (_elm_lang$core$Native_Utils.eq(
-		A2(_elm_lang$core$Basics_ops['%'], newSongPosition.tick, 8),
-		0)) {
-		var _p40 = _mbylstra$elmfirebaseauth$Components_StepSequencer$advanceIt(model.stepSequencer);
-		var newStepSequencer = _p40._0;
-		var maybeMsg = _p40._1;
-		var model3 = _elm_lang$core$Native_Utils.update(
-			model2,
-			{stepSequencer: newStepSequencer});
-		var _p41 = maybeMsg;
-		if (_p41.ctor === 'Just') {
-			return A2(_mbylstra$elmfirebaseauth$Components_Main_Update$update, _p41._0, model3);
-		} else {
-			return A2(
-				_elm_lang$core$Platform_Cmd_ops['!'],
-				model3,
-				{ctor: '[]'});
-		}
-	} else {
-		return A2(
-			_elm_lang$core$Platform_Cmd_ops['!'],
-			model2,
-			{ctor: '[]'});
 	}
 };
 var _mbylstra$elmfirebaseauth$Components_MeasureText$view = A2(
@@ -30422,225 +30138,56 @@ var _mbylstra$elmfirebaseauth$Components_Main_View_MainHeader$view = function (m
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$button,
+					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(_mbylstra$elmfirebaseauth$Components_Main_Types$ToggleOnOff),
+						_0: _elm_lang$html$Html_Attributes$class('main-header-right'),
 						_1: {ctor: '[]'}
 					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text('on/off'),
-						_1: {ctor: '[]'}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('main-header-right'),
-							_1: {ctor: '[]'}
-						},
-						function () {
-							var _p0 = model.user;
-							if (_p0.ctor === 'Just') {
-								return {
+					function () {
+						var _p0 = model.user;
+						if (_p0.ctor === 'Just') {
+							return {
+								ctor: '::',
+								_0: _mbylstra$elmfirebaseauth$Components_User$view(_p0._0),
+								_1: {
 									ctor: '::',
-									_0: _mbylstra$elmfirebaseauth$Components_User$view(_p0._0),
-									_1: {
+									_0: A2(_mbylstra$elmfirebaseauth$Components_Main_View_UserMenu$view, _mbylstra$elmfirebaseauth$Components_Main_Types$MDL, model.mdl),
+									_1: {ctor: '[]'}
+								}
+							};
+						} else {
+							return {
+								ctor: '::',
+								_0: A3(
+									_mbylstra$elmfirebaseauth$HtmlHelpers$aButton,
+									_mbylstra$elmfirebaseauth$Components_Main_Types$SignupViewMsg(_mbylstra$elmfirebaseauth$SignupView$OpenSignInDialog),
+									{ctor: '[]'},
+									{
 										ctor: '::',
-										_0: A2(_mbylstra$elmfirebaseauth$Components_Main_View_UserMenu$view, _mbylstra$elmfirebaseauth$Components_Main_Types$MDL, model.mdl),
+										_0: _elm_lang$html$Html$text('Log In'),
 										_1: {ctor: '[]'}
-									}
-								};
-							} else {
-								return {
+									}),
+								_1: {
 									ctor: '::',
 									_0: A3(
 										_mbylstra$elmfirebaseauth$HtmlHelpers$aButton,
-										_mbylstra$elmfirebaseauth$Components_Main_Types$SignupViewMsg(_mbylstra$elmfirebaseauth$SignupView$OpenSignInDialog),
+										_mbylstra$elmfirebaseauth$Components_Main_Types$SignupViewMsg(_mbylstra$elmfirebaseauth$SignupView$OpenSignUpDialog),
 										{ctor: '[]'},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('Log In'),
-											_1: {ctor: '[]'}
-										}),
-									_1: {
-										ctor: '::',
-										_0: A3(
-											_mbylstra$elmfirebaseauth$HtmlHelpers$aButton,
-											_mbylstra$elmfirebaseauth$Components_Main_Types$SignupViewMsg(_mbylstra$elmfirebaseauth$SignupView$OpenSignUpDialog),
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text('Create Account'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {ctor: '[]'}
-									}
-								};
-							}
-						}()),
-					_1: {ctor: '[]'}
-				}
-			}
-		});
-};
-var _mbylstra$elmfirebaseauth$Components_Piano$pitchToFrequency = function (pitch) {
-	return Math.pow(2, (pitch - 49.0) / 12.0) * 440.0;
-};
-var _mbylstra$elmfirebaseauth$Components_Piano$ColorScheme = F2(
-	function (a, b) {
-		return {whiteKey: a, blackKey: b};
-	});
-var _mbylstra$elmfirebaseauth$Components_Piano$White = {ctor: 'White'};
-var _mbylstra$elmfirebaseauth$Components_Piano$Black = {ctor: 'Black'};
-var _mbylstra$elmfirebaseauth$Components_Piano$view = F4(
-	function (colorScheme, numOctaves, bottomPitch, tagger) {
-		var pianoKey = F2(
-			function (keyType, pitch) {
-				var _p0 = false;
-				var _p1 = keyType;
-				if (_p1.ctor === 'Black') {
-					return A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('black-key-wrapper'),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$div,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('black-key'),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$html$Html_Events$onMouseEnter(
-											tagger(pitch)),
-										_1: {
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$style(
-												{
-													ctor: '::',
-													_0: {
-														ctor: '_Tuple2',
-														_0: 'background-color',
-														_1: _mbylstra$elmfirebaseauth$ColorExtra$toCssRgb(colorScheme.blackKey)
-													},
-													_1: {ctor: '[]'}
-												}),
-											_1: {ctor: '[]'}
-										}
-									}
-								},
-								{ctor: '[]'}),
-							_1: {ctor: '[]'}
-						});
-				} else {
-					return A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('white-key'),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onMouseEnter(
-									tagger(pitch)),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$style(
-										{
-											ctor: '::',
-											_0: {
-												ctor: '_Tuple2',
-												_0: 'background-color',
-												_1: _mbylstra$elmfirebaseauth$ColorExtra$toCssRgb(colorScheme.whiteKey)
-											},
+											_0: _elm_lang$html$Html$text('Create Account'),
 											_1: {ctor: '[]'}
 										}),
 									_1: {ctor: '[]'}
 								}
-							}
-						},
-						{ctor: '[]'});
-				}
-			});
-		var pianoOctave = function (cPitch) {
-			return {
-				ctor: '::',
-				_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$White, cPitch),
-				_1: {
-					ctor: '::',
-					_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$Black, cPitch + 1.0),
-					_1: {
-						ctor: '::',
-						_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$White, cPitch + 2.0),
-						_1: {
-							ctor: '::',
-							_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$Black, cPitch + 3.0),
-							_1: {
-								ctor: '::',
-								_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$White, cPitch + 4.0),
-								_1: {
-									ctor: '::',
-									_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$White, cPitch + 5.0),
-									_1: {
-										ctor: '::',
-										_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$Black, cPitch + 6.0),
-										_1: {
-											ctor: '::',
-											_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$White, cPitch + 7.0),
-											_1: {
-												ctor: '::',
-												_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$Black, cPitch + 8.0),
-												_1: {
-													ctor: '::',
-													_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$White, cPitch + 9.0),
-													_1: {
-														ctor: '::',
-														_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$Black, cPitch + 10.0),
-														_1: {
-															ctor: '::',
-															_0: A2(pianoKey, _mbylstra$elmfirebaseauth$Components_Piano$White, cPitch + 11.0),
-															_1: {ctor: '[]'}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
+							};
 						}
-					}
-				}
-			};
-		};
-		var bottomPitches = A2(
-			_elm_lang$core$List$map,
-			function (n) {
-				return bottomPitch + (_elm_lang$core$Basics$toFloat(n) * 12.0);
-			},
-			A2(_elm_lang$core$List$range, 1, numOctaves));
-		var pianoOctaves = A2(
-			_elm_lang$core$List$concatMap,
-			function (octaveBottomPitch) {
-				return pianoOctave(octaveBottomPitch);
-			},
-			bottomPitches);
-		return A2(
-			_elm_lang$html$Html$div,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$class('piano'),
+					}()),
 				_1: {ctor: '[]'}
-			},
-			pianoOctaves);
-	});
+			}
+		});
+};
 var _mbylstra$elmfirebaseauth$Components_SliderNoModel$decodeSliderValue = function (result) {
 	return A2(
 		_elm_lang$core$Result$withDefault,
@@ -30774,7 +30321,7 @@ var _mbylstra$elmfirebaseauth$Components_Main_View_KnobsAndSliders$horizontalSli
 		});
 };
 var _mbylstra$elmfirebaseauth$Components_Main_View_KnobsAndSliders$inputView = function (model) {
-	if (_elm_lang$core$Native_Utils.eq(model.label, 'freq')) {
+	if (A2(_elm_lang$core$String$startsWith, '_FI_', model.label)) {
 		return {ctor: '[]'};
 	} else {
 		var _p0 = model.inputType;
@@ -30852,28 +30399,253 @@ var _mbylstra$elmfirebaseauth$Components_Main_View_KnobsAndSliders$view = functi
 			{ctor: '[]'});
 	}
 };
-var _mbylstra$elmfirebaseauth$Components_Main_View_MainFooter$drumStepSequencerView = function (model) {
-	return {
+var _mbylstra$elmfirebaseauth$Icons_Drum$icon = A2(
+	_elm_lang$svg$Svg$svg,
+	{
 		ctor: '::',
-		_0: _mbylstra$elmfirebaseauth$Components_DrumStepSequencer$view(model.drumStepSequencer),
-		_1: {ctor: '[]'}
-	};
-};
-var _mbylstra$elmfirebaseauth$Components_Main_View_MainFooter$pianoView = function (model) {
-	return _mbylstra$elmfirebaseauth$Components_FaustUiModel$showPiano(model.faustUiInputs) ? {
-		ctor: '::',
-		_0: _mbylstra$elmfirebaseauth$Components_StepSequencer$view(model.stepSequencer),
+		_0: _elm_lang$svg$Svg_Attributes$class('drum-icon'),
 		_1: {
 			ctor: '::',
-			_0: A4(
-				_mbylstra$elmfirebaseauth$Components_Piano$view,
-				{blackKey: _elm_lang$core$Color$black, whiteKey: _elm_lang$core$Color$white},
-				6,
-				12,
-				_mbylstra$elmfirebaseauth$Components_Main_Types$PianoKeyMouseDown),
-			_1: {ctor: '[]'}
+			_0: A2(_elm_lang$html$Html_Attributes$attribute, 'style', 'enable-background:new 0 0 100 100;'),
+			_1: {
+				ctor: '::',
+				_0: A2(_elm_lang$html$Html_Attributes$attribute, 'version', '1.1'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 100 100'),
+					_1: {
+						ctor: '::',
+						_0: A2(_elm_lang$html$Html_Attributes$attribute, 'x', '0px'),
+						_1: {
+							ctor: '::',
+							_0: A2(_elm_lang$html$Html_Attributes$attribute, 'xml:space', 'preserve'),
+							_1: {
+								ctor: '::',
+								_0: A2(_elm_lang$html$Html_Attributes$attribute, 'xmlns', 'http://www.w3.org/2000/svg'),
+								_1: {
+									ctor: '::',
+									_0: A2(_elm_lang$html$Html_Attributes$attribute, 'xmlns:xlink', 'http://www.w3.org/1999/xlink'),
+									_1: {
+										ctor: '::',
+										_0: A2(_elm_lang$html$Html_Attributes$attribute, 'y', '0px'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$svg$Svg$g,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$svg$Svg$path,
+					{
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$d('M50,11.8c-21.1,0-38.2,17.1-38.2,38.2c0,21.1,17.1,38.2,38.2,38.2c21.1,0,38.2-17.1,38.2-38.2C88.2,28.9,71.1,11.8,50,11.8   z M50,86.2C30,86.2,13.8,70,13.8,50C13.8,30,30,13.8,50,13.8C70,13.8,86.2,30,86.2,50C86.2,70,70,86.2,50,86.2z'),
+						_1: {ctor: '[]'}
+					},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$svg$Svg$path,
+						{
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$d('M91.2,59.8c0.8-3.2,1.2-6.5,1.2-9.8c0-3.4-0.4-6.7-1.2-9.8c0,0,0,0,0,0c0.2-0.2,0.4-0.5,0.5-0.8c0.5-0.9,0.6-2,0.2-3   c-0.3-1-1-1.8-2-2.3c-0.3-0.1-0.6-0.2-0.9-0.3c-2.6-6.2-6.6-11.6-11.6-15.9c0,0,0,0,0,0c0.1-1.3-0.5-2.7-1.6-3.5   c-0.9-0.6-1.9-0.9-3-0.7c-0.3,0-0.6,0.1-0.9,0.3c-5.5-3.4-11.9-5.5-18.7-6.1c0,0,0,0,0,0c-0.7-1.1-1.9-1.9-3.4-1.9   c-1.4,0-2.7,0.8-3.4,1.9c0,0,0,0,0,0c-6.8,0.5-13.2,2.7-18.7,6.1c-0.3-0.1-0.6-0.2-0.9-0.3c-1.1-0.2-2.1,0.1-3,0.7   c-0.9,0.6-1.4,1.5-1.6,2.6c-0.1,0.3,0,0.6,0,0.9c-5,4.3-9,9.7-11.6,15.9c-0.3,0.1-0.6,0.2-0.9,0.3c-0.9,0.5-1.6,1.3-2,2.3   c-0.3,1-0.2,2.1,0.2,3c0.1,0.3,0.3,0.5,0.5,0.8c0,0,0,0,0,0C8,43.3,7.6,46.6,7.6,50c0,3.4,0.4,6.7,1.2,9.8   c-0.2,0.2-0.4,0.5-0.5,0.8c-0.5,0.9-0.6,2-0.2,3c0.4,1.4,1.5,2.3,2.8,2.6c0,0,0,0,0,0c2.6,6.2,6.6,11.6,11.6,15.9   c0,0.3,0,0.6,0,0.9c0.2,1,0.7,2,1.6,2.6c0.7,0.5,1.5,0.8,2.3,0.8c0.2,0,0.4,0,0.6,0c0.3,0,0.6-0.1,0.9-0.3c0,0,0,0,0,0   c5.5,3.4,11.9,5.5,18.7,6.1c0,0,0,0,0,0c0.7,1.1,1.9,1.9,3.4,1.9c1.4,0,2.7-0.8,3.4-1.9c6.8-0.5,13.2-2.7,18.7-6.1   c0.5,0.2,1,0.3,1.5,0.3c0.8,0,1.6-0.2,2.3-0.8v0c1.2-0.8,1.7-2.2,1.6-3.5c5-4.3,9-9.7,11.6-15.9c1.3-0.3,2.4-1.3,2.8-2.6   c0.3-1,0.2-2.1-0.2-3C91.6,60.3,91.4,60.1,91.2,59.8z M50,90.4C27.7,90.4,9.6,72.3,9.6,50C9.6,27.7,27.7,9.6,50,9.6   c22.3,0,40.4,18.1,40.4,40.4C90.4,72.3,72.3,90.4,50,90.4z'),
+							_1: {ctor: '[]'}
+						},
+						{ctor: '[]'}),
+					_1: {ctor: '[]'}
+				}
+			}),
+		_1: {ctor: '[]'}
+	});
+var _mbylstra$elmfirebaseauth$Icons_Snare$icon = A2(
+	_elm_lang$svg$Svg$svg,
+	{
+		ctor: '::',
+		_0: _elm_lang$svg$Svg_Attributes$class('snare-icon'),
+		_1: {
+			ctor: '::',
+			_0: A2(_elm_lang$html$Html_Attributes$attribute, 'style', 'enable-background:new 0 0 100 100;'),
+			_1: {
+				ctor: '::',
+				_0: A2(_elm_lang$html$Html_Attributes$attribute, 'version', '1.1'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 100 100'),
+					_1: {
+						ctor: '::',
+						_0: A2(_elm_lang$html$Html_Attributes$attribute, 'x', '0px'),
+						_1: {
+							ctor: '::',
+							_0: A2(_elm_lang$html$Html_Attributes$attribute, 'xml:space', 'preserve'),
+							_1: {
+								ctor: '::',
+								_0: A2(_elm_lang$html$Html_Attributes$attribute, 'xmlns', 'http://www.w3.org/2000/svg'),
+								_1: {
+									ctor: '::',
+									_0: A2(_elm_lang$html$Html_Attributes$attribute, 'xmlns:xlink', 'http://www.w3.org/1999/xlink'),
+									_1: {
+										ctor: '::',
+										_0: A2(_elm_lang$html$Html_Attributes$attribute, 'y', '0px'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$svg$Svg$path,
+			{
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$d('M88.7,56H88v-1.7c0-0.5-0.4-0.9-0.8-1v-6.2c0.5-0.1,0.8-0.5,0.8-1v-2.1c0,0,0-0.1,0-0.1h0.7c0.5,0,1-0.2,1.3-0.6  c0.3-0.4,0.5-0.9,0.4-1.4l-0.6-4.8c-0.1-0.9-0.9-1.5-1.8-1.5h-0.9v-1c1.3-0.4,2.3-1.6,2.3-3v-3.2c0-1.6-1.3-3-3-3H13.5  c-1.6,0-3,1.3-3,3v3.2c0,1.4,1,2.6,2.3,3v1H12c-0.9,0-1.6,0.7-1.8,1.5L9.6,42c-0.1,0.5,0.1,1,0.4,1.4c0.3,0.4,0.8,0.6,1.3,0.6H12  c0,0,0,0.1,0,0.1v2.1c0,0.5,0.4,0.9,0.8,1v6.2c-0.5,0.1-0.8,0.5-0.8,1V56h-0.7c-0.5,0-1,0.2-1.3,0.6S9.5,57.5,9.6,58l0.6,4.8  c0.1,0.9,0.9,1.5,1.8,1.5h0.9v1c-1.3,0.4-2.3,1.6-2.3,3v3.2c0,1.6,1.3,3,3,3h73.1c1.6,0,3-1.3,3-3v-3.2c0-1.4-1-2.6-2.3-3v-1H88  c0.9,0,1.6-0.7,1.8-1.5l0.6-4.8c0.1-0.5-0.1-1-0.4-1.4C89.7,56.2,89.2,56,88.7,56z M70,65.2c-1.1,0-2.2,0.2-3.3,0.7v-2.6  c0.9,0,1.6-0.7,1.7-1.5L69,57c0.1-0.5-0.1-1-0.4-1.4c-0.3-0.4-0.8-0.6-1.3-0.6h-0.6l0-1.1c0-0.6-0.4-1-1-1c0,0,0,0,0,0  c-0.5,0-1,0.4-1,1l0,1.1h-0.6c-0.5,0-1,0.2-1.3,0.6c-0.3,0.4-0.5,0.9-0.4,1.4l0.6,4.8c0.1,0.9,0.8,1.5,1.7,1.5v2.6  c-1.2-0.5-2.3-0.7-3.3-0.7H38.6c-1.1,0-2.1,0.2-3.3,0.7v-2.6c0.9,0,1.6-0.7,1.7-1.5l0.6-4.8c0.1-0.5-0.1-1-0.4-1.4  c-0.3-0.4-0.8-0.6-1.3-0.6h-0.6l0-1.1c0-0.6-0.4-1-1-1c0,0,0,0,0,0c-0.6,0-1,0.4-1,1l0,1.1h-0.6c-0.5,0-1,0.2-1.3,0.6  C31.1,56,30.9,56.5,31,57l0.6,4.8c0.1,0.8,0.8,1.5,1.7,1.5v2.6c-1.2-0.5-2.3-0.7-3.4-0.7H14.8V34.8H30c1.1,0,2.2-0.2,3.3-0.7v2.6  c-0.9,0-1.6,0.7-1.7,1.5L31,43c-0.1,0.5,0.1,1,0.4,1.4c0.3,0.4,0.8,0.6,1.3,0.6h0.6v1.2c0,0.6,0.4,1,1,1s1-0.4,1-1V45h0.6  c0.5,0,1-0.2,1.3-0.6c0.3-0.4,0.5-0.9,0.4-1.4L37,38.2c-0.1-0.9-0.8-1.5-1.7-1.5v-2.6c1.2,0.5,2.3,0.7,3.3,0.7h22.7  c1.1,0,2.1-0.2,3.3-0.7v2.6c-0.9,0-1.6,0.7-1.7,1.5L62.3,43c-0.1,0.5,0.1,1,0.4,1.4c0.3,0.4,0.8,0.6,1.3,0.6h0.6v1.2  c0,0.6,0.4,1,1,1s1-0.4,1-1V45h0.6c0.5,0,1-0.2,1.3-0.6c0.3-0.4,0.5-0.9,0.4-1.4l-0.6-4.8c-0.1-0.9-0.8-1.5-1.7-1.5v-2.6  c1.2,0.5,2.3,0.7,3.4,0.7h15.2v30.4H70z M67,57l-0.6,4.3H65L64.4,57H67z M35.6,57L35,61.3h-1.5L33,57H35.6z M33,43l0.6-4.3H35  l0.6,4.3H33z M64.4,43l0.6-4.3h1.5L67,43H64.4z M87.8,37.7l0.6,4.3h-1.2v-4.3H87.8z M12.5,28.4c0-0.5,0.4-1,1-1h73.1  c0.5,0,1,0.4,1,1v3.2c0,0.6-0.5,1.1-1.1,1.1H70c-1.2,0-2.3-0.4-3.3-0.9c0,0,0,0,0,0v-1.8c0-0.6-0.4-1-1-1s-1,0.4-1,1v1.8  c-1,0.5-2.2,0.9-3.3,0.9H38.6c-1.2,0-2.3-0.4-3.3-0.9c0,0,0,0,0,0v-1.8c0-0.6-0.4-1-1-1s-1,0.4-1,1v1.8c0,0,0,0,0,0  c-1.1,0.5-2.2,0.9-3.3,0.9H13.6c-0.6,0-1.1-0.5-1.1-1.1V28.4z M12.2,37.7h0.7V42h-1.2L12.2,37.7z M12.2,62.3L11.6,58h1.2v4.3H12.2z   M87.5,71.6c0,0.5-0.4,1-1,1H13.5c-0.5,0-1-0.4-1-1v-3.2c0-0.6,0.5-1.1,1.1-1.1H30c1.2,0,2.3,0.4,3.3,0.9c0,0,0,0,0,0v1.8  c0,0.6,0.4,1,1,1s1-0.4,1-1v-1.8c1-0.5,2.2-0.9,3.3-0.9h22.7c1.2,0,2.3,0.4,3.3,0.9c0,0,0,0,0,0v1.8c0,0.6,0.4,1,1,1s1-0.4,1-1v-1.8  c0,0,0,0,0,0c1.1-0.5,2.2-0.9,3.3-0.9h16.3c0.6,0,1.1,0.5,1.1,1.1V71.6z M87.8,62.3h-0.7V58h1.2L87.8,62.3z'),
+				_1: {ctor: '[]'}
+			},
+			{ctor: '[]'}),
+		_1: {ctor: '[]'}
+	});
+var _mbylstra$elmfirebaseauth$Icons_HiHat$icon = A2(
+	_elm_lang$svg$Svg$svg,
+	{
+		ctor: '::',
+		_0: _elm_lang$svg$Svg_Attributes$class('hi-hat-icon'),
+		_1: {
+			ctor: '::',
+			_0: A2(_elm_lang$html$Html_Attributes$attribute, 'style', 'enable-background:new 0 0 100 100;'),
+			_1: {
+				ctor: '::',
+				_0: A2(_elm_lang$html$Html_Attributes$attribute, 'version', '1.1'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 100 100'),
+					_1: {
+						ctor: '::',
+						_0: A2(_elm_lang$html$Html_Attributes$attribute, 'x', '0px'),
+						_1: {
+							ctor: '::',
+							_0: A2(_elm_lang$html$Html_Attributes$attribute, 'xml:space', 'preserve'),
+							_1: {
+								ctor: '::',
+								_0: A2(_elm_lang$html$Html_Attributes$attribute, 'xmlns', 'http://www.w3.org/2000/svg'),
+								_1: {
+									ctor: '::',
+									_0: A2(_elm_lang$html$Html_Attributes$attribute, 'xmlns:xlink', 'http://www.w3.org/1999/xlink'),
+									_1: {
+										ctor: '::',
+										_0: A2(_elm_lang$html$Html_Attributes$attribute, 'y', '0px'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$svg$Svg$g,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$svg$Svg$path,
+					{
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$d('M95.3,44.9L66,36.5c-1.7-0.5-3.2-1.5-4.1-2.8c-2.5-3.6-6.5-5.8-10.9-6.1v-9.9c0-0.6-0.4-1-1-1s-1,0.4-1,1v9.9   c-4.3,0.3-8.3,2.5-10.9,6.1C37.2,35,35.7,36,34,36.5L4.7,44.9c-1.1,0.3-1.7,1.3-1.6,2.4c0.1,0.9,0.7,1.6,1.6,1.8l0,0L34,57.6   c1.7,0.5,3.2,1.5,4.1,2.8c2,2.9,5,4.9,8.3,5.7v15.4c0,0.3,0.1,0.6,0.4,0.8c0.1,0.1,1.3,1,3.2,1s3-0.9,3.2-1   c0.2-0.2,0.4-0.5,0.4-0.8V66.1c3.3-0.8,6.3-2.9,8.3-5.7c0.9-1.3,2.4-2.3,4.1-2.8l29.4-8.4l0,0c0.8-0.2,1.4-0.9,1.6-1.8   C97.1,46.2,96.4,45.2,95.3,44.9z M51.6,81c-0.3,0.2-0.9,0.3-1.6,0.3c-0.7,0-1.2-0.2-1.6-0.3V66.5c0.5,0.1,1,0.1,1.6,0.1   s1,0,1.6-0.1V81z M65.4,55.6c-2.2,0.6-4,1.9-5.2,3.6c-2.3,3.3-6.2,5.3-10.2,5.3s-7.9-2-10.2-5.3c-1.2-1.7-3-3-5.2-3.6l-12.4-3.6   c6.9,0.7,16,1.2,27.9,1.2c11.9,0,21-0.5,27.9-1.2L65.4,55.6z M94.7,47.2h-0.2l-0.2,0.1c-0.1,0-12.5,4-44.4,4s-44.3-4-44.4-4   l-0.2-0.1H5.3c-0.1,0-0.2,0-0.2-0.2c0-0.2,0.1-0.2,0.1-0.2l29.4-8.4c2.2-0.6,4-1.9,5.2-3.6c2.1-3.1,5.5-5,9.2-5.3v0.9   c0,0.6,0.4,1,1,1s1-0.4,1-1v-0.9c3.7,0.3,7.1,2.2,9.2,5.3c1.2,1.7,3,3,5.2,3.6l29.4,8.4c0.1,0,0.2,0,0.1,0.2   C94.9,47.2,94.8,47.2,94.7,47.2z'),
+						_1: {ctor: '[]'}
+					},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$svg$Svg$path,
+						{
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$d('M57.5,40.7c-7,3.2-15,0-15,0c-0.5-0.2-1.1,0-1.3,0.6c-0.2,0.5,0,1.1,0.6,1.3c0.2,0.1,4,1.6,8.8,1.6c2.5,0,5.2-0.4,7.9-1.6   c0.5-0.2,0.7-0.8,0.5-1.3C58.6,40.7,58,40.5,57.5,40.7z'),
+							_1: {ctor: '[]'}
+						},
+						{ctor: '[]'}),
+					_1: {ctor: '[]'}
+				}
+			}),
+		_1: {ctor: '[]'}
+	});
+var _mbylstra$elmfirebaseauth$Components_Main_View_MainFooter$drumStepSequencerView = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('drum-step-sequencer-wrapper'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('drum-step-sequencer-icons'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _mbylstra$elmfirebaseauth$Icons_HiHat$icon,
+					_1: {
+						ctor: '::',
+						_0: _mbylstra$elmfirebaseauth$Icons_Snare$icon,
+						_1: {
+							ctor: '::',
+							_0: _mbylstra$elmfirebaseauth$Icons_Drum$icon,
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(_mbylstra$elmfirebaseauth$Components_DrumStepSequencer$view, 'step-sequencer drum-step-sequencer', model.drumStepSequencer),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _mbylstra$elmfirebaseauth$Components_Main_View_MainFooter$stepSequencersView = function (model) {
+	var pitchStepSequencer = _mbylstra$elmfirebaseauth$Components_FaustUiModel$showPiano(model.faustUiInputs) ? {
+		ctor: '::',
+		_0: A2(_mbylstra$elmfirebaseauth$Components_PitchStepSequencer$view, 'step-sequencer pitch-step-sequencer', model.pitchStepSequencer),
+		_1: {ctor: '[]'}
 	} : {ctor: '[]'};
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('step-sequencers'),
+			_1: {ctor: '[]'}
+		},
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			pitchStepSequencer,
+			{
+				ctor: '::',
+				_0: _mbylstra$elmfirebaseauth$Components_Main_View_MainFooter$drumStepSequencerView(model),
+				_1: {ctor: '[]'}
+			}));
 };
 var _mbylstra$elmfirebaseauth$Components_Main_View_MainFooter$view = function (model) {
 	return A2(
@@ -30883,33 +30655,31 @@ var _mbylstra$elmfirebaseauth$Components_Main_View_MainFooter$view = function (m
 			_0: _elm_lang$html$Html_Attributes$class('main-footer'),
 			_1: {ctor: '[]'}
 		},
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			{
+		{
+			ctor: '::',
+			_0: A2(
+				_mbylstra$elmfirebaseauth$HtmlHelpers$maybeView,
+				function (error) {
+					return A2(
+						_elm_lang$html$Html$p,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(error),
+							_1: {ctor: '[]'}
+						});
+				},
+				model.compilationError),
+			_1: {
 				ctor: '::',
-				_0: A2(
-					_mbylstra$elmfirebaseauth$HtmlHelpers$maybeView,
-					function (error) {
-						return A2(
-							_elm_lang$html$Html$p,
-							{ctor: '[]'},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text(error),
-								_1: {ctor: '[]'}
-							});
-					},
-					model.compilationError),
+				_0: _mbylstra$elmfirebaseauth$Components_Main_View_KnobsAndSliders$view(model),
 				_1: {
 					ctor: '::',
-					_0: _mbylstra$elmfirebaseauth$Components_Main_View_KnobsAndSliders$view(model),
+					_0: _mbylstra$elmfirebaseauth$Components_Main_View_MainFooter$stepSequencersView(model),
 					_1: {ctor: '[]'}
 				}
-			},
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				_mbylstra$elmfirebaseauth$Components_Main_View_MainFooter$pianoView(model),
-				_mbylstra$elmfirebaseauth$Components_Main_View_MainFooter$drumStepSequencerView(model))));
+			}
+		});
 };
 var _mbylstra$elmfirebaseauth$Components_Main_View_ProgramList$buttonView = function (faustProgram) {
 	return A2(

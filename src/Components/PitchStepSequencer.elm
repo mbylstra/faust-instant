@@ -1,4 +1,4 @@
-module Components.StepSequencer exposing (..)
+module Components.PitchStepSequencer exposing (..)
 
 import Html exposing (div, button, text, node, h2, p)
 import Html.Attributes exposing (style, class)
@@ -9,7 +9,7 @@ import Components.Main.Types as MainTypes
 import Components.StepSequencer.Types exposing (Model)
 
 numBars : Int
-numBars = 2
+numBars = 1
 
 numKeys : Int
 numKeys = 13
@@ -49,15 +49,9 @@ handleGridControlMsg gridControlMsg model =
         ({ model | gridControl = gridControl }, outMsgs)
 
 
-view : Model -> Html.Html MainTypes.Msg
-view model =
-    div [ class "step-sequencer" ]
+view : String -> Model -> Html.Html MainTypes.Msg
+view className model =
+    div [ class className ]
         [ Html.map MainTypes.GridControlMsg <|
-            GridControl.view {columnGroupLength=notesPerBar} model.gridControl
+            GridControl.view {columnGroupLength=2} model.gridControl
         ]
-
-
--- get the value by
--- - get the column at x
--- - iterater through every value in the column, and take the last value
--- - of true ( I realise the model stinks a bit)

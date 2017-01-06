@@ -9,7 +9,7 @@ import Components.Main.Types as MainTypes
 import Components.StepSequencer.Types exposing (Model)
 
 numBars : Int
-numBars = 2
+numBars = 1
 
 numKeys : Int
 numKeys = 3
@@ -49,11 +49,11 @@ handleGridControlMsg gridControlMsg model =
         ({ model | gridControl = gridControl }, outMsgs)
 
 
-view : Model -> Html.Html MainTypes.Msg
-view model =
-    div [ class "step-sequencer" ]
+view : String -> Model -> Html.Html MainTypes.Msg
+view className model =
+    div [ class className ]
         [ Html.map MainTypes.DrumStepSequencerGridControlMsg <|
-            GridControl.view {columnGroupLength=notesPerBar} model.gridControl
+            GridControl.view {columnGroupLength=2} model.gridControl
         ]
 
 

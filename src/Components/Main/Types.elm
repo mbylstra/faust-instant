@@ -77,12 +77,12 @@ type alias Model =
     , textMeasurementWidth : Maybe Int
     , bufferSnapshot : Maybe (List Float)
     , faustSvgUrl : Maybe String
-    , audioClockTime : Float
-    , tempo : Float
-    , lastMetronomeTickTime : Float
-    , globalSongPosition : SongPosition
-    , numberOfBeatsPerBar : Int
-    , stepSequencer : StepSequencerTypes.Model
+    -- , audioClockTime : Float
+    -- , tempo : Float
+    -- , lastMetronomeTickTime : Float
+    -- , globalSongPosition : SongPosition
+    -- , numberOfBeatsPerBar : Int
+    , pitchStepSequencer : StepSequencerTypes.Model
     , drumStepSequencer : StepSequencerTypes.Model
     }
 
@@ -137,8 +137,8 @@ type Msg
     | MenuMsg Int Material.Menu.Msg
     | GridControlMsg GridControl.Msg
     | DrumStepSequencerGridControlMsg GridControl.Msg
-    | AudioBufferClockTick Float
-    | MetronomeTick -- the metronome ticks 24 times per beat
+    -- | AudioBufferClockTick Float
+    -- | MetronomeTick -- the metronome ticks 24 times per beat
     | SetPitch Float
     | ToggleOnOff
     | BarGraphUpdate { address : String, value : Float }

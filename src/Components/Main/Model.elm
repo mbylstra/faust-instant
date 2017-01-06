@@ -38,7 +38,7 @@ import Components.Main.Commands
         ( fetchCurrentFirebaseUser
         )
 import Components.Main.Http.Firebase exposing (getStaffPicks, getUserFaustPrograms)
-import Components.StepSequencer as StepSequencer
+import Components.PitchStepSequencer as PitchStepSequencer
 import Components.DrumStepSequencer as DrumStepSequencer
 
 
@@ -84,12 +84,12 @@ init flags =
         , textMeasurementWidth = Nothing
         , bufferSnapshot = Nothing
         , faustSvgUrl = Nothing
-        , audioClockTime = 0.0
-        , tempo = 120.0
-        , lastMetronomeTickTime = 0.0
-        , globalSongPosition = { bar = 0, beat = 0, tick = 0 }
-        , numberOfBeatsPerBar = 4
-        , stepSequencer = StepSequencer.init
+        -- , audioClockTime = 0.0
+        -- , tempo = 120.0
+        -- , lastMetronomeTickTime = 0.0
+        -- , globalSongPosition = { bar = 0, beat = 0, tick = 0 }
+        -- , numberOfBeatsPerBar = 4
+        , pitchStepSequencer = PitchStepSequencer.init
         , drumStepSequencer = DrumStepSequencer.init
         }
             ! [ Cmd.map HotKeysMsg hotKeysCommand

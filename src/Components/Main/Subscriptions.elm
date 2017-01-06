@@ -26,11 +26,11 @@ subscriptions model =
     , incomingBufferSnapshot BufferSnapshot
     , incomingBarGraphUpdate BarGraphUpdate
     ]
-    ++ ( if model.on then
-            [ incomingAudioBufferClockTick AudioBufferClockTick ]
-        else
-            []
-        )
+    -- ++ ( if model.on then
+    --         [ incomingAudioBufferClockTick AudioBufferClockTick ]
+    --     else
+    --         []
+    --     )
         -- ++ (if model.arpeggiatorOn then
         --         [ Sub.map ArpeggiatorMsg (Arpeggiator.subscription model.arpeggiator) ]
         --     else
