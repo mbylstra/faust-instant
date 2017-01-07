@@ -7,6 +7,7 @@ import Json.Decode
 import Dict exposing (Dict)
 import Http
 
+
 -- external components
 
 import FirebaseAuth exposing (AuthProvider(..), SignInWithPopupError(..))
@@ -20,7 +21,10 @@ import GridControl
 
 import Components.HotKeys as HotKeys
 import Components.Slider as Slider
+
+
 -- import Components.Arpeggiator as Arpeggiator
+
 import Components.FaustProgram as FaustProgram
 import Components.User as User
 import Components.SimpleDialog as SimpleDialog
@@ -39,11 +43,13 @@ type alias Flags =
     , code : String
     }
 
+
 type alias SongPosition =
     { bar : Int
     , beat : Int
     , tick : Int
     }
+
 
 type alias Model =
     { on : Bool
@@ -57,13 +63,14 @@ type alias Model =
     , mainVolume : Slider.Model
     , fftData : List Float
     , faustUi : Maybe FaustUi
-    , faustUiInputs : Dict String (Float, InputRecord)
+    , faustUiInputs : Dict String ( Float, InputRecord )
     , faustMeters : Dict String Float
     , polyphony : Polyphony
     , bufferSize : Int
-    , loading : Bool
-    -- , arpeggiator : Arpeggiator.Model
-    -- , arpeggiatorOn : Bool
+    , loading :
+        Bool
+        -- , arpeggiator : Arpeggiator.Model
+        -- , arpeggiatorOn : Bool
     , signupView : SignupView.Model
     , user : Maybe User.Model
     , authToken :
@@ -76,13 +83,14 @@ type alias Model =
     , myPrograms : List FaustProgram.Model
     , textMeasurementWidth : Maybe Int
     , bufferSnapshot : Maybe (List Float)
-    , faustSvgUrl : Maybe String
-    -- , audioClockTime : Float
-    -- , tempo : Float
-    -- , lastMetronomeTickTime : Float
-    -- , globalSongPosition : SongPosition
-    -- , numberOfBeatsPerBar : Int
-    , pitchStepSequencer : StepSequencerTypes.Model
+    , faustSvgUrl :
+        Maybe String
+        -- , audioClockTime : Float
+        -- , tempo : Float
+        -- , lastMetronomeTickTime : Float
+        -- , globalSongPosition : SongPosition
+        -- , numberOfBeatsPerBar : Int
+    , notePitchStepSequencer : StepSequencerTypes.Model
     , drumStepSequencer : StepSequencerTypes.Model
     }
 
@@ -102,7 +110,7 @@ type Msg
     | FaustUiButtonUp String
     | PianoKeyMouseDown Float
     | BufferSizeChanged Int
-    -- | ArpeggiatorMsg Arpeggiator.Msg
+      -- | ArpeggiatorMsg Arpeggiator.Msg
     | SignupViewMsg SignupView.Msg
     | Error SignInWithPopupError
     | FirebaseLoginSuccess FirebaseAuth.User
@@ -135,10 +143,10 @@ type Msg
       -- Material Design Lite
     | MDL (Material.Msg Msg)
     | MenuMsg Int Material.Menu.Msg
-    | GridControlMsg GridControl.Msg
-    | DrumStepSequencerGridControlMsg GridControl.Msg
-    -- | AudioBufferClockTick Float
-    -- | MetronomeTick -- the metronome ticks 24 times per beat
+    | NotePitchStepSequencerMsg GridControl.Msg
+    | DrumStepSequencerMsg GridControl.Msg
+      -- | AudioBufferClockTick Float
+      -- | MetronomeTick -- the metronome ticks 24 times per beat
     | SetPitch Float
     | ToggleOnOff
     | BarGraphUpdate { address : String, value : Float }

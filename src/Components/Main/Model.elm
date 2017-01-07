@@ -22,7 +22,10 @@ import Material
 import Components.FaustProgram as FaustProgram exposing (hasAuthor, hasBeenSavedToDatabase)
 import Components.HotKeys as HotKeys
 import Components.Slider as Slider
+
+
 -- import Components.Arpeggiator as Arpeggiator
+
 import Components.SimpleDialog as SimpleDialog
 import Components.User as User
 import Components.UserSettingsForm as UserSettingsForm
@@ -38,8 +41,7 @@ import Components.Main.Commands
         ( fetchCurrentFirebaseUser
         )
 import Components.Main.Http.Firebase exposing (getStaffPicks, getUserFaustPrograms)
-import Components.PitchStepSequencer as PitchStepSequencer
-import Components.DrumStepSequencer as DrumStepSequencer
+import Components.StepSequencer as StepSequencer
 
 
 --------------------------------------------------------------------------------
@@ -70,9 +72,10 @@ init flags =
         , faustMeters = Dict.empty
         , polyphony = Monophonic
         , bufferSize = Constants.defaultBufferSize
-        , loading = False
-        -- , arpeggiator = Arpeggiator.init
-        -- , arpeggiatorOn = False
+        , loading =
+            False
+            -- , arpeggiator = Arpeggiator.init
+            -- , arpeggiatorOn = False
         , signupView = SignupView.init
         , user = Nothing
         , authToken = Nothing
@@ -83,14 +86,29 @@ init flags =
         , myPrograms = []
         , textMeasurementWidth = Nothing
         , bufferSnapshot = Nothing
-        , faustSvgUrl = Nothing
-        -- , audioClockTime = 0.0
-        -- , tempo = 120.0
-        -- , lastMetronomeTickTime = 0.0
-        -- , globalSongPosition = { bar = 0, beat = 0, tick = 0 }
-        -- , numberOfBeatsPerBar = 4
-        , pitchStepSequencer = PitchStepSequencer.init
-        , drumStepSequencer = DrumStepSequencer.init
+        , faustSvgUrl =
+            Nothing
+            -- , audioClockTime = 0.0
+            -- , tempo = 120.0
+            -- , lastMetronomeTickTime = 0.0
+            -- , globalSongPosition = { bar = 0, beat = 0, tick = 0 }
+            -- , numberOfBeatsPerBar = 4
+        , notePitchStepSequencer =
+            StepSequencer.init
+                { numBars = 1
+                , numKeys = 13
+                , notesPerBar = 8
+                , twoDimensional = False
+                }
+        , drumStepSequencer =
+            StepSequencer.init
+                { numBars = 1
+                , numKeys =
+                    3
+                    -- hat, kick, snare
+                , notesPerBar = 8
+                , twoDimensional = True
+                }
         }
             ! [ Cmd.map HotKeysMsg hotKeysCommand
               , elmAppInitialRender ()
@@ -176,7 +194,11 @@ canSaveProgram model =
                     if userOwnsProgram user faustProgram then
                         True
                     else
-                        ( if Constants.saveStaffPicksMode then True else False )
+                        (if Constants.saveStaffPicksMode then
+                            True
+                         else
+                            False
+                        )
 
                 Nothing ->
                     if hasAuthor model.faustProgram then

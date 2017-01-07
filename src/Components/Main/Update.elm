@@ -2,25 +2,32 @@ module Components.Main.Update exposing (..)
 
 --------------------------------------------------------------------------------
 -- core
+
 import Json.Decode
 import Task
 import Dict
 
+
 -- external packages
+
 import Http exposing (Error(..))
 import Update.Extra exposing (updateModel, andThen)
 import Material
 
+
 -- linked WIP external packages
-import GridControl
+
 import FirebaseAuth
 import SignupView exposing (OutMsg(SignUpButtonClicked, SignInButtonClicked))
 
+
 -- project libs
+
 import Util exposing (unsafeMaybe, unsafeResult)
 
 
 -- project components
+
 import Components.HotKeys as HotKeys
 import Components.Slider as Slider
 import Components.SimpleDialog as SimpleDialog
@@ -43,15 +50,16 @@ import Components.Main.Ports as Ports
         )
 import Components.FaustProgram as FaustProgram
 import Components.Main.Constants exposing (firebaseConfig)
-import Components.Main.Http.Firebase as FirebaseHttp
-    exposing
-        ( getTheDemoProgram, deleteFaustProgram )
+import Components.Main.Http.Firebase as FirebaseHttp exposing (getTheDemoProgram, deleteFaustProgram)
 import Components.Main.Http.FaustFileStorage exposing (storeDspFile)
 import Components.Midi as Midi
 import Components.UserSettingsForm as UserSettingsForm
 import Components.FaustUiModel as FaustUiModel exposing (faustUiDecoder)
-import Components.PitchStepSequencer as PitchStepSequencer
-import Components.DrumStepSequencer as DrumStepSequencer
+import Components.Main.Update.StepSequencers
+    exposing
+        ( handleNotePitchStepSequencerMsg
+        , handleDrumStepSequencerMsg
+        )
 
 
 --------------------------------------------------------------------------------
@@ -61,7 +69,7 @@ import Components.DrumStepSequencer as DrumStepSequencer
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
-    -- case Debug.log "action" action of
+        -- case Debug.log "action" action of
         NoOp ->
             model ! []
 
@@ -88,15 +96,17 @@ update action model =
 
         FaustUiButtonDown address ->
             let
-                _ = Debug.log "FaustUiButtonDown" 1
+                _ =
+                    Debug.log "FaustUiButtonDown" 1
             in
-                model ! [ setControlValue (address, 1.0) ]
+                model ! [ setControlValue ( address, 1.0 ) ]
 
         FaustUiButtonUp address ->
             let
-                _ = Debug.log "FaustUiButtonUp" 1
+                _ =
+                    Debug.log "FaustUiButtonUp" 1
             in
-                model ! [ setControlValue (address, 0.0) ]
+                model ! [ setControlValue ( address, 0.0 ) ]
 
         PianoKeyMouseDown pitch ->
             pianoKeyMouseDown pitch model
@@ -106,7 +116,6 @@ update action model =
 
         -- ArpeggiatorMsg msg ->
         --     arpeggiatorMsg msg model
-
         SignupViewMsg msg ->
             signupViewMsg msg model
 
@@ -197,18 +206,16 @@ update action model =
         MidiInputEvent midiEvent ->
             midiInputEvent midiEvent model
 
-        GridControlMsg gridControlMsg ->
-            handleGridControlMsg gridControlMsg model
+        NotePitchStepSequencerMsg gridControlMsg ->
+            handleNotePitchStepSequencerMsg gridControlMsg model
 
-        DrumStepSequencerGridControlMsg gridControlMsg ->
-            handleDrumStepSequencerGridControlMsg gridControlMsg model
+        DrumStepSequencerMsg gridControlMsg ->
+            handleDrumStepSequencerMsg gridControlMsg model
 
         -- AudioBufferClockTick time ->
         --     handleAudioBufferClockTick time model
-
         -- MetronomeTick ->
         --     handleMetronomeTick model
-
         SetPitch pitch ->
             setPitch pitch model
 
@@ -217,6 +224,8 @@ update action model =
 
         BarGraphUpdate { address, value } ->
             handleBarGraphUpdate address value model
+
+
 
 -- _ ->
 --   Debug.crash ""
@@ -272,9 +281,9 @@ hotKeysMsg msg model =
         commands =
             [ Cmd.map HotKeysMsg hotKeysCommand ]
                 ++ if doCompile then
-                        createCompileCommands model
+                    createCompileCommands model
                    else
-                        []
+                    []
 
         loading =
             if doCompile then
@@ -299,16 +308,16 @@ dspCompiled json model =
     let
         faustUi =
             json
-            |> Json.Decode.decodeValue faustUiDecoder
-            |> unsafeResult
+                |> Json.Decode.decodeValue faustUiDecoder
+                |> unsafeResult
     in
         { model
-        | faustUi = Just faustUi
-        , faustUiInputs = FaustUiModel.extractUiInputs faustUi
-        , faustMeters = FaustUiModel.getInitialMetersModel faustUi
-        , loading = False
+            | faustUi = Just faustUi
+            , faustUiInputs = FaustUiModel.extractUiInputs faustUi
+            , faustMeters = FaustUiModel.getInitialMetersModel faustUi
+            , loading = False
         }
-        ! [ layoutUpdated () ]
+            ! [ layoutUpdated () ]
 
 
 sliderChanged : String -> Float -> Model -> ( Model, Cmd Msg )
@@ -318,22 +327,21 @@ sliderChanged address value model =
     -- | faustUiInputs = Dict.insert address (value model.faustUiInputs
     -- }
     model
-    !
-
-    [ setControlValue ( address, value ) ]
+        ! [ setControlValue ( address, value ) ]
 
 
-setPitch : Float -> Model -> (Model, Cmd Msg)
+setPitch : Float -> Model -> ( Model, Cmd Msg )
 setPitch pitch model =
     model ! [ Ports.setPitch pitch ]
 
 
-fireStepSequencerCmds : Int -> Float -> Model -> (Model, Cmd Msg)
+fireStepSequencerCmds : Int -> Float -> Model -> ( Model, Cmd Msg )
 fireStepSequencerCmds index pitch model =
-    model !
-        [ setControlValue ("_FI_pitchstepsequencer-index", toFloat(index))
-        , setControlValue ("_FI_pitchstepsequencer-value", pitch)
-        ]
+    model
+        ! [ setControlValue ( "_FI_pitchstepsequencer-index", toFloat (index) )
+          , setControlValue ( "_FI_pitchstepsequencer-value", pitch )
+          ]
+
 
 pianoKeyMouseDown : Float -> Model -> ( Model, Cmd Msg )
 pianoKeyMouseDown pitch model =
@@ -347,6 +355,7 @@ bufferSizeChanged bufferSize model =
             { model | bufferSize = bufferSize }
     in
         newModel ! [ createCompileCommand newModel ]
+
 
 
 -- arpeggiatorMsg : Arpeggiator.Msg -> Model -> ( Model, Cmd Msg )
@@ -376,12 +385,16 @@ signupViewMsg msg model =
 
         performSignUpCommand =
             let
-              tagger = \result ->
-                case result of
-                  Err error -> Error error
-                  Ok data -> FirebaseLoginSuccess data
+                tagger =
+                    \result ->
+                        case result of
+                            Err error ->
+                                Error error
+
+                            Ok data ->
+                                FirebaseLoginSuccess data
             in
-                  Task.attempt tagger githubLoginTask
+                Task.attempt tagger githubLoginTask
 
         cmds =
             case maybeOutMsg of
@@ -465,10 +478,9 @@ save model =
 
                         Nothing ->
                             FirebaseHttp.postFaustProgram authToken model.faustProgram
+
                 -- let's also save to cloud at the same time. Ideally they'be done in series,
                 -- but two fire n forget cmds is easier!
-
-
                 commands =
                     case model.faustProgram.author of
                         Just author ->
@@ -479,6 +491,7 @@ save model =
                                 , code = model.faustProgram.code
                                 }
                             ]
+
                         Nothing ->
                             [ postProgramCmd ]
             in
@@ -496,7 +509,6 @@ newFile model =
 
 deleteCurrentFile : Model -> ( Model, Cmd Msg )
 deleteCurrentFile model =
-
     -- TODO: consider putting faustProgram in a union type like
     -- Unsaved, Saved, OwnedByUser, etc - which makes unpacking maybe's easier
     case model.faustProgram.databaseId of
@@ -504,11 +516,13 @@ deleteCurrentFile model =
             case model.authToken of
                 Just authToken ->
                     model ! [ deleteFaustProgram authToken key ]
+
                 Nothing ->
                     Debug.crash "Unauthenticated user should not be abled to delete a db program"
 
         Nothing ->
-            model ! []
+            model
+                ! []
                 |> andThen update NewFile
 
 
@@ -550,12 +564,14 @@ userSettingsFormMsg msg_ model =
 
                             updateUserProfileCommand =
                                 let
-                                    tagger = \result ->
-                                      case result of
-                                        Err _ ->
-                                          GeneralError
-                                        Ok _ ->
-                                          NoOp
+                                    tagger =
+                                        \result ->
+                                            case result of
+                                                Err _ ->
+                                                    GeneralError
+
+                                                Ok _ ->
+                                                    NoOp
                                 in
                                     Task.attempt tagger updateUserProfileTask
 
@@ -579,7 +595,8 @@ userSettingsFormMsg msg_ model =
 fetchedStaffPicks : List ( String, FaustProgram.Model ) -> Model -> ( Model, Cmd Msg )
 fetchedStaffPicks staffPickPairs model =
     let
-        staffPicks = FaustProgram.addIds staffPickPairs
+        staffPicks =
+            FaustProgram.addIds staffPickPairs
     in
         { model | staffPicks = staffPicks } ! []
 
@@ -591,8 +608,11 @@ fetchedStaffPicks staffPickPairs model =
 fetchedUserPrograms : List ( String, FaustProgram.Model ) -> Model -> ( Model, Cmd Msg )
 fetchedUserPrograms faustProgramPairs model =
     let
-        faustPrograms = FaustProgram.addIds faustProgramPairs
-        sortedPrograms =  List.sortBy .title faustPrograms
+        faustPrograms =
+            FaustProgram.addIds faustProgramPairs
+
+        sortedPrograms =
+            List.sortBy .title faustPrograms
     in
         { model | myPrograms = sortedPrograms } ! []
 
@@ -613,11 +633,12 @@ openProgram faustProgram model =
                 | faustProgram = faustProgram
                 , loading = True
             }
+
         commands =
             [ updateFaustCode newModel.faustProgram.code
             , measureText newModel.faustProgram.title
             ]
-             ++ createCompileCommands newModel
+                ++ createCompileCommands newModel
     in
         newModel ! commands
 
@@ -635,7 +656,8 @@ handleHttpError httpError model =
 
         BadStatus httpError ->
             let
-                _ = Debug.log "BadStatus" (toString httpError)
+                _ =
+                    Debug.log "BadStatus" (toString httpError)
             in
                 model ! []
 
@@ -695,11 +717,12 @@ webfontsActive model =
     model ! [ measureText model.faustProgram.title ]
 
 
-handleBufferSnapshot : List Float -> Model -> (Model, Cmd Msg)
+handleBufferSnapshot : List Float -> Model -> ( Model, Cmd Msg )
 handleBufferSnapshot snapshot model =
-    { model | bufferSnapshot = Just snapshot }  ! []
+    { model | bufferSnapshot = Just snapshot } ! []
 
-svgUrlFetched : String -> Model -> (Model, Cmd Msg)
+
+svgUrlFetched : String -> Model -> ( Model, Cmd Msg )
 svgUrlFetched url model =
     { model | faustSvgUrl = Just url } ! []
 
@@ -734,120 +757,16 @@ midiInputEvent midiEvent model =
         _ ->
             model ! []
 
-handleGridControlMsg : GridControl.Msg -> Model -> ( Model, Cmd Msg )
-handleGridControlMsg gridControlMsg model =
-    let
-        (stepSequencer, outMsgs) = PitchStepSequencer.handleGridControlMsg gridControlMsg model.pitchStepSequencer
-        outMsgToCmds outMsg =
-            case outMsg of
-                GridControl.CellUpdated {x, y, value} ->
-                    let
-                        indexAddress = "/0x00/_FI_pitchstepsequencer-index"
-                        valueAddress = "/0x00/_FI_pitchstepsequencer-value"
-                        yToPitch = 60 + (12 - y)
-                    in
-                        [ setControlValue (indexAddress, toFloat(x))
-                        , setControlValue (valueAddress, toFloat(yToPitch))
-                        ]
-
-        cmds = List.concatMap outMsgToCmds outMsgs
-        _ = Debug.log "cmds" cmds
-    in
-        { model | pitchStepSequencer = stepSequencer } ! cmds
-
-handleDrumStepSequencerGridControlMsg : GridControl.Msg -> Model -> ( Model, Cmd Msg )
-handleDrumStepSequencerGridControlMsg gridControlMsg model =
-    let
-        (stepSequencer, outMsgs) = DrumStepSequencer.handleGridControlMsg gridControlMsg model.drumStepSequencer
-        _ = Debug.log "outMsgs" outMsgs
-        outMsgToCmds outMsg =
-            case outMsg of
-                GridControl.CellUpdated {x, y, value} ->
-                    let
-                        indexAddress = "/0x00/_FI_drumsequencer-index-" ++ toString(y)
-                        valueAddress = "/0x00/_FI_drumsequencer-value-" ++ toString(y)
-                        valueInt =
-                            case value of
-                                True -> 1
-                                False -> 0
-
-                    in
-                        [ setControlValue (indexAddress, toFloat(x))
-                        , setControlValue (valueAddress, toFloat(valueInt))
-                        ]
-
-        cmds = List.concatMap outMsgToCmds outMsgs
-        _ = Debug.log "cmds" cmds
-    in
-        { model | drumStepSequencer = stepSequencer } ! cmds
-
 
 numberOfTicksPerBeat : Int
-numberOfTicksPerBeat = 24
+numberOfTicksPerBeat =
+    24
 
 
--- handleAudioBufferClockTick : Float -> Model -> (Model, Cmd Msg)
--- handleAudioBufferClockTick time model =
---     let
---         beatDuration = 1.0 / (model.tempo / 60.0)
---         -- 6O BPM is 1 beat = 1 second
---         -- 120 BPM is 1 beat = 0.5 seconds.
---
---         metronomeTickDuration = beatDuration / (toFloat numberOfTicksPerBeat)
---         nextMetronomeTickTime = model.lastMetronomeTickTime + metronomeTickDuration
---     in
---         if model.audioClockTime >= nextMetronomeTickTime
---         then
---             { model | audioClockTime = time, lastMetronomeTickTime = nextMetronomeTickTime } ! []
---             |> andThen update MetronomeTick
---         else
---             { model | audioClockTime = time } ! []
-
--- handleMetronomeTick : Model -> (Model, Cmd Msg)
--- handleMetronomeTick model =
---     let
---         updateGlobalSongPosition : SongPosition -> SongPosition
---         updateGlobalSongPosition songPosition =
---             let
---                 { bar, beat, tick } = songPosition
---                 newTick = (tick + 1) % numberOfTicksPerBeat
---             in
---                 if newTick == 0
---                 then
---                     let
---                         newBeat = songPosition.beat + 1 % (model.numberOfBeatsPerBar)
---                     in
---                         if newBeat == 0
---                         then
---                             { songPosition | bar = bar + 1, beat = 0, tick = 0 }
---                         else
---                             { songPosition | beat = newBeat, tick = 0 }
---                 else
---                     { songPosition | tick = newTick }
---
---         newSongPosition = updateGlobalSongPosition model.globalSongPosition
---         model2 = { model | globalSongPosition = newSongPosition }
---     in
---
---         -- if tick falls on an eighth note, then we want to advance the step sequencer
---         if newSongPosition.tick % 8 == 0
---         then
---             let
---                 (newStepSequencer, maybeMsg) = StepSequencer.advanceIt model.stepSequencer
---                 model3 = { model2 | pitchStepSequencer = newStepSequencer }
---             in
---                 case maybeMsg of
---                     Just msg ->
---                         update msg model3
---                     Nothing ->
---                         model3 ! []
---         else
---             model2 ! []
-
-
-handleBarGraphUpdate : String -> Float -> Model -> (Model, Cmd Msg)
+handleBarGraphUpdate : String -> Float -> Model -> ( Model, Cmd Msg )
 handleBarGraphUpdate address value model =
     let
-        faustMeters = model.faustMeters
+        faustMeters =
+            model.faustMeters
     in
         { model | faustMeters = Dict.insert address value faustMeters } ! []
