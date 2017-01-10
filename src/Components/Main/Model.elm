@@ -85,7 +85,12 @@ init flags =
         , staffPicks = []
         , myPrograms = []
         , textMeasurementWidth = Nothing
-        , bufferSnapshot = Nothing
+        , bufferSnapshot =
+            Nothing
+        , includeDrumBuddy =
+            True
+            -- , includeDrumBuddy = False
+        , includeNoteStepSequencer = False
         , faustSvgUrl =
             Nothing
             -- , audioClockTime = 0.0

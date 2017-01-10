@@ -27,6 +27,7 @@ import Components.Main.View.KnobsAndSliders as KnobsAndSliders
 import Icons.Drum
 import Icons.Snare
 import Icons.HiHat
+import Components.FaustCodeWrangler exposing (wrangleFaustCodeForFaustInstantGimmicks)
 
 
 view : Model -> Html Msg
@@ -52,8 +53,13 @@ view model =
 stepSequencersView : Model -> Html Msg
 stepSequencersView model =
     let
+        showPiano =
+            (FaustUiModel.showPiano model.faustUiInputs)
+                || (String.contains "_FI_freq;" (wrangleFaustCodeForFaustInstantGimmicks model.faustProgram.code))
+
+        -- needs a big refactor!
         notePitchStepSequencer =
-            if FaustUiModel.showPiano model.faustUiInputs then
+            if showPiano then
                 [ Html.map NotePitchStepSequencerMsg <|
                     StepSequencer.view
                         "step-sequencer pitch-step-sequencer"

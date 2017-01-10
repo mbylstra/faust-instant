@@ -83,6 +83,8 @@ type alias Model =
     , myPrograms : List FaustProgram.Model
     , textMeasurementWidth : Maybe Int
     , bufferSnapshot : Maybe (List Float)
+    , includeDrumBuddy : Bool
+    , includeNoteStepSequencer : Bool
     , faustSvgUrl :
         Maybe String
         -- , audioClockTime : Float

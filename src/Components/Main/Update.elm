@@ -60,6 +60,7 @@ import Components.Main.Update.StepSequencers
         ( handleNotePitchStepSequencerMsg
         , handleDrumStepSequencerMsg
         )
+import Components.Main.Update.StepSequencers as StepSequencers
 
 
 --------------------------------------------------------------------------------
@@ -317,7 +318,7 @@ dspCompiled json model =
             , faustMeters = FaustUiModel.getInitialMetersModel faustUi
             , loading = False
         }
-            ! [ layoutUpdated () ]
+            ! ([ layoutUpdated () ] ++ StepSequencers.getAllSetValueCmds model)
 
 
 sliderChanged : String -> Float -> Model -> ( Model, Cmd Msg )

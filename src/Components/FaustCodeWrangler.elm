@@ -95,9 +95,9 @@ replaceFreqAndGateInputsWithStepSequencer faustCode =
 
         importStatement =
             """
-            _FI_pitchStepSequencer = library("http://lib.faustinstant.net/mbylstra/fi-gated-pitch-step-sequencer.lib").pitchStepSequencer;
-            _FI_freq = _FI_pitchStepSequencer(_FI_bpm) : _, !;
-            _FI_gate = _FI_pitchStepSequencer(_FI_bpm) : !, _;
+            _FI_noteStepSequencer = library("http://lib.faustinstant.net/mbylstra/fi-note-step-sequencer.lib").noteStepSequencer;
+            _FI_freq = _FI_noteStepSequencer(_FI_bpm) : _, !;
+            _FI_gate = _FI_noteStepSequencer(_FI_bpm) : !, _;
         """
     in
         importStatement
@@ -112,8 +112,8 @@ replaceFreqAndGateInputsWithStepSequencer faustCode =
 -- replaceGateInputWithStepSequencer faustCode =
 --     let
 --         importStatement = """
---             pitchStepSequencer = library("http://lib.faustinstant.net/mbylstra/fi-pitch-step-sequencer.lib").pitchStepSequencer;
+--             noteStepSequencer = library("http://lib.faustinstant.net/mbylstra/fi-pitch-step-sequencer.lib").noteStepSequencer;
 --         """
 --     in
 --         importStatement
---             ++ (Regex.replace Regex.All freqInputRegex (\_ -> "pitchStepSequencer(bpm);") faustCode)
+--             ++ (Regex.replace Regex.All freqInputRegex (\_ -> "noteStepSequencer(bpm);") faustCode)

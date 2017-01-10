@@ -4,11 +4,11 @@ import Html exposing (div, button, text, node, h2, p)
 import Html.Attributes exposing (style, class)
 import Html
 import GridControl
-
-
--- import Components.Main.Types as MainTypes
-
 import Components.StepSequencer.Types exposing (Model)
+import Matrix exposing (Matrix)
+
+
+-- Model
 
 
 type alias Params =
@@ -26,12 +26,26 @@ init params =
         GridControl.init
             (params.notesPerBar * params.numBars)
             params.numKeys
-            False
+            params.twoDimensional
     }
 
 
+get2DValues : Model -> List (Maybe Int)
+get2DValues model =
+    let
+        indexes =
+            List.range 0 (GridControl.width model.gridControl)
+    in
+        List.map (GridControl.valueAtColumn model.gridControl) indexes
 
--- no change required
+
+getMatrix : Model -> Matrix Bool
+getMatrix model =
+    GridControl.getMatrix model.gridControl
+
+
+
+-- Update
 
 
 update : GridControl.Msg -> Model -> ( Model, List GridControl.OutMsg )
@@ -44,7 +58,7 @@ update gridControlMsg model =
 
 
 
--- TODO: the mapping needs to happen one level up!
+-- View
 
 
 view : String -> Model -> Html.Html GridControl.Msg
