@@ -114,6 +114,7 @@ init flags =
                 , notesPerBar = 8
                 , twoDimensional = True
                 }
+        , wrangleFaustCode = True
         }
             ! [ Cmd.map HotKeysMsg hotKeysCommand
               , elmAppInitialRender ()

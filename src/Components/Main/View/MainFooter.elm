@@ -6,6 +6,7 @@ module Components.Main.View.MainFooter exposing (view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 
 
 -- external components
@@ -28,26 +29,21 @@ import Icons.Drum
 import Icons.Snare
 import Icons.HiHat
 import Components.FaustCodeWrangler exposing (wrangleFaustCodeForFaustInstantGimmicks)
+import Components.NoteStepSequencer as NoteStepSequencer
 
 
 view : Model -> Html Msg
 view model =
     div [ class "main-footer" ]
-        ([ maybeView (\error -> p [] [ text error ]) model.compilationError
-           -- [ p []
-           --     [ text (Maybe.withDefault "" model.compilationError) ]
-           -- , Html.map VolumeSliderMsg (Slider.view model.mainVolume)
-           -- , p []
-           --   [ text "Audio Meter Value: "
-           --   , text (toString model.audioMeter)
-           --   ]
-           -- , Html.map AudioMeterMsg (AudioMeter.view model.audioMeter)
-           -- , FFTBarGraph.view model.fftData
-         , KnobsAndSliders.view model
-         , stepSequencersView model
-         ]
-         -- ++ (pianoView model)
-        )
+        [ maybeView (\error -> p [] [ text error ]) model.compilationError
+        , KnobsAndSliders.view model
+        , stepSequencersView model
+        , input [ type_ "checkbox", checked model.wrangleFaustCode, onCheck EnableFaustCodeWrangling ] []
+        ]
+
+
+
+-- ++ (pianoView model)
 
 
 stepSequencersView : Model -> Html Msg
@@ -60,11 +56,7 @@ stepSequencersView model =
         -- needs a big refactor!
         notePitchStepSequencer =
             if showPiano then
-                [ Html.map NotePitchStepSequencerMsg <|
-                    StepSequencer.view
-                        "step-sequencer pitch-step-sequencer"
-                        model.notePitchStepSequencer
-                ]
+                [ NoteStepSequencer.view model ]
             else
                 []
     in

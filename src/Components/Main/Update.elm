@@ -55,12 +55,8 @@ import Components.Main.Http.FaustFileStorage exposing (storeDspFile)
 import Components.Midi as Midi
 import Components.UserSettingsForm as UserSettingsForm
 import Components.FaustUiModel as FaustUiModel exposing (faustUiDecoder)
-import Components.Main.Update.StepSequencers
-    exposing
-        ( handleNotePitchStepSequencerMsg
-        , handleDrumStepSequencerMsg
-        )
-import Components.Main.Update.StepSequencers as StepSequencers
+import Components.NoteStepSequencer as NoteStepSequencer
+import Components.DrumStepSequencer as DrumStepSequencer
 
 
 --------------------------------------------------------------------------------
@@ -208,10 +204,10 @@ update action model =
             midiInputEvent midiEvent model
 
         NotePitchStepSequencerMsg gridControlMsg ->
-            handleNotePitchStepSequencerMsg gridControlMsg model
+            NoteStepSequencer.handleMsg gridControlMsg model
 
         DrumStepSequencerMsg gridControlMsg ->
-            handleDrumStepSequencerMsg gridControlMsg model
+            DrumStepSequencer.handleMsg gridControlMsg model
 
         -- AudioBufferClockTick time ->
         --     handleAudioBufferClockTick time model
@@ -225,6 +221,9 @@ update action model =
 
         BarGraphUpdate { address, value } ->
             handleBarGraphUpdate address value model
+
+        EnableFaustCodeWrangling trueOrFalse ->
+            { model | wrangleFaustCode = trueOrFalse } ! []
 
 
 
@@ -318,7 +317,10 @@ dspCompiled json model =
             , faustMeters = FaustUiModel.getInitialMetersModel faustUi
             , loading = False
         }
-            ! ([ layoutUpdated () ] ++ StepSequencers.getAllSetValueCmds model)
+            ! ([ layoutUpdated () ]
+                ++ (DrumStepSequencer.getSetValueCmds model)
+                ++ (NoteStepSequencer.getSetValueCmds model)
+              )
 
 
 sliderChanged : String -> Float -> Model -> ( Model, Cmd Msg )

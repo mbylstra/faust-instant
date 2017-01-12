@@ -21,8 +21,7 @@ type alias Params =
 
 init : Params -> Model
 init params =
-    { position = 0
-    , gridControl =
+    { gridControl =
         GridControl.init
             (params.notesPerBar * params.numBars)
             params.numKeys

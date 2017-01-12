@@ -9,7 +9,6 @@ import Components.Main.Ports exposing (compileFaustCode, saveToLocalStoragePort)
 import Components.Main.Constants as Constants
 import Components.Main.Http.OnlineCompiler exposing (getSvgUrl)
 import Components.FaustCodeWrangler exposing (wrangleFaustCodeForFaustInstantGimmicks)
-import Components.Main.Update.StepSequencers as StepSequencers
 
 
 --------------------------------------------------------------------------------
@@ -54,7 +53,7 @@ createCompileCommand : Model -> Cmd Msg
 createCompileCommand model =
     let
         wrangledFaustCode =
-            if model.includeDrumBuddy then
+            if model.wrangleFaustCode then
                 wrangleFaustCodeForFaustInstantGimmicks model.faustProgram.code
             else
                 model.faustProgram.code
@@ -84,7 +83,6 @@ createCompileCommands model =
             [ createCompileCommand model
             , getSvgUrl SvgUrlFetched model.faustProgram.code
             ]
-                ++ StepSequencers.getAllSetValueCmds model
     in
         Debug.log "commands" commands
 

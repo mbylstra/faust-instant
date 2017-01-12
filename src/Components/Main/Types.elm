@@ -85,6 +85,7 @@ type alias Model =
     , bufferSnapshot : Maybe (List Float)
     , includeDrumBuddy : Bool
     , includeNoteStepSequencer : Bool
+    , wrangleFaustCode : Bool
     , faustSvgUrl :
         Maybe String
         -- , audioClockTime : Float
@@ -152,6 +153,7 @@ type Msg
     | SetPitch Float
     | ToggleOnOff
     | BarGraphUpdate { address : String, value : Float }
+    | EnableFaustCodeWrangling Bool
 
 
 type Polyphony
