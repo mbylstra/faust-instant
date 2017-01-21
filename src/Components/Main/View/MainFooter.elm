@@ -30,6 +30,7 @@ import Icons.Snare
 import Icons.HiHat
 import Components.FaustCodeWrangler exposing (wrangleFaustCodeForFaustInstantGimmicks)
 import Components.NoteStepSequencer as NoteStepSequencer
+import Components.DrumStepSequencer as DrumStepSequencer
 
 
 view : Model -> Html Msg
@@ -61,7 +62,7 @@ stepSequencersView model =
                 []
     in
         div [ class "step-sequencers" ]
-            (notePitchStepSequencer ++ [ drumStepSequencerView model ])
+            (notePitchStepSequencer ++ [ DrumStepSequencer.view model ])
 
 
 
@@ -73,13 +74,3 @@ stepSequencersView model =
 --         ]
 --     else
 --         []
-
-
-drumStepSequencerView : Model -> Html Msg
-drumStepSequencerView model =
-    div [ class "drum-step-sequencer-wrapper" ]
-        [ div [ class "drum-step-sequencer-icons" ]
-            [ Icons.HiHat.icon, Icons.Snare.icon, Icons.Drum.icon ]
-        , Html.map DrumStepSequencerMsg <|
-            StepSequencer.view "step-sequencer drum-step-sequencer" model.drumStepSequencer
-        ]

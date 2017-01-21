@@ -6,6 +6,8 @@ import Html
 import GridControl
 import Components.StepSequencer.Types exposing (Model)
 import Matrix exposing (Matrix)
+import Json.Encode as Encode
+import Array exposing (Array)
 
 
 -- Model
@@ -64,3 +66,29 @@ view : String -> Model -> Html.Html GridControl.Msg
 view className model =
     div [ class className ]
         [ GridControl.view { columnGroupLength = 2 } model.gridControl ]
+
+
+
+-- Encode
+
+
+{-| http://stackoverflow.com/questions/38412720/how-to-encode-tuple-to-json-in-elm
+-}
+tuple2Encoder : (a -> Encode.Value) -> (b -> Encode.Value) -> ( a, b ) -> Encode.Value
+tuple2Encoder enc1 enc2 ( val1, val2 ) =
+    Encode.list [ enc1 val1, enc2 val2 ]
+
+
+coordEncoder : ( Int, Int ) -> Encode.Value
+coordEncoder =
+    tuple2Encoder Encode.int Encode.int
+
+
+cellEncoder : ( ( Int, Int ), Bool ) -> Encode.Value
+cellEncoder =
+    tuple2Encoder coordEncoder Encode.bool
+
+
+cellsEncoder : Array ( ( Int, Int ), Bool ) -> Encode.Value
+cellsEncoder cellsArray =
+    Encode.array <| Array.map cellEncoder cellsArray
