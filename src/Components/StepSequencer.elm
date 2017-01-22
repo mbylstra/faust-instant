@@ -58,6 +58,15 @@ update gridControlMsg model =
         ( { model | gridControl = gridControl }, outMsgs )
 
 
+set1DValues : List Int -> Model -> Model
+set1DValues values model =
+    let
+        newGridControl =
+            GridControl.set1DHorizontalValues values model.gridControl
+    in
+        { model | gridControl = newGridControl }
+
+
 
 -- View
 
